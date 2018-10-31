@@ -4,15 +4,42 @@ import embgine.graphics.Camera;
 
 public class EntityGroup {
 	
-	private EntityPool pool;
+	private int[] perLayer;
+	private Entity[][] screenPool;
 	
-	private Behavior renderer;
+	private int layers;
+	
+	private Spawn behavior;
+	
 	private int numParams;
 	
-	public EntityGroup(Behavior r, int np, int mx) {
-		renderer = r;
+	//array system stuff
+	private int size;
+	private Entity[] collection;
+	private int first; 
+	private int last; 
+	private boolean full;
+	
+	/**
+	 * initializes the entity group in the scene
+	 * 
+	 * @param b - the behavior interface
+	 * @param np - the number of render parameters
+	 * @param mx - the max number of entities in this group
+	 * @param lay - the amount of layers in the scene
+	 */
+	public EntityGroup(Spawn spawn, int np, int mx, int lay) {
+		behavior = spawn;
+		
 		numParams = np;
-		pool = new EntityPool(mx);
+
+		size = mx;
+		collection = new Entity[size];
+		first = 0;
+		last = 0;
+		full = false;
+		
+		layers = lay;
 	}
 	
 	/**
@@ -21,9 +48,9 @@ public class EntityGroup {
 	 * @return the entity created. Or NULL if the entity could not be created
 	 */
 	public Entity createInstance() {
-		Entity create = new Entity(renderer, numParams);
-		if( pool.add(create) ) {
-			renderer.spawn();
+		Entity create = new Entity(this, behavior, numParams);
+		if( add(create) ) {
+			behavior.spawn();
 			return create;
 		}else {
 			return null;
@@ -33,36 +60,33 @@ public class EntityGroup {
 	/**
 	 * destroys one of the entity instances in this group
 	 * 
-	 * @return uwu
+	 * @param i - the index of the entity to delete
 	 */
-	public void destroyInstance(Entity e) {
-		
+	public void destroyInstance(int i) {
+		remove(i);
 	}
 	
 	/**
-	 * gets you a list of all the entities in this group that are on the screen
+	 * updates the list of entities on screen
+	 * 
 	 * @param camera - the game camera, to be used for screen checking
-	 * @return an array containing entities that are on screen
 	 */
-	public Entity[] getOnScreen(Camera camera) {
-		int length = 0;
-		Entity[] temp = new Entity[size];
+	public void onScreenUpdate(Camera camera) {
+		perLayer = new int[layers];
+		Entity[][] screenPool = new Entity[layers][size];
+		
 		for(int i = 0; i < last; ++i) {
 			Entity e = collection[i];
 			if(e != null && e.getOnScreen(camera)) {
-				temp[length] = e;
-				++length;
+				int layer = e.getLayer();
+				screenPool[layer][perLayer[layer]] = e;
+				++perLayer[layer];
 			}
 		}
-		Entity[] ret = new Entity[length];
-		for(int i = 0; i < length; ++i) {
-			ret[i] = temp[i];
-		}
-		return ret;
+		
 	}
 	
 	public void update(int layer) {
-		Entity[] collection = pool.get();
 		for(int i = 0; i < last; ++i) {
 			Entity e = collection[i];
 			if(e != null && e.getLayer() == layer) {
@@ -72,105 +96,78 @@ public class EntityGroup {
 	}
 	
 	public void render(int layer) {
-		for(int i = 0; i < last; ++i) {
-			Entity e = collection[i];
-			if(e != null && e.getLayer() == layer) {
+		Entity[] list = screenPool[layer];
+		int len = perLayer[layer];
+		for(int i = 0; i < len; ++i) {
+			Entity e = list[i];
+			if(e.getLayer() == layer) {
 				e.render();
 			}
 		}
 	}
 	
-	public class EntityPool {
-
-		private int size;
-		
-		private Entity[] collection;
-		
-		private int first; //the first position an object can go in
-		
-		private int last; //the last position an object exists in
-		
-		private boolean full;
-
-		public EntityPool(int s) {
-			size = s;
-			
-			collection = new Entity[size];
-			
-			first = 0;
-			last = 0;
-			
-			full = false;
+	public void clear() {
+		for(int i = 0; i < last; ++i) {
+			collection[i] = null;
 		}
 		
-		public Entity[] get() {
-			return collection;
-		}
+		first = 0;
+		last = 0;
 		
-		public int getLast() {
-			return last;
-		}
-		
-		public boolean add(Entity o) {
-			if(!full) {
-				
-				o.setIndex(first);
-				
-				collection[first] = o;
-				
-				if(last < first + 1) {
-					last = first + 1;
-				}
-				
-				forwardFirst(first + 1);
-				
-				return true;
-			}else {
-				return false;
-			}
-		}
-		
-		protected void remove(int ind) {
-			collection[ind] = null;
-			
-			forwardFirst(0);
-			
-			if(ind == last) {
-				last = 0;
-				for(int i = last - 1; i > -1; --i) {
-					if(collection[i] != null) {
-						last = i;
-						break;
-					}
-				}
-			}
-			
-			full = false;
-		}
-		
-		private void forwardFirst(int start) {
-			over: {
-				for(int i = start; i < size; ++i) {
-					if(collection[i] == null) {
-						first = i;
-						break over;
-					}
-				}
-				full = true;
-			}
-		}
-		
-		protected void clear() {
-			for(int i = 0; i < last; ++i) {
-				collection[i] = null;
-			}
-			
-			first = 0;
-			last = 0;
-			
-			full = false;
-		}
-		
+		full = false;
 	}
 	
+	/*
+	 * private methods from here on, used as part of the array system
+	 */
+
+	private boolean add(Entity o) {
+		if(!full) {
+			
+			o.setIndex(first);
+			
+			collection[first] = o;
+			
+			if(last < first + 1) {
+				last = first + 1;
+			}
+			
+			forwardFirst(first + 1);
+			
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	private void remove(int ind) {
+		collection[ind] = null;
+		
+		forwardFirst(0);
+		
+		if(ind == last) {
+			last = 0;
+			for(int i = last - 1; i > -1; --i) {
+				if(collection[i] != null) {
+					last = i;
+					break;
+				}
+			}
+		}
+		
+		full = false;
+	}
+	
+	private void forwardFirst(int start) {
+		over: {
+			for(int i = start; i < size; ++i) {
+				if(collection[i] == null) {
+					first = i;
+					break over;
+				}
+			}
+			full = true;
+		}
+	}
+		
 }

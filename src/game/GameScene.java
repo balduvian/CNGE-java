@@ -3,7 +3,9 @@ package game;
 import static org.lwjgl.opengl.GL11.*;
 
 import embgine.core.Entity;
+import embgine.core.EntityGroup;
 import embgine.core.Scene;
+import embgine.core.Spawn;
 import embgine.graphics.Texture;
 import embgine.graphics.Transform;
 import embgine.graphics.shapes.CurvedTriangle;
@@ -23,7 +25,7 @@ public class GameScene extends Scene{
 	
 	private Texture currentCapture;
 	
-	private EntityGroup imagePanel;
+	private EntityGroup player;
 	private Entity sidePanel;
 	private Entity sideButton;
 	
@@ -44,67 +46,23 @@ public class GameScene extends Scene{
 		
 		currentCapture = new Texture();
 		
-		imagePanel = new Entity(
-			() -> {
-				currentCapture.bind();
-				
-				tileShader.enable();
-				tileShader.setUniforms(1, 1, 0, 0, 1, 1, 1, 1);
-				tileShader.setMvp(camera.getModelProjectionMatrix(camera.getModelMatrix(imagePanel.getTransform())));
-				
-				rect.render();
-				
-				tileShader.disable();
-				
-				currentCapture.unbind();
-			},
-			0
-		);
-		
-		sidePanel = new Entity(
-			() -> {
-				colShader.enable();
-				colShader.sendUniforms(1f, 1f, 1f, 0.5f);
-				colShader.setMvp(camera.getModelProjectionMatrix(camera.getModelMatrix(sidePanel.getTransform())));
-				
-				rect.render();
-				
-				colShader.disable();
-			},
-			0
-		);
-		
-		sideButton = new Entity(
-			() -> {
-				Transform t = sideButton.getTransform();
-				
-				borShader.enable(
+		player = new EntityGroup(
+			new Spawn() {
+				public void spawn() {
+					// TODO Auto-generated method stub
 					
-				);
-				
-				borShader.sendUniforms(
-					0.9f, 0.9f, 0.9f, 1f,
-					0.1f, 0.1f, 0.1f, 1f,
-					(float)sceneWidth,
-					(float)sceneHeight,
-					t.abcissa,
-					t.ordinate,
-					t.width,
-					t.height,
-					6f,
-					0f
-				);
-				
-				float wScale = 6;
-				float hScale = 6;
-				
-				borShader.setMvp(camera.getModelProjectionMatrix(camera.getModelMatrix(sideButton.getTransform())).scale(1.5f, 1.5f, 1f).scale(1.5f, 1.5f, 1f));
-				
-				rect.render();
-				
-				borShader.disable();
+				}
+				public void update() {
+					// TODO Auto-generated method stub
+					
+				}
+				public void render() {
+					// TODO Auto-generated method stub
+					
+				}
 			},
-			1
+			0,
+			4, 0
 		);
 		
 		cameraAttached = getCams();
@@ -126,7 +84,7 @@ public class GameScene extends Scene{
 	
 	@Override
 	public void resizeUpdate() {
-		imagePanel.getTransform().set(sceneWidth, 0, -sceneWidth, sceneHeight);
+		player.getTransform().set(sceneWidth, 0, -sceneWidth, sceneHeight);
 		
 		int spw = sceneWidth / 2;
 		
@@ -146,7 +104,7 @@ public class GameScene extends Scene{
 
 	@Override
 	public void render() {
-		imagePanel.render();
+		player.render();
 		
 		sidePanel.render();
 		

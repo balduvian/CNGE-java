@@ -10,11 +10,13 @@ public class Entity {
 	private int index;
 	private int layer;
 	
+	private EntityGroup group;
 	private Transform transform;
-	private Behavior behavior;
+	private Spawn behavior;
 	protected Object[] params;
 	
-	public Entity(Behavior r, int np) {
+	public Entity(EntityGroup g, Spawn r, int np) {
+		group = g;
 		transform = new Transform();
 		behavior = r;
 		params = new Object[np];
@@ -26,6 +28,10 @@ public class Entity {
 	
 	public void render() {
 		behavior.render();
+	}
+	
+	public void destroy() {
+		group.destroyInstance(index);
 	}
 	
 	public Transform getTransform() {
@@ -57,7 +63,8 @@ public class Entity {
 	}
 	
 	public boolean onScreenUpdate(Camera c) {
-		onScreen = behavior.isOnScreen(c);
+		onScreen = true;
+		//TODO FIX THIS SHIT
 		return onScreen;
 	}
 	
