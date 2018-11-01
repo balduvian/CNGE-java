@@ -20,7 +20,6 @@ import embgine.graphics.Texture;
 import embgine.graphics.Transform;
 import embgine.graphics.Window;
 import embgine.graphics.shapes.Shape;
-import embgine.standard.shader.base.BaseShader;
 
 /**
  * @author Emmet
@@ -100,15 +99,13 @@ public class Base {
 		window.setResize(
 			(w, h) -> {
 				camera.setDims(w, h);
-				reBuffer(w, h);
+				reFrame(w, h);
 			}
 		);
 	}
 	
-	
-	
 	/**
-	 * starts the app running after all initial setup is done 
+	 * this is the last thing you call in main to start the game
 	 * 
 	 * @param s - the scene to start on
 	 */
@@ -117,12 +114,18 @@ public class Base {
 		
 		scene.giveCamera(camera);
 		
-		reBuffer(window.getWidth(), window.getHeight());
+		reFrame(window.getWidth(), window.getHeight());
 		
 		gameLoop();
 	}
 	
-	private void reBuffer(int w, int h) {
+	/**
+	 * called when the window is resized, sets the renderable frame inside the window based on the screen mode
+	 * 
+	 * @param w - auto put in, the width of the window
+	 * @param h - auto put in the height of the window
+	 */
+	private void reFrame(int w, int h) {
 		//alrighty, now let's set the frame that will be rendered in the window based on the height and width of the window
 		switch(gameScreenType) {
 			case BasePreset.SCREEN_PIXEL:

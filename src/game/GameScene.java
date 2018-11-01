@@ -10,9 +10,9 @@ import embgine.graphics.Texture;
 import embgine.graphics.Transform;
 import embgine.graphics.shapes.CurvedTriangle;
 import embgine.graphics.shapes.Shape;
-import game.shaders.border.BorderShader;
-import game.shaders.color.ColorShader;
-import game.shaders.tile.TileShader;
+import game.shaders.BorderShader;
+import game.shaders.ColorShader;
+import game.shaders.TileShader;
 
 public class GameScene extends Scene{
 	
@@ -23,17 +23,7 @@ public class GameScene extends Scene{
 	private ColorShader colShader;
 	private BorderShader borShader;
 	
-	private Texture currentCapture;
-	
 	private EntityGroup player;
-	private Entity sidePanel;
-	private Entity sideButton;
-	
-	private boolean webcamReady;
-	
-	private boolean cameraAttached;
-	
-	private boolean oddFrame;
 	
 	public GameScene() {
 		shape = new CurvedTriangle();
@@ -41,10 +31,6 @@ public class GameScene extends Scene{
 		tileShader = new TileShader();
 		colShader = new ColorShader();
 		borShader = new BorderShader();
-		
-		oddFrame = true;
-		
-		currentCapture = new Texture();
 		
 		player = new EntityGroup(
 			new Spawn() {
@@ -62,53 +48,25 @@ public class GameScene extends Scene{
 				}
 			},
 			0,
-			4, 0
+			4,
+			0
 		);
-		
-		cameraAttached = getCams();
-		
-	}
-
-	public boolean getCams() {
-		
-		return ( webcamReady );
-	}
-	
-	public void getResolutions() {
-		
-	}
-	
-	public void getCapture() {
 		
 	}
 	
 	@Override
 	public void resizeUpdate() {
-		player.getTransform().set(sceneWidth, 0, -sceneWidth, sceneHeight);
 		
-		int spw = sceneWidth / 2;
-		
-		sidePanel.getTransform().set(0, 0, spw, sceneHeight);
-		
-		sideButton.getTransform().set(100, 100, spw - 200, 100);
 	}
 	
 	@Override
 	public void update() {
 		
-		if(cameraAttached && (oddFrame = !oddFrame) ) {
-			getCapture();
-		}
-		
 	}
 
 	@Override
 	public void render() {
-		player.render();
 		
-		sidePanel.render();
-		
-		sideButton.render();
 	}
 	
 }
