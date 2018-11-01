@@ -24,7 +24,6 @@ public class BasePreset {
 	public boolean pixelType;
 	public int width;
 	public int height;
-	public int unit;
 	public int limit;
 	
 	/**
@@ -40,7 +39,6 @@ public class BasePreset {
 		pixelType = a;
 		width = vw;
 		height = vh;
-		unit = gu;
 	}
 	
 	/**
@@ -57,7 +55,6 @@ public class BasePreset {
 		pixelType = a;
 		width = vw;
 		height = vh;
-		unit = gu;
 		limit = li;
 	}
 	
@@ -69,7 +66,6 @@ public class BasePreset {
 		pixelType = UNIT_SCREEN_PIXELS;
 		width = 1;
 		height = 1;
-		unit = 1;
 		limit = 1;
 	}
 }

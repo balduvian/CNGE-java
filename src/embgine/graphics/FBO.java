@@ -6,6 +6,8 @@ import static org.lwjgl.opengl.GL32.*;
 
 public class FBO {
     
+	private static Window window;
+	
     private int id;
     private int depthRenderBufferID;
     private Texture boundTexture;
@@ -30,6 +32,10 @@ public class FBO {
         
         //unbind
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    
+    public static void giveWindow(Window w) {
+    	window = w;
     }
     
     /**
@@ -69,19 +75,13 @@ public class FBO {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     
-    public void disable() {
-    	
-    }
-    
     /**
-     * disables any created frameBuffer and uses the default window frameBuffer
-     * 
-     * @param window - the window to switch default frameBuffer to
+     * switches the frameBuffer back to the window
      */
-    public static void disable(Window window) {
+    public void disable() {
     	glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, window.getWidth(), window.getHeight());
-        window.clear();
+        Window.clear();
     }
     
     /**

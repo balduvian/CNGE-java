@@ -1,4 +1,4 @@
-package embgine.graphics.shapes;
+package embgine.graphics;
 
 /**
  * a shape that supports textures

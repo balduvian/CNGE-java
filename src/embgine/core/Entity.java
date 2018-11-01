@@ -12,10 +12,10 @@ public class Entity {
 	
 	private EntityGroup group;
 	private Transform transform;
-	private Spawn behavior;
+	private Behavior behavior;
 	protected Object[] params;
 	
-	public Entity(EntityGroup g, Spawn r, int np) {
+	public Entity(EntityGroup g, Behavior r, int np) {
 		group = g;
 		transform = new Transform();
 		behavior = r;

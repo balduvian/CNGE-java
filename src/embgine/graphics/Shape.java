@@ -1,7 +1,7 @@
-package embgine.graphics.shapes;
+package embgine.graphics;
 
-import embgine.graphics.Camera;
-import embgine.graphics.VBO;
+import embgine.graphics.shapes.ArrowShape;
+import embgine.graphics.shapes.RectShape;
 
 abstract public class Shape {
 	

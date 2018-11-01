@@ -9,7 +9,7 @@ public class EntityGroup {
 	
 	private int layers;
 	
-	private Spawn behavior;
+	private Behavior behavior;
 	
 	private int numParams;
 	
@@ -20,16 +20,19 @@ public class EntityGroup {
 	private int last; 
 	private boolean full;
 	
+	private String name;
+	
 	/**
 	 * initializes the entity group in the scene
 	 * 
-	 * @param b - the behavior interface
+	 * @param na - the name of the group
+	 * @param bh - the behavior interface
 	 * @param np - the number of render parameters
 	 * @param mx - the max number of entities in this group
-	 * @param lay - the amount of layers in the scene
+	 * @param la - the amount of layers in the scene
 	 */
-	public EntityGroup(Spawn spawn, int np, int mx, int lay) {
-		behavior = spawn;
+	public EntityGroup(String na, Behavior bh, int np, int mx, int la) {
+		behavior = bh;
 		
 		numParams = np;
 
@@ -39,7 +42,7 @@ public class EntityGroup {
 		last = 0;
 		full = false;
 		
-		layers = lay;
+		layers = la;
 	}
 	
 	/**
@@ -86,10 +89,10 @@ public class EntityGroup {
 		
 	}
 	
-	public void update(int layer) {
+	public void update() {
 		for(int i = 0; i < last; ++i) {
 			Entity e = collection[i];
-			if(e != null && e.getLayer() == layer) {
+			if(e != null) {
 				e.update();
 			}
 		}

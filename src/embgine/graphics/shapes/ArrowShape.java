@@ -2,6 +2,8 @@ package embgine.graphics.shapes;
 
 import org.lwjgl.opengl.GL11;
 
+import embgine.graphics.TexShape;
+
 public class ArrowShape extends TexShape{
 
 	public ArrowShape() {

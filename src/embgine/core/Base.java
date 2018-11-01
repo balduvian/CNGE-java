@@ -16,10 +16,10 @@ import embgine.graphics.ALManagement;
 import embgine.graphics.Camera;
 import embgine.graphics.FBO;
 import embgine.graphics.Shader;
+import embgine.graphics.Shape;
 import embgine.graphics.Texture;
 import embgine.graphics.Transform;
 import embgine.graphics.Window;
-import embgine.graphics.shapes.Shape;
 
 /**
  * @author Emmet
@@ -50,8 +50,6 @@ public class Base {
 	private int frameWidth;
 	private int frameHeight;
 	
-	private int gameUnit;
-	
 	private int gameWidth;
 	private int gameHeight;
 	private int gameLimit;
@@ -74,7 +72,7 @@ public class Base {
 	 * 
 	 * @return the base
 	 */
-	public Base(Window win, BasePreset scrp) {
+	public Base(Window win, BasePreset set) {
 		window = win;
 		
 		frameRate = window.getRefreshRate();
@@ -85,16 +83,17 @@ public class Base {
 		
 		baseShader = new BaseShader();
 		
+		Scene.giveStuff(camera, this);
 		Shape.init(camera);
+		FBO.giveWindow(window);
 		
 		audio = new ALManagement();
 		
-		gameScreenType = scrp.screenType;
-		gamePixelType = scrp.pixelType;
-		gameWidth = scrp.width;
-		gameHeight = scrp.height;
-		gameUnit = scrp.unit;
-		gameLimit = scrp.limit;
+		gameScreenType = set.screenType;
+		gamePixelType = set.pixelType;
+		gameWidth = set.width;
+		gameHeight = set.height;
+		gameLimit = set.limit;
 		
 		window.setResize(
 			(w, h) -> {
@@ -110,13 +109,21 @@ public class Base {
 	 * @param s - the scene to start on
 	 */
 	public void start(Scene s) {
-		scene = s;
-		
-		scene.giveCamera(camera);
-		
 		reFrame(window.getWidth(), window.getHeight());
 		
+		setScene(s);
+		
 		gameLoop();
+	}
+	
+	/**
+	 * changes the current scene
+	 * 
+	 * @param s - the scene to change to
+	 */
+	public void setScene(Scene s) {
+		scene = s;
+		scene.start();
 	}
 	
 	/**
@@ -191,7 +198,7 @@ public class Base {
 			screenBuffer.replaceTexture(new Texture(frameWidth, frameHeight));
 		}
 		
-		scene.giveDims(w, h);
+		Scene.giveDims(w, h);
 		scene.resizeUpdate();
 	}
 	
@@ -224,7 +231,7 @@ public class Base {
 	private void update() {
 		window.update();
 		
-		scene.update();
+		scene.overUpdate();
 		
 		camera.update();
 	}
@@ -238,9 +245,11 @@ public class Base {
 		
 		Window.clear();
 		
-		scene.render();
+		//////////////////////////////////////////
+		scene.overRender();
+		//////////////////////////////////////////
 		
-		FBO.disable(window);
+		screenBuffer.disable();
 		
 		glClearColor(0, 0, 0, 1);
 		Window.clear();
