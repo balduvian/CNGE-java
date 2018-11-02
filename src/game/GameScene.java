@@ -2,9 +2,12 @@ package game;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import org.joml.Vector4f;
+
 import embgine.core.Entity;
 import embgine.core.EntityGroup;
 import embgine.core.Scene;
+import embgine.core.Base;
 import embgine.core.Behavior;
 import embgine.graphics.Shape;
 import embgine.graphics.TexShape;
@@ -17,15 +20,16 @@ import game.shaders.TileShader;
 
 public class GameScene extends Scene{
 	
-	public static int GAMESCENE_LAYERS = 5;
+	public static int LAYERS = 5;
 	
-	private TexShape rect;
+	private static TexShape rect;
 	
-	private TileShader tileShader;
-	private ColorShader colShader;
-	private BorderShader borShader;
+	private static TileShader tileShader;
+	private static ColorShader colShader;
+	private static BorderShader borShader;
 	
-	private Texture playerTex;
+	private static Texture playerTex;
+	private static Texture coinTex;
 	
 	private enum group {
 		player,
@@ -35,29 +39,44 @@ public class GameScene extends Scene{
 	
 	public GameScene() {
 		super(
+			LAYERS,
 			new EntityGroup[] {
 				new EntityGroup(
 					"player",
 					new Behavior() {
-						public void spawn() {
-							// TODO Auto-generated method stub
+						public void spawn(Object[] p, Transform t) {
 							
+							System.out.println("I'M HERE BITCHES");
+							
+							p[0] = (int)0;
+							p[1] = (double)0;
+							
+							t.setSize(16, 16);
 						}
-						public void update() {
-							// TODO Auto-generated method stub
-							
+						public void update(Object[] p, Transform t) {
+							p[1] = (double)p[1] + Base.time;
+							if((double)p[1] >= 0.1666) {
+								p[1] = (double)0;
+								p[0] = (int)p[0] + 1;
+								p[0] = (int)p[0] % 14;
+							}
 						}
-						public void render() {
-							// TODO Auto-generated method stub
+						public void render(Object[] p, Transform t) {
+							coinTex.bind();
 							
+							Vector4f frame = coinTex.getFrame((int)p[0]);
+							
+							tileShader.enable();
+							tileShader.setUniforms(frame.x, frame.y, frame.z, frame.w, 1, 1, 1, 1);
+							tileShader.setMvp(camera.getModelViewProjectionMatrix(camera.getModelMatrix(t)));
+							
+							rect.render();
 						}
 					},
-					0,
-					4,
-					0
+					2,
+					4
 				)
-			},
-			GAMESCENE_LAYERS
+			}
 		);
 		
 		rect = Shape.RECT;
@@ -66,12 +85,13 @@ public class GameScene extends Scene{
 		colShader = new ColorShader();
 		borShader = new BorderShader();
 		
-		playerTex = new Texture("res/textuers/icon.png");
+		playerTex = new Texture("res/textures/icon.png");
+		coinTex = new Texture("res/textures/coin.png", 14);
 	}
 	
 	@Override
 	public void start() {
-		
+		groups[0].createInstance(16, 16, 0);
 	}
 
 	@Override

@@ -109,9 +109,12 @@ public class Base {
 	 * @param s - the scene to start on
 	 */
 	public void start(Scene s) {
+		
+		scene = s;
+		
 		reFrame(window.getWidth(), window.getHeight());
 		
-		setScene(s);
+		scene.start();
 		
 		gameLoop();
 	}

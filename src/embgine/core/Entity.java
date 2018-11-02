@@ -12,30 +12,26 @@ public class Entity {
 	
 	private EntityGroup group;
 	private Transform transform;
-	private Behavior behavior;
-	protected Object[] params;
+	private Object[] params;
 	
-	public Entity(EntityGroup g, Behavior r, int np) {
+	public Entity(EntityGroup g, int np, float x, float y, int l) {
 		group = g;
 		transform = new Transform();
-		behavior = r;
+		transform.setTranslation(x, y);
 		params = new Object[np];
+		layer = l;
 	}
 	
-	public void update() {
-		behavior.update();
-	}
-	
-	public void render() {
-		behavior.render();
-	}
-	
-	public void destroy() {
-		group.destroyInstance(index);
+	public Object[] getParams() {
+		return params;
 	}
 	
 	public Transform getTransform() {
 		return transform;
+	}
+	
+	public void destroy() {
+		group.destroyInstance(index);
 	}
 	
 	public void setParams(Object... values) {
@@ -72,7 +68,7 @@ public class Entity {
 		onScreen = o;
 	}
 	
-	public boolean getOnScreen(Camera c) {
+	public boolean getOnScreen() {
 		return onScreen;
 	}
 	

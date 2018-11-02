@@ -10,7 +10,7 @@ public class Main {
 		
 		Window window = new Window(false, "Spark Runner 2", true);
 		
-		window.setIcon("bezier/images/icon.png");
+		window.setIcon("res/textures/icon.png");
 		
 		Base base = new Base(window, new BasePreset(BasePreset.ASPECT_STRETCH_HORZ, false, 48, 48, 16, 64));
 		

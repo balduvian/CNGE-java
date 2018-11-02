@@ -29,9 +29,8 @@ public class EntityGroup {
 	 * @param bh - the behavior interface
 	 * @param np - the number of render parameters
 	 * @param mx - the max number of entities in this group
-	 * @param la - the amount of layers in the scene
 	 */
-	public EntityGroup(String na, Behavior bh, int np, int mx, int la) {
+	public EntityGroup(String na, Behavior bh, int np, int mx) {
 		behavior = bh;
 		
 		numParams = np;
@@ -41,19 +40,25 @@ public class EntityGroup {
 		first = 0;
 		last = 0;
 		full = false;
-		
+	}
+	
+	public void giveLayers(int la) {
 		layers = la;
 	}
 	
 	/**
 	 * creates an instance of the entity belonging to this group
 	 * 
+	 * @param x - the x position of the entity
+	 * @param y - the y position of the entity
+	 * @param l - the layer the entity is on
+	 * 
 	 * @return the entity created. Or NULL if the entity could not be created
 	 */
-	public Entity createInstance() {
-		Entity create = new Entity(this, behavior, numParams);
+	public Entity createInstance(float x, float y, int l) {
+		Entity create = new Entity(this, numParams, x, y, l);
 		if( add(create) ) {
-			behavior.spawn();
+			behavior.spawn(create.getParams(), create.getTransform());
 			return create;
 		}else {
 			return null;
@@ -75,36 +80,60 @@ public class EntityGroup {
 	 * @param camera - the game camera, to be used for screen checking
 	 */
 	public void onScreenUpdate(Camera camera) {
+
 		perLayer = new int[layers];
 		Entity[][] screenPool = new Entity[layers][size];
 		
 		for(int i = 0; i < last; ++i) {
+			screenPool[i] = new Entity[size];
 			Entity e = collection[i];
-			if(e != null && e.getOnScreen(camera)) {
+			if(e != null && e.onScreenUpdate(camera)) {
 				int layer = e.getLayer();
 				screenPool[layer][perLayer[layer]] = e;
 				++perLayer[layer];
 			}
 		}
 		
+		for(int i = 0; i < layers; ++i) {
+			for(int j = 0; j < size; ++j) {
+				System.out.print(screenPool[i][j]);
+			}
+			System.out.print(" " + perLayer[i]);
+			System.out.println();
+		}
 	}
 	
 	public void update() {
 		for(int i = 0; i < last; ++i) {
 			Entity e = collection[i];
 			if(e != null) {
-				e.update();
+				behavior.update(e.getParams(), e.getTransform());
 			}
 		}
 	}
 	
 	public void render(int layer) {
-		Entity[] list = screenPool[layer];
+		
+		System.out.println("reneder layer: " + layer);
+		
 		int len = perLayer[layer];
+		
+		System.out.println("len: " + len);
+		
+		//Entity[] list = screenPool[layer];
+		
+		for(int i = 0; i < layers; ++i) {
+			for(int j = 0; j < size; ++j) {
+				System.out.print(screenPool[i][j]);
+			}
+			System.out.print(" " + perLayer[i]);
+			System.out.println();
+		}
+		
 		for(int i = 0; i < len; ++i) {
-			Entity e = list[i];
+			Entity e = screenPool[layer][i];
 			if(e.getLayer() == layer) {
-				e.render();
+				behavior.render(e.getParams(), e.getTransform());
 			}
 		}
 	}

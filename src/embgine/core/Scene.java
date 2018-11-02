@@ -15,10 +15,15 @@ public abstract class Scene {
 	protected EntityGroup[] groups;
 	protected int numGroups;
 	
-	public Scene(EntityGroup[] g, int l) {
+	public Scene(int l, EntityGroup[] g) {
+		layers = l;
+		
 		groups = g;
 		numGroups = g.length;
-		layers = l;
+		
+		for(int i = 0; i < numGroups; ++i) {
+			groups[i].giveLayers(layers);
+		}
 	}
 	
 	/*
