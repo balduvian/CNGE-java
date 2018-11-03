@@ -31,10 +31,16 @@ public class GameScene extends Scene{
 	private static Texture playerTex;
 	private static Texture coinTex;
 	
-	private enum group {
-		player,
-		dab,
-		hard
+	private enum Group {
+		PLAYER (0),
+		DAB (1),
+		HARD (2);
+		
+		public int index;
+		
+		Group (int ind) {
+			this.index = ind;
+		}
 	}
 	
 	public GameScene() {
@@ -46,27 +52,27 @@ public class GameScene extends Scene{
 					new Behavior() {
 						public void spawn(Object[] p, Transform t) {
 							
-							System.out.println("I'M HERE BITCHES");
-							
 							p[0] = (int)0;
 							p[1] = (double)0;
 							
-							t.setSize(1, 1);
+							t.setSize(16, 16);
 						}
 						public void update(Object[] p, Transform t) {
 							p[1] = (double)p[1] + Base.time;
-							if((double)p[1] >= 0.1666) {
+							if((double)p[1] >= 0.066666666) {
 								p[1] = (double)0;
 								p[0] = (int)p[0] + 1;
 								p[0] = (int)p[0] % 14;
 							}
 						}
 						public void render(Object[] p, Transform t) {
-							coinTex.bind();
 							
 							Vector4f frame = coinTex.getFrame((int)p[0]);
 							
+							coinTex.bind();
+							
 							tileShader.enable();
+							
 							tileShader.setUniforms(frame.x, frame.y, frame.z, frame.w, 1, 1, 1, 1);
 							tileShader.setMvp(camera.getModelProjectionMatrix(camera.getModelMatrix(t)));
 							
@@ -75,7 +81,7 @@ public class GameScene extends Scene{
 							tileShader.disable();
 							
 							coinTex.unbind();
-					
+							
 						}
 					},
 					2,
@@ -96,7 +102,7 @@ public class GameScene extends Scene{
 	
 	@Override
 	public void start() {
-		groups[0].createInstance(0, 0, 0);
+		groups[Group.PLAYER.index].createInstance(8, 8, 0);
 	}
 
 	@Override

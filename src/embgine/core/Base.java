@@ -104,8 +104,6 @@ public class Base {
 				reFrame(w, h);
 			}
 		);
-		
-		t = new Texture("res/textures/icon.png");
 	}
 	
 	/**
@@ -141,8 +139,6 @@ public class Base {
 	 * @param h - auto put in the height of the window
 	 */
 	private void reFrame(int w, int h) {
-		
-		camera.setDims(w, h);
 		
 		//alrighty, now let's set the frame that will be rendered in the window based on the height and width of the window
 		switch(gameScreenType) {
@@ -209,6 +205,8 @@ public class Base {
 			screenBuffer.replaceTexture(new Texture(frameWidth, frameHeight));
 		}
 		
+		camera.setDims(gameWidth, gameHeight);
+		
 		Scene.giveDims(w, h);
 		scene.resizeUpdate();
 	}
@@ -247,28 +245,24 @@ public class Base {
 		camera.update();
 	}
 	
-	private Texture t;
-	
 	private void render() {
 		
 		//start up that mf game screenBuffer
-		//screenBuffer.enable();
+		screenBuffer.enable();
 		
 		glClearColor(1, 0, 1, 1);
 		Window.clear(); //clear the game screenBuffer
 		
 		scene.overRender();
 		
-		//screenBuffer.disable(window);
+		screenBuffer.disable();
 		//close down that mf screenBuffer
 		
-		//clear the bars
-		//glClearColor(0, 1, 0, 1);
-		//Window.clear();
+		//clear the bars with black
+		glClearColor(0, 0, 0, 1);
+		Window.clear();
 		
-		//screenBuffer.getBoundTexture().bind();
-		
-		t.bind();
+		screenBuffer.getBoundTexture().bind();
 		
 		baseShader.enable();
 		
@@ -284,12 +278,8 @@ public class Base {
 		
 		baseShader.disable();
 		
-		t.unbind();
-		//screenBuffer.getBoundTexture().unbind();
-		
-		////////////
-		
-		
+		screenBuffer.getBoundTexture().unbind();
+
 	}
 	
 }

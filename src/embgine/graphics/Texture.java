@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL12;
 
 public class Texture {
 	
-	public final static Vector4f FULL_FRAME = new Vector4f();
+	public final static Vector4f FULL_FRAME = new Vector4f(1, 1, 0, 0);
 	
 	private int id;
 	
@@ -95,7 +95,7 @@ public class Texture {
 	}
 	
 	public Vector4f getFrame(int x) {
-		return new Vector4f(frameWidth, 1, x*frameWidth, 1);
+		return new Vector4f(frameWidth, 1, x*frameWidth, 0);
 	}
 	
 	/**

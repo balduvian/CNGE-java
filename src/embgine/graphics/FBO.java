@@ -72,16 +72,14 @@ public class FBO {
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, id);
         glViewport(0, 0, boundTexture.getWidth(), boundTexture.getHeight());
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     
     /**
      * switches the frameBuffer back to the window
      */
-    public void disable(Window w) {
+    public void disable() {
     	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, w.getWidth(), w.getHeight());
-        Window.clear();
+        glViewport(0, 0, window.getWidth(), window.getHeight());
     }
     
     /**
