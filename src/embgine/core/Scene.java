@@ -1,6 +1,9 @@
 package embgine.core;
 
+import static org.lwjgl.opengl.GL11.glClearColor;
+
 import embgine.graphics.Camera;
+import embgine.graphics.Window;
 
 public abstract class Scene {
 

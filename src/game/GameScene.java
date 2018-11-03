@@ -51,7 +51,7 @@ public class GameScene extends Scene{
 							p[0] = (int)0;
 							p[1] = (double)0;
 							
-							t.setSize(16, 16);
+							t.setSize(1, 1);
 						}
 						public void update(Object[] p, Transform t) {
 							p[1] = (double)p[1] + Base.time;
@@ -68,9 +68,14 @@ public class GameScene extends Scene{
 							
 							tileShader.enable();
 							tileShader.setUniforms(frame.x, frame.y, frame.z, frame.w, 1, 1, 1, 1);
-							tileShader.setMvp(camera.getModelViewProjectionMatrix(camera.getModelMatrix(t)));
+							tileShader.setMvp(camera.getModelProjectionMatrix(camera.getModelMatrix(t)));
 							
 							rect.render();
+							
+							tileShader.disable();
+							
+							coinTex.unbind();
+					
 						}
 					},
 					2,
@@ -91,7 +96,7 @@ public class GameScene extends Scene{
 	
 	@Override
 	public void start() {
-		groups[0].createInstance(16, 16, 0);
+		groups[0].createInstance(0, 0, 0);
 	}
 
 	@Override

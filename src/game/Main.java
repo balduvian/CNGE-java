@@ -12,7 +12,7 @@ public class Main {
 		
 		window.setIcon("res/textures/icon.png");
 		
-		Base base = new Base(window, new BasePreset(BasePreset.ASPECT_STRETCH_HORZ, false, 48, 48, 16, 64));
+		Base base = new Base(window, new BasePreset(BasePreset.ASPECT_FIXED, BasePreset.UNIT_GAME_PIXELS, 48, 48));
 		
 		base.start(new GameScene());
 		

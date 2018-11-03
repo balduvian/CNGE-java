@@ -82,7 +82,7 @@ public class EntityGroup {
 	public void onScreenUpdate(Camera camera) {
 
 		perLayer = new int[layers];
-		Entity[][] screenPool = new Entity[layers][size];
+		screenPool = new Entity[layers][size];
 		
 		for(int i = 0; i < last; ++i) {
 			screenPool[i] = new Entity[size];
@@ -94,13 +94,6 @@ public class EntityGroup {
 			}
 		}
 		
-		for(int i = 0; i < layers; ++i) {
-			for(int j = 0; j < size; ++j) {
-				System.out.print(screenPool[i][j]);
-			}
-			System.out.print(" " + perLayer[i]);
-			System.out.println();
-		}
 	}
 	
 	public void update() {
@@ -114,21 +107,9 @@ public class EntityGroup {
 	
 	public void render(int layer) {
 		
-		System.out.println("reneder layer: " + layer);
-		
 		int len = perLayer[layer];
-		
-		System.out.println("len: " + len);
-		
-		//Entity[] list = screenPool[layer];
-		
-		for(int i = 0; i < layers; ++i) {
-			for(int j = 0; j < size; ++j) {
-				System.out.print(screenPool[i][j]);
-			}
-			System.out.print(" " + perLayer[i]);
-			System.out.println();
-		}
+
+		Entity[] list = screenPool[layer];
 		
 		for(int i = 0; i < len; ++i) {
 			Entity e = screenPool[layer][i];

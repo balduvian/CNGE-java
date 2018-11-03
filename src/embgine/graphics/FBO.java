@@ -78,9 +78,9 @@ public class FBO {
     /**
      * switches the frameBuffer back to the window
      */
-    public void disable() {
+    public void disable(Window w) {
     	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, window.getWidth(), window.getHeight());
+        glViewport(0, 0, w.getWidth(), w.getHeight());
         Window.clear();
     }
     

@@ -34,7 +34,7 @@ public class BasePreset {
 	 * @param vh - virtual dusplayed height
 	 * @param gu - game unit
 	 */
-	public BasePreset(int s, boolean a, int vw, int vh, int gu) {
+	public BasePreset(int s, boolean a, int vw, int vh) {
 		screenType = s;
 		pixelType = a;
 		width = vw;
@@ -50,7 +50,7 @@ public class BasePreset {
 	 * @param gu
 	 * @param li - the maximum width/height depending on what screen mode
 	 */
-	public BasePreset(int s, boolean a, int vw, int vh, int gu, int li) {
+	public BasePreset(int s, boolean a, int vw, int vh, int li) {
 		screenType = s;
 		pixelType = a;
 		width = vw;

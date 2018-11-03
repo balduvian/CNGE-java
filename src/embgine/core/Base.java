@@ -54,6 +54,8 @@ public class Base {
 	private int gameHeight;
 	private int gameLimit;
 	
+	private Shape rect;
+	
 	/**
 	 * The base of the entire program. Create one in your own main method
 	 * 
@@ -77,7 +79,7 @@ public class Base {
 		
 		frameRate = window.getRefreshRate();
 		
-		camera = new Camera(window.getWidth(), window.getHeight());
+		camera = new Camera(1, 1);
 		
 		screenBuffer = new FBO(new Texture());
 		
@@ -86,6 +88,8 @@ public class Base {
 		Scene.giveStuff(camera, this);
 		Shape.init(camera);
 		FBO.giveWindow(window);
+		
+		rect = Shape.RECT;
 		
 		audio = new ALManagement();
 		
@@ -97,10 +101,11 @@ public class Base {
 		
 		window.setResize(
 			(w, h) -> {
-				camera.setDims(w, h);
 				reFrame(w, h);
 			}
 		);
+		
+		t = new Texture("res/textures/icon.png");
 	}
 	
 	/**
@@ -136,6 +141,9 @@ public class Base {
 	 * @param h - auto put in the height of the window
 	 */
 	private void reFrame(int w, int h) {
+		
+		camera.setDims(w, h);
+		
 		//alrighty, now let's set the frame that will be rendered in the window based on the height and width of the window
 		switch(gameScreenType) {
 			case BasePreset.SCREEN_PIXEL:
@@ -239,27 +247,28 @@ public class Base {
 		camera.update();
 	}
 	
+	private Texture t;
+	
 	private void render() {
 		
 		//start up that mf game screenBuffer
-		screenBuffer.enable();
+		//screenBuffer.enable();
 		
-		glClearColor(0, 0, 0, 1);
+		glClearColor(1, 0, 1, 1);
+		Window.clear(); //clear the game screenBuffer
 		
-		Window.clear();
-		
-		//////////////////////////////////////////
 		scene.overRender();
-		//////////////////////////////////////////
 		
-		screenBuffer.disable();
+		//screenBuffer.disable(window);
+		//close down that mf screenBuffer
 		
-		glClearColor(0, 0, 0, 1);
-		Window.clear();
+		//clear the bars
+		//glClearColor(0, 1, 0, 1);
+		//Window.clear();
 		
-		Shape rect = Shape.RECT;
+		//screenBuffer.getBoundTexture().bind();
 		
-		screenBuffer.getBoundTexture().bind();
+		t.bind();
 		
 		baseShader.enable();
 		
@@ -272,9 +281,11 @@ public class Base {
 		}
 		
 		rect.render();
+		
 		baseShader.disable();
 		
-		screenBuffer.getBoundTexture().unbind();
+		t.unbind();
+		//screenBuffer.getBoundTexture().unbind();
 		
 		////////////
 		
