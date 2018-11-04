@@ -16,9 +16,9 @@ public interface Behavior {
 	 * these are needed to personalize the actions for each entity instance
 	 */
 	
-	public void  spawn(Object[] p, Transform t);
+	public void  spawn(Entity e, Object[] p, Transform t);
 	
-	public void update(Object[] p, Transform t);
+	public void update(Entity e, Object[] p, Transform t);
 	
-	public void render(Object[] p, Transform t);
+	public void render(Entity e, Object[] p, Transform t);
 }

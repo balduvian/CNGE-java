@@ -26,11 +26,11 @@ public class EntityGroup {
 	 * initializes the entity group in the scene
 	 * 
 	 * @param na - the name of the group
-	 * @param bh - the behavior interface
 	 * @param np - the number of render parameters
 	 * @param mx - the max number of entities in this group
+	 * @param bh - the behavior interface
 	 */
-	public EntityGroup(String na, Behavior bh, int np, int mx) {
+	public EntityGroup(String na, int np, int mx, Behavior bh) {
 		behavior = bh;
 		
 		numParams = np;
@@ -58,7 +58,7 @@ public class EntityGroup {
 	public Entity createInstance(float x, float y, int l) {
 		Entity create = new Entity(this, numParams, x, y, l);
 		if( add(create) ) {
-			behavior.spawn(create.getParams(), create.getTransform());
+			behavior.spawn(create, create.getParams(), create.getTransform());
 			return create;
 		}else {
 			return null;
@@ -100,7 +100,7 @@ public class EntityGroup {
 		for(int i = 0; i < last; ++i) {
 			Entity e = collection[i];
 			if(e != null) {
-				behavior.update(e.getParams(), e.getTransform());
+				behavior.update(e, e.getParams(), e.getTransform());
 			}
 		}
 	}
@@ -114,7 +114,7 @@ public class EntityGroup {
 		for(int i = 0; i < len; ++i) {
 			Entity e = screenPool[layer][i];
 			if(e.getLayer() == layer) {
-				behavior.render(e.getParams(), e.getTransform());
+				behavior.render(e, e.getParams(), e.getTransform());
 			}
 		}
 	}

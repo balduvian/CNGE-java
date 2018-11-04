@@ -6,9 +6,11 @@ import org.joml.Vector4f;
 
 import embgine.core.Entity;
 import embgine.core.EntityGroup;
+import embgine.core.MapGroup;
 import embgine.core.Scene;
 import embgine.core.Base;
 import embgine.core.Behavior;
+import embgine.core.BlockSet;
 import embgine.graphics.Shape;
 import embgine.graphics.TexShape;
 import embgine.graphics.Texture;
@@ -31,17 +33,10 @@ public class GameScene extends Scene{
 	private static Texture playerTex;
 	private static Texture coinTex;
 	
-	private enum Group {
-		PLAYER (0),
-		DAB (1),
-		HARD (2);
-		
-		public int index;
-		
-		Group (int ind) {
-			this.index = ind;
-		}
-	}
+	private static BlockSet world0Blocks;
+	
+	public static final int ENTITY_PLAYER = 0;
+	public static final int MAP_LEVEL1 = 1;
 	
 	public GameScene() {
 		super(
@@ -49,6 +44,8 @@ public class GameScene extends Scene{
 			new EntityGroup[] {
 				new EntityGroup(
 					"player",
+					2,
+					4,
 					new Behavior() {
 						public void spawn(Object[] p, Transform t) {
 							
@@ -83,9 +80,27 @@ public class GameScene extends Scene{
 							coinTex.unbind();
 							
 						}
-					},
-					2,
-					4
+					}
+				),
+				
+				new MapGroup(
+						"level1",
+						0,
+						1,
+						new Behavior() {
+							public void spawn(Object[] p, Transform t) {
+								
+							}
+							public void update(Object[] p, Transform t) {
+								
+							}
+							public void render(Object[] p, Transform t) {
+								
+							}
+						},
+						"res/maps/level0.png",
+						new Transform(32, 16),
+						world0Blocks
 				)
 			}
 		);
@@ -98,11 +113,29 @@ public class GameScene extends Scene{
 		
 		playerTex = new Texture("res/textures/icon.png");
 		coinTex = new Texture("res/textures/coin.png", 14);
+		
+		world0Blocks = new BlockSet(
+				
+				new int[] {
+						
+				}, 
+				new Texture[] {
+						
+				},
+				new boolean[] {
+						
+				}
+				
+		);
+	}
+	
+	public void mapRender(Map m) {
+		
 	}
 	
 	@Override
 	public void start() {
-		groups[Group.PLAYER.index].createInstance(8, 8, 0);
+		groups[ENTITY_PLAYER].createInstance(8, 8, 0);
 	}
 
 	@Override

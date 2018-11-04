@@ -11,7 +11,7 @@ public class Entity {
 	private int layer;
 	
 	private EntityGroup group;
-	private Transform transform;
+	protected Transform transform;
 	private Object[] params;
 	
 	public Entity(EntityGroup g, int np, float x, float y, int l) {
