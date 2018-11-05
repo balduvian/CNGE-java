@@ -148,10 +148,13 @@ public class MapGroup extends EntityGroup {
 				Transform mt = e.getTransform();
 				Transform ct = camera.getTransform();
 				
-				e.setLeft((int)Math.floor((ct.abcissa - mt.abcissa) / tileScale[i] * mt.wScale));
-				e.setRight((int)Math.ceil(( (ct.abcissa +  ct.width) - mt.abcissa) / tileScale[i] * mt.wScale));
-				e.setUp((int)Math.floor((ct.abcissa - mt.abcissa) / tileScale[i] * mt.hScale));
-				e.setDown((int)Math.ceil(( (ct.abcissa + ct.height) - mt.abcissa) / tileScale[i] * mt.hScale));
+				
+				e. setLeft( (int)Math.floor( ( ct.abcissa - mt.abcissa) / (tileScale[i] * mt.wScale) ));
+				e.setRight( (int) Math.ceil( ((ct.abcissa +   ct.width) - mt.abcissa) / (tileScale[i] * mt.wScale) ));
+				e.   setUp( (int)Math.floor( ( ct.ordinate - mt.ordinate) / (tileScale[i] * mt.hScale) ));
+				e. setDown( (int) Math.ceil( ((ct.ordinate +  ct.height) - mt.ordinate) / (tileScale[i] * mt.hScale) ));
+				
+				//System.out.println( ( ct.abcissa - mt.abcissa) + " | " + (tileScale[i] * mt.wScale) );
 			}
 		}
 		
@@ -189,20 +192,19 @@ public class MapGroup extends EntityGroup {
 				int d = e.getDown();
 				int l = e.getLeft();
 				
-				System.out.println(r);
+				//System.out.println(u + " " + r + " " + d + " " + l);
+				
+				//System.out.println("two twelves " + (l * wide + t.abcissa));
 				
 				for(int x = l; x < r; ++x) {
 					for(int y = u; y < d; ++y) {
-						if(tiles[i][x][y] != -1) {
-							
-							Block sendBlock;
-							try {
-								sendBlock = blockSet[e.boundedAccess(x, y)];
+						try {
+							int tile = e.boundedAccess(x, y);
+							if(tile != -1) {
 								blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
-								((MapBehavior)behavior).mapRender(mapParams, sendBlock, x, y, e, e.getParams(), blockTransform );
-							} catch (MapAccessException ex) { }
-							
-						}
+								((MapBehavior)behavior).mapRender(mapParams, blockSet[tile], x, y, e, e.getParams(), blockTransform );
+							}
+						} catch (MapAccessException ex) { }
 					}
 				}
 					

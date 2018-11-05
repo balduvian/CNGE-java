@@ -23,8 +23,8 @@ public class Camera {
 	
 	public void update() {
 		projection.scale(transform.wScale, transform.hScale, 1, projectionView);
-		projection.translate(-transform.abcissa, -transform.ordinate, 0, projectionView);
 		projection.rotateZ(-transform.rotation, projectionView);
+		projection.translate(-transform.abcissa, -transform.ordinate, 0, projectionView);
 	}
 	
 	/**

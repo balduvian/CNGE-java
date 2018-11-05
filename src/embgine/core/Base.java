@@ -85,7 +85,7 @@ public class Base {
 		
 		baseShader = new BaseShader();
 		
-		Scene.giveStuff(camera, this);
+		Scene.giveStuff(camera, this, window);
 		Shape.init(camera);
 		FBO.giveWindow(window);
 		
@@ -276,9 +276,9 @@ public class Base {
 		
 		rect.render();
 		
-		baseShader.disable();
+		Shader.disable();
 		
-		screenBuffer.getBoundTexture().unbind();
+		Texture.unbind();
 
 	}
 	

@@ -111,6 +111,14 @@ public class Transform {
 		ordinate += y;
 	}
 	
+	public void moveX(float x) {
+		abcissa += x;
+	}
+	
+	public void moveY(float y) {
+		ordinate += y;
+	}
+	
 	public float getWidth() {
 		return width * wScale;
 	}

@@ -2,11 +2,13 @@ package embgine.core;
 
 import embgine.core.group.EntityGroup;
 import embgine.graphics.Camera;
+import embgine.graphics.Window;
 
 public abstract class Scene {
 
 	private static Base base;
 	
+	protected static Window window;
 	protected static Camera camera;
 	protected static int screenWidth;
 	protected static int screenHeight;
@@ -31,9 +33,10 @@ public abstract class Scene {
 	 * static stuff that the base gives to the scene
 	 */
 
-	public static void giveStuff(Camera c, Base b) {
+	public static void giveStuff(Camera c, Base b, Window w) {
 		camera = c;
 		base = b;
+		window = w;
 	}
 	
 	public static void giveDims(int w, int h) {

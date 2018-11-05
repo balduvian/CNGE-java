@@ -20,6 +20,7 @@ import game.TexBlock;
 
 import static game.scenes.game.GameBlocks.*;
 import static game.scenes.game.GameGraphics.*;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class GameScene extends Scene {
 	
@@ -53,7 +54,7 @@ public class GameScene extends Scene {
 							p[0] = (int)0;
 							p[1] = (double)0;
 							
-							t.setSize(16, 16);
+							t.setSize(256, 256);
 						}
 						public void update(Entity e, Object[] p, Transform t) {
 							p[1] = (double)p[1] + Base.time;
@@ -72,7 +73,7 @@ public class GameScene extends Scene {
 							tileShader.enable();
 							
 							tileShader.setUniforms(frame.x, frame.y, frame.z, frame.w, 1, 1, 1, 1);
-							tileShader.setMvp(camera.getModelProjectionMatrix(camera.getModelMatrix(t)));
+							tileShader.setMvp(camera.getModelViewProjectionMatrix(camera.getModelMatrix(t)));
 							
 							rect.render();
 							
@@ -159,13 +160,28 @@ public class GameScene extends Scene {
 	
 	@Override
 	public void start() {
+		groups[ENTITY_COIN].createInstance(96, 96, LAYER_ACTION);
 		((MapGroup)groups[MAP_LEVEL1]).load();
 		((MapGroup)groups[MAP_LEVEL1]).createMap(0, 0);
 	}
 
 	@Override
 	public void preUpdate() {
+		Transform ct = camera.getTransform();
+		if(window.keyPressed(GLFW_KEY_W)) {
+			ct.moveY(-(float)(32 * Base.time));
+		}
+		if(window.keyPressed(GLFW_KEY_A)) {
+			ct.moveX(-(float)(32 * Base.time));
+		}
+		if(window.keyPressed(GLFW_KEY_S)) {
+			ct.moveY((float)(32 * Base.time));
+		}
+		if(window.keyPressed(GLFW_KEY_D)) {
+			ct.moveX((float)(32 * Base.time));
+		}
 		
+		System.out.println(ct.abcissa + " " + ct.ordinate);
 	}
 
 	@Override
