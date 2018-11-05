@@ -1,17 +1,19 @@
-package embgine.core;
+package embgine.core.group;
 
+import embgine.core.Behavior;
+import embgine.core.Entity;
 import embgine.graphics.Camera;
 
 public class EntityGroup {
 	
-	private int[] perLayer;
-	private Entity[][] screenPool;
+	protected int[] perLayer;
+	protected Entity[][] screenPool;
 	
 	private int layers;
 	
-	private Behavior behavior;
+	protected Behavior behavior;
 	
-	private int numParams;
+	protected int numParams;
 	
 	//array system stuff
 	private int size;
@@ -112,7 +114,7 @@ public class EntityGroup {
 		Entity[] list = screenPool[layer];
 		
 		for(int i = 0; i < len; ++i) {
-			Entity e = screenPool[layer][i];
+			Entity e = list[i];
 			if(e.getLayer() == layer) {
 				behavior.render(e, e.getParams(), e.getTransform());
 			}
@@ -134,7 +136,7 @@ public class EntityGroup {
 	 * private methods from here on, used as part of the array system
 	 */
 
-	private boolean add(Entity o) {
+	protected boolean add(Entity o) {
 		if(!full) {
 			
 			o.setIndex(first);

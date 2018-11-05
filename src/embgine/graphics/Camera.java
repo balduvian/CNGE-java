@@ -39,6 +39,20 @@ public class Camera {
 	}
 	
 	/**
+	 * gets the model matrix from manually inputted transform parameters
+	 * 
+	 * @param x - abcissa
+	 * @param y - ordinate
+	 * @param w - width
+	 * @param h - height
+	 * 
+	 * @return the model matrix in world coordiantes
+	 */
+	public Matrix4f getModelMatrix(float x, float y, float w, float h) {
+		return new Matrix4f().translate(transform.abcissa, transform.ordinate, 1).rotateZ(transform.rotation).scale(transform.getWidth(), transform.getHeight(), 1);
+	}
+	
+	/**
 	 * gets the mvp matrix from a certain model matrix
 	 * 
 	 * @param model - the matrix of the model

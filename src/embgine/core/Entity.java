@@ -1,5 +1,6 @@
 package embgine.core;
 
+import embgine.core.group.EntityGroup;
 import embgine.graphics.Camera;
 import embgine.graphics.Transform;
 

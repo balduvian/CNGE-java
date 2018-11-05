@@ -90,7 +90,7 @@ abstract public class Shader {
 	/**
 	 * call this after rendering is done to stop using the shader
 	 */
-	public void disable() {
+	public static void disable() {
 		glUseProgram(0);
 	}
 	

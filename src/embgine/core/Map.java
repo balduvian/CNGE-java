@@ -1,20 +1,23 @@
 package embgine.core;
 
+import embgine.core.group.EntityGroup;
+
 public class Map extends Entity{
 	
 	public static final int NO_BLOCK = -1;
 	
-	private BlockSet set;
+	private Block[] set;
 	private int[][] tiles;
 	private int width;
 	private int height;
 	
-	public Map(EntityGroup g, int np, float x, float y, int l, int[][] t, BlockSet b) {
+	public Map(EntityGroup g, int np, float x, float y, int l, float s, int[][] t, Block[] b) {
 		super(g, np, x, y, l);
 		tiles = t;
 		width = t.length;
 		height = t[0].length;
 		set = b;
+		transform.setSize(width * s, height * s);
 	}
 	
 	public int[][] getTies() {
@@ -25,8 +28,16 @@ public class Map extends Entity{
 		return tiles[x][y];
 	}
 	
-	public BlockSet getSet() {
+	public Block[] getSet() {
 		return set;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
 	}
 	
 	/**

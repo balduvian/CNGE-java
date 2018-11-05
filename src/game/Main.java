@@ -5,6 +5,7 @@ import java.io.IOException;
 import embgine.core.Base;
 import embgine.core.BasePreset;
 import embgine.graphics.Window;
+import game.scenes.game.GameScene;
 
 public class Main {
 	
@@ -15,7 +16,7 @@ public class Main {
 		if (os.indexOf("mac") >= 0){
 			if (args.length == 0) {
 				try {
-	                Runtime.getRuntime().exec(new String[]{"java", "-XstartOnFirstThread", "-jar", "TheLastWall.jar", "noReRun"});
+	                Runtime.getRuntime().exec(new String[]{"java", "-XstartOnFirstThread", "-jar", "Spark Runner 2.jar"});
 	            } catch (IOException e) {
 	                e.printStackTrace();
 	            }

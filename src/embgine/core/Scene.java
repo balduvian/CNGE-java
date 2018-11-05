@@ -1,9 +1,7 @@
 package embgine.core;
 
-import static org.lwjgl.opengl.GL11.glClearColor;
-
+import embgine.core.group.EntityGroup;
 import embgine.graphics.Camera;
-import embgine.graphics.Window;
 
 public abstract class Scene {
 
@@ -18,8 +16,13 @@ public abstract class Scene {
 	protected EntityGroup[] groups;
 	protected int numGroups;
 	
-	public Scene(int l, EntityGroup[] g) {
+	public Scene(int l, Scenery[] s, EntityGroup[] g) {
 		layers = l;
+		
+		int numScenery = s.length;
+		for(int i = 0; i < numScenery; ++i) {
+			s[i].init();
+		}
 		
 		groups = g;
 		numGroups = g.length;
@@ -32,7 +35,7 @@ public abstract class Scene {
 	/*
 	 * static stuff that the base gives to the scene
 	 */
-	
+
 	public static void giveStuff(Camera c, Base b) {
 		camera = c;
 		base = b;
