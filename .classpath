@@ -6,16 +6,16 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="ref/opengl/lwjgl-glfw-natives-windows.jar"/>
-	<classpathentry kind="lib" path="ref/opengl/lwjgl-glfw.jar"/>
-	<classpathentry kind="lib" path="ref/opengl/lwjgl-natives-windows.jar"/>
-	<classpathentry kind="lib" path="ref/opengl/lwjgl-openal-natives-windows.jar"/>
-	<classpathentry kind="lib" path="ref/opengl/lwjgl-openal.jar"/>
-	<classpathentry kind="lib" path="ref/opengl/lwjgl-opengl-natives-windows.jar"/>
-	<classpathentry kind="lib" path="ref/opengl/lwjgl-opengl.jar"/>
-	<classpathentry kind="lib" path="ref/opengl/lwjgl-stb-natives-windows.jar"/>
-	<classpathentry kind="lib" path="ref/opengl/lwjgl-stb.jar"/>
-	<classpathentry kind="lib" path="ref/opengl/lwjgl.jar"/>
-	<classpathentry kind="lib" path="ref/opengl/joml-1.9.11.jar"/>
+	<classpathentry kind="lib" path="ref/lwjgl/windows/lwjgl-glfw-natives-windows.jar"/>
+	<classpathentry kind="lib" path="ref/lwjgl/windows/lwjgl-natives-windows.jar"/>
+	<classpathentry kind="lib" path="ref/lwjgl/windows/lwjgl-openal-natives-windows.jar"/>
+	<classpathentry kind="lib" path="ref/lwjgl/windows/lwjgl-opengl-natives-windows.jar"/>
+	<classpathentry kind="lib" path="ref/lwjgl/windows/lwjgl-stb-natives-windows.jar"/>
+	<classpathentry kind="lib" path="ref/lwjgl/joml-1.9.11.jar"/>
+	<classpathentry kind="lib" path="ref/lwjgl/lwjgl-glfw.jar"/>
+	<classpathentry kind="lib" path="ref/lwjgl/lwjgl-openal.jar"/>
+	<classpathentry kind="lib" path="ref/lwjgl/lwjgl-opengl.jar"/>
+	<classpathentry kind="lib" path="ref/lwjgl/lwjgl-stb.jar"/>
+	<classpathentry kind="lib" path="ref/lwjgl/lwjgl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
