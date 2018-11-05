@@ -11,6 +11,11 @@ public class Map extends Entity{
 	private int width;
 	private int height;
 	
+	private int up;
+	private int left;
+	private int down;
+	private int right;
+	
 	public Map(EntityGroup g, int np, float x, float y, int l, float s, int[][] t, Block[] b) {
 		super(g, np, x, y, l);
 		tiles = t;
@@ -18,6 +23,31 @@ public class Map extends Entity{
 		height = t[0].length;
 		set = b;
 		transform.setSize(width * s, height * s);
+	}
+	
+	public int getUp() {
+		return up;
+	}
+	public int getLeft() {
+		return left;
+	}
+	public int getDown() {
+		return down;
+	}
+	public int getRight() {
+		return right;
+	}
+	public void setUp(int u) {
+		up = u;
+	}
+	public void setLeft(int l) {
+		left = l;
+	}
+	public void setDown(int d) {
+		down = d;
+	}
+	public void setRight(int r) {
+		right = r;
 	}
 	
 	public int[][] getTies() {
@@ -220,7 +250,7 @@ public class Map extends Entity{
 	 * 
 	 * @author Emmet
 	 */
-	private class MapAccessException extends Exception {
+	public class MapAccessException extends Exception {
 		private static final long serialVersionUID = 9197260479519042104L;
 	}
 	

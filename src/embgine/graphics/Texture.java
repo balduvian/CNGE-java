@@ -118,7 +118,7 @@ public class Texture {
 	
 	private void init(String path, boolean nearest, boolean clampH, boolean clampV) {
 		try {
-			BufferedImage b = ImageIO.read(this.getClass().getClassLoader().getResource(path).openStream());
+			BufferedImage b = ImageIO.read(new File(path));
 			width = b.getWidth();
 			height = b.getHeight();
 			int[] pixels = b.getRGB(0, 0, width, height, null, 0, width);

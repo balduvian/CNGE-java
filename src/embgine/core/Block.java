@@ -20,12 +20,18 @@ public class Block {
 	public int layer;
 	
 	/**
+	 * an integer that identifies the block, fill in with a known constant
+	 */
+	public int id;
+	
+	/**
 	 * constructor for all blocks
 	 * @param cc - color code for block type
 	 * @param l - layer for block type
 	 */
-	public Block(int cc, int l) {
+	public Block(int cc, int l, int i) {
 		colorCode = cc;
 		layer = l;
+		id = i;
 	}
 }

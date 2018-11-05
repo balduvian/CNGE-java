@@ -34,7 +34,7 @@ public class Main {
 		
 		window.setIcon("res/textures/icon.png");
 		
-		Base base = new Base(window, new BasePreset(BasePreset.ASPECT_FIXED, BasePreset.UNIT_SCREEN_PIXELS, 48, 48));
+		Base base = new Base(window, new BasePreset(BasePreset.ASPECT_FIXED, BasePreset.UNIT_GAME_PIXELS, 512, 288));
 		
 		base.start(new GameScene());
 	}

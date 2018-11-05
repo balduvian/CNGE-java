@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -169,7 +170,7 @@ public class Window {
 	public static GLFWImage makeGLFWImage(String imagePath) {
 		BufferedImage b = null;
 		try {
-			b = ImageIO.read(Window.class.getClassLoader().getResource(imagePath));
+			b = ImageIO.read(new File(imagePath));
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

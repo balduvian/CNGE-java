@@ -5,7 +5,7 @@ import embgine.graphics.Shader;
 public class BaseShader extends Shader{
 
 	public BaseShader() {
-		super("res/embgine/shader/base/base.vs", "res/embgine/shader/base/base.fs");
+		super("res/embgine/shaders/base/base.vs", "res/embgine/shaders/base/base.fs");
 	}
 
 }

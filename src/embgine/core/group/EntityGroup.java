@@ -9,17 +9,17 @@ public class EntityGroup {
 	protected int[] perLayer;
 	protected Entity[][] screenPool;
 	
-	private int layers;
+	protected int layers;
 	
 	protected Behavior behavior;
 	
 	protected int numParams;
 	
 	//array system stuff
-	private int size;
-	private Entity[] collection;
+	protected int size;
+	protected Entity[] collection;
 	private int first; 
-	private int last; 
+	protected int last; 
 	private boolean full;
 	
 	private String name;

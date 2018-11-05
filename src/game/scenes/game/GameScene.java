@@ -15,6 +15,7 @@ import embgine.core.Block;
 import embgine.graphics.Shader;
 import embgine.graphics.Texture;
 import embgine.graphics.Transform;
+import game.SparkBlock;
 import game.TexBlock;
 
 import static game.scenes.game.GameBlocks.*;
@@ -30,8 +31,9 @@ public class GameScene extends Scene {
 	public static int LAYER_ACTION;
 	public static int LAYER_GUI;
 	
-	public static final int ENTITY_PLAYER = 0;
+	public static final int ENTITY_COIN = 0;
 	public static final int MAP_LEVEL1 = 1;
+	public static final int ENTITY_PLAYER = 2;
 	
 	public GameScene() {
 		super(
@@ -86,6 +88,7 @@ public class GameScene extends Scene {
 					"level1",
 					0,
 					1,
+					1,
 					new MapBehavior() {
 						public void spawn(Entity e, Object[] p, Transform t) {
 							
@@ -96,16 +99,23 @@ public class GameScene extends Scene {
 						public void render(Entity e, Object[] p, Transform t) {
 							
 						}
-						public void mapRender(Block b, int x, int y, Map e, Object[] p, Transform t) {
+						public void mapRender(Object[] mp, Block b, int x, int y, Map e, Object[] p, Transform t) {
 							TexBlock tb = (TexBlock)b;
-	
+							
 							tb.texture.bind();
 							
 							tileShader.enable();
 							
 							tileShader.setMvp(camera.getModelViewProjectionMatrix(camera.getModelMatrix(t)));
 							
-							Vector4f frame = tb.texture.getFrame(tb.texX, tb.texY);
+							Vector4f frame = null;
+							
+							if(tb.id == PLAIN_BLOCK && ((int[][])mp[0])[x][y] == 1) {
+								frame = tb.texture.getFrame(0, 1);
+							}else {
+								frame = tb.texture.getFrame(tb.texX, tb.texY);
+							}
+							
 							tileShader.setUniforms(frame.x, frame.y, frame.z, frame.w, 1, 1, 1, 1);
 							
 							rect.render();
@@ -114,12 +124,33 @@ public class GameScene extends Scene {
 							
 							Texture.unbind();
 						}
-						public void mapSpawn(Block[] b, int[][][] m) {
+						public void mapSpawn(Object[] p, Block[] b, int[][][] m) {
+							int w = m[0].length;
+							int h = m[0][0].length;
 							
+							p[0] = new int[w][h];
+							
+							for(int i = 0; i < w; ++i) {
+								for(int j = 1; j < h; ++j) {
+									//test if non solid above
+									if(m[0][i][j] == PLAIN_BLOCK) {
+										try {
+											SparkBlock bl = ((SparkBlock)b[m[0][i][j - 1]]);
+											if(!bl.solid) {
+												((int[][])p[0])[i][j] = 1;
+											}
+										}catch(Exception ex) {
+											
+											((int[][])p[0])[i][j] = 1;
+											
+										}
+									}
+								}
+							}
 						}
 					},
 					"res/levels/level1.png",
-					3,
+					32,
 					world1Blocks
 				)
 			}
@@ -128,7 +159,6 @@ public class GameScene extends Scene {
 	
 	@Override
 	public void start() {
-		groups[ENTITY_PLAYER].createInstance(8, 8, 0);
 		((MapGroup)groups[MAP_LEVEL1]).load();
 		((MapGroup)groups[MAP_LEVEL1]).createMap(0, 0);
 	}

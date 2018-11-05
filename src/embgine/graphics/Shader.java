@@ -3,6 +3,8 @@ package embgine.graphics;
 import static org.lwjgl.opengl.GL20.*;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -44,7 +46,7 @@ abstract public class Shader {
 	private int loadShader(String path, int type) {
 		StringBuilder build = new StringBuilder();
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResource(path).openStream()));
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 			String line;
 			while((line = br.readLine()) != null) {
 				build.append(line);

@@ -1,6 +1,7 @@
 package embgine.core.group;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 import javax.imageio.ImageIO;
 
@@ -8,7 +9,9 @@ import embgine.core.Behavior;
 import embgine.core.Block;
 import embgine.core.Entity;
 import embgine.core.Map;
+import embgine.core.Map.MapAccessException;
 import embgine.core.MapBehavior;
+import embgine.graphics.Camera;
 import embgine.graphics.Transform;
 import game.TexBlock;
 
@@ -26,6 +29,8 @@ public class MapGroup extends EntityGroup {
 	
 	private Block[] blockSet;
 	
+	private Object[] mapParams;
+	
 	/**
 	 * defines a new map type for the scene
 	 * 
@@ -33,8 +38,9 @@ public class MapGroup extends EntityGroup {
 	 * @param ts - transforms for the sections [IT BETTER BE THE SAME LENGTH AS IMAGEPATHS]
 	 * @param bs - the blockset for the map
 	 */
-	public MapGroup(String na, int np, int mx, Behavior bh, String[] imagePaths, float[] ts, Block[] bs) {
+	public MapGroup(String na, int np, int nmp, int mx, Behavior bh, String[] imagePaths, float[] ts, Block[] bs) {
 		super(na, np, mx, bh);
+		mapParams = new Object[nmp];
 		sections = imagePaths.length;
 		mapImages = imagePaths;
 		tileScale = ts;
@@ -48,8 +54,9 @@ public class MapGroup extends EntityGroup {
 	 * @param t - transform
 	 * @param bs - the blockset for the map
 	 */
-	public MapGroup(String na, int np, int mx, Behavior bh, String imagePath, float t, Block[] bs) {
+	public MapGroup(String na, int np, int nmp, int mx, Behavior bh, String imagePath, float t, Block[] bs) {
 		super(na, np, mx, bh);
+		mapParams = new Object[nmp];
 		sections = 1;
 		mapImages = new String[] {imagePath};
 		tileScale = new float[] {t};
@@ -121,6 +128,36 @@ public class MapGroup extends EntityGroup {
 	}
 	
 	/**
+	 * updates the list of entities on screen
+	 * 
+	 * @param camera - the game camera, to be used for screen checking
+	 */
+	public void onScreenUpdate(Camera camera) {
+
+		perLayer = new int[layers];
+		screenPool = new Entity[layers][size];
+		
+		for(int i = 0; i < last; ++i) {
+			screenPool[i] = new Entity[size];
+			Map e = (Map)collection[i];
+			if(e != null && e.onScreenUpdate(camera)) {
+				int layer = e.getLayer();
+				screenPool[layer][perLayer[layer]] = e;
+				++perLayer[layer];
+				
+				Transform mt = e.getTransform();
+				Transform ct = camera.getTransform();
+				
+				e.setLeft((int)Math.floor((ct.abcissa - mt.abcissa) / tileScale[i] * mt.wScale));
+				e.setRight((int)Math.ceil(( (ct.abcissa +  ct.width) - mt.abcissa) / tileScale[i] * mt.wScale));
+				e.setUp((int)Math.floor((ct.abcissa - mt.abcissa) / tileScale[i] * mt.hScale));
+				e.setDown((int)Math.ceil(( (ct.abcissa + ct.height) - mt.abcissa) / tileScale[i] * mt.hScale));
+			}
+		}
+		
+	}
+	
+	/**
 	 * overrides render from entity group 
 	 * 
 	 * @param layer - the current render layer
@@ -146,11 +183,25 @@ public class MapGroup extends EntityGroup {
 			if(e.getLayer() == layer) {
 				int w = e.getWidth();
 				int h = e.getHeight();
-				for(int x = 0; x < w; ++x) {
-					for(int y = 0; y < h; ++y) {
+				
+				int u = e.getUp();
+				int r = e.getRight();
+				int d = e.getDown();
+				int l = e.getLeft();
+				
+				System.out.println(r);
+				
+				for(int x = l; x < r; ++x) {
+					for(int y = u; y < d; ++y) {
 						if(tiles[i][x][y] != -1) {
-							blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
-							((MapBehavior)behavior).mapRender(blockSet[tiles[i][x][y]], x, y, e, e.getParams(), blockTransform );
+							
+							Block sendBlock;
+							try {
+								sendBlock = blockSet[e.boundedAccess(x, y)];
+								blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
+								((MapBehavior)behavior).mapRender(mapParams, sendBlock, x, y, e, e.getParams(), blockTransform );
+							} catch (MapAccessException ex) { }
+							
 						}
 					}
 				}
@@ -183,7 +234,7 @@ public class MapGroup extends EntityGroup {
 			}
 		}
 		
-		((MapBehavior)behavior).mapSpawn(blockSet, tiles);
+		((MapBehavior)behavior).mapSpawn(mapParams, blockSet, tiles);
 	}
 	
 	private class LoaderThread implements Runnable {
@@ -199,7 +250,7 @@ public class MapGroup extends EntityGroup {
 			
 			BufferedImage b = null;
 			try {
-				b = ImageIO.read(getClass().getClassLoader().getResource(mapImages[number]));
+				b = ImageIO.read(new File(mapImages[number]));
 			}catch(Exception ex) {
 				ex.printStackTrace();
 				System.exit(-1);
@@ -260,7 +311,7 @@ public class MapGroup extends EntityGroup {
 			int color = blockSet[block].colorCode;
 			for(int j = 0; j < height; ++j) {
 				for(int i = 0; i < width; ++i) {
-					if(data[j * height + i] == color) {
+					if(data[j * width + i] == color) {
 						array[i][j] = block;
 					}
 				}
