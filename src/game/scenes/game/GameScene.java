@@ -37,8 +37,8 @@ public class GameScene extends Scene {
 		super(
 			LAYERS,
 			new Scenery[] {
-				new GameGraphics(),
-				new GameBlocks()
+				new GameGraphics().init(),
+				new GameBlocks().init()
 			},
 			new EntityGroup[] {
 				new EntityGroup(
@@ -74,7 +74,7 @@ public class GameScene extends Scene {
 							
 							rect.render();
 							
-							tileShader.disable();
+							Shader.disable();
 							
 							Texture.unbind();
 							
@@ -98,7 +98,7 @@ public class GameScene extends Scene {
 						}
 						public void mapRender(Block b, int x, int y, Map e, Object[] p, Transform t) {
 							TexBlock tb = (TexBlock)b;
-							
+	
 							tb.texture.bind();
 							
 							tileShader.enable();
@@ -118,21 +118,18 @@ public class GameScene extends Scene {
 							
 						}
 					},
-					"res/maps/level1.png",
-					2,
+					"res/levels/level1.png",
+					3,
 					world1Blocks
 				)
 			}
 		);
 	}
 	
-	public void mapRender(Map m) {
-		
-	}
-	
 	@Override
 	public void start() {
 		groups[ENTITY_PLAYER].createInstance(8, 8, 0);
+		((MapGroup)groups[MAP_LEVEL1]).load();
 		((MapGroup)groups[MAP_LEVEL1]).createMap(0, 0);
 	}
 

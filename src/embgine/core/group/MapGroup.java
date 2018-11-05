@@ -10,6 +10,7 @@ import embgine.core.Entity;
 import embgine.core.Map;
 import embgine.core.MapBehavior;
 import embgine.graphics.Transform;
+import game.TexBlock;
 
 public class MapGroup extends EntityGroup {
 
@@ -147,8 +148,10 @@ public class MapGroup extends EntityGroup {
 				int h = e.getHeight();
 				for(int x = 0; x < w; ++x) {
 					for(int y = 0; y < h; ++y) {
-						blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
-						((MapBehavior)behavior).mapRender(blockSet[tiles[0][x][y]], x, y, e, e.getParams(), blockTransform );
+						if(tiles[i][x][y] != -1) {
+							blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
+							((MapBehavior)behavior).mapRender(blockSet[tiles[i][x][y]], x, y, e, e.getParams(), blockTransform );
+						}
 					}
 				}
 					
@@ -191,6 +194,9 @@ public class MapGroup extends EntityGroup {
 		}
 		
 		public void run() {
+			
+			//System.out.println("thrad: " + number + " | " + mapImages[number]);
+			
 			BufferedImage b = null;
 			try {
 				b = ImageIO.read(getClass().getClassLoader().getResource(mapImages[number]));
@@ -206,6 +212,13 @@ public class MapGroup extends EntityGroup {
 			b.getRGB(0, 0, width, height, data, 0, width);
 			
 			tiles[number] = new int[width][height];
+
+			//first fill out with -1 (Spooky)
+			for(int j = 0; j < width; ++j) {
+				for(int k = 0; k < height; ++k) {
+					tiles[number][j][k] = -1;
+				}
+			}
 			
 			int bs = blockSet.length;
 			Thread[] tList = new Thread[bs];

@@ -10,6 +10,7 @@ public class TexBlock extends SparkBlock{
 	
 	public TexBlock(int cc, int l, boolean s, Texture t, int x, int y) {
 		super(cc, l, s);
+		texture = t;
 		texX = x;
 		texY = y;
 	}

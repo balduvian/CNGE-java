@@ -19,11 +19,6 @@ public abstract class Scene {
 	public Scene(int l, Scenery[] s, EntityGroup[] g) {
 		layers = l;
 		
-		int numScenery = s.length;
-		for(int i = 0; i < numScenery; ++i) {
-			s[i].init();
-		}
-		
 		groups = g;
 		numGroups = g.length;
 		

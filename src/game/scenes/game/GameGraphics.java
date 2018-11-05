@@ -20,7 +20,7 @@ public class GameGraphics implements Scenery{
 	public static Texture coinTex;
 	public static Texture tileSheet;
 	
-	public void init() {
+	public Scenery init() {
 		rect = Shape.RECT;
 		
 		tileShader = new TileShader();
@@ -30,6 +30,8 @@ public class GameGraphics implements Scenery{
 		playerTex = new Texture("res/textures/icon.png");
 		coinTex = new Texture("res/textures/coin.png", 14);
 		tileSheet = new Texture("res/textures/blocks.png", 3, 3);
+		
+		return this;
 	}
 
 }
