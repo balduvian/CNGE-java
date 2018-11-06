@@ -2,9 +2,9 @@ package game;
 
 import java.io.IOException;
 
-import embgine.core.Base;
-import embgine.core.BasePreset;
-import embgine.graphics.Window;
+import cnge.core.Base;
+import cnge.core.BasePreset;
+import cnge.graphics.Window;
 import game.scenes.game.GameScene;
 
 public class Main {

@@ -2,7 +2,7 @@ package game.scenes.game;
 
 import static game.scenes.game.GameGraphics.tileSheet;
 
-import embgine.core.Scenery;
+import cnge.core.Scenery;
 import game.TexBlock;
 
 public class GameBlocks implements Scenery{

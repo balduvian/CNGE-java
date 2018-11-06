@@ -1,6 +1,6 @@
 package game;
 
-import embgine.core.Block;
+import cnge.core.Block;
 
 public class SparkBlock extends Block{
 

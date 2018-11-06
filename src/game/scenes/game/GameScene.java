@@ -2,19 +2,19 @@ package game.scenes.game;
 
 import org.joml.Vector4f;
 
-import embgine.core.Entity;
-import embgine.core.Map;
-import embgine.core.MapBehavior;
-import embgine.core.Scene;
-import embgine.core.Scenery;
-import embgine.core.group.EntityGroup;
-import embgine.core.group.MapGroup;
-import embgine.core.Base;
-import embgine.core.Behavior;
-import embgine.core.Block;
-import embgine.graphics.Shader;
-import embgine.graphics.Texture;
-import embgine.graphics.Transform;
+import cnge.core.Entity;
+import cnge.core.Map;
+import cnge.core.MapBehavior;
+import cnge.core.Scene;
+import cnge.core.Scenery;
+import cnge.core.group.EntityGroup;
+import cnge.core.group.MapGroup;
+import cnge.core.Base;
+import cnge.core.Behavior;
+import cnge.core.Block;
+import cnge.graphics.Shader;
+import cnge.graphics.Texture;
+import cnge.graphics.Transform;
 import game.SparkBlock;
 import game.TexBlock;
 

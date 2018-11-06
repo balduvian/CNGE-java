@@ -3,7 +3,7 @@ package game.shaders;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniform4f;
 
-import embgine.graphics.Shader;
+import cnge.graphics.Shader;
 
 /**
  * draws a simple single color into a shape

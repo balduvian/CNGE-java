@@ -1,9 +1,9 @@
 package game.scenes.game;
 
-import embgine.core.Scenery;
-import embgine.graphics.Shape;
-import embgine.graphics.TexShape;
-import embgine.graphics.Texture;
+import cnge.core.Scenery;
+import cnge.graphics.Shape;
+import cnge.graphics.TexShape;
+import cnge.graphics.Texture;
 import game.shaders.BorderShader;
 import game.shaders.ColorShader;
 import game.shaders.TileShader;

@@ -6,13 +6,13 @@ import static game.scenes.game.GameGraphics.tileShader;
 
 import org.joml.Vector4f;
 
-import embgine.core.Base;
-import embgine.core.Behavior;
-import embgine.core.Entity;
-import embgine.core.group.EntityGroup;
-import embgine.graphics.Camera;
-import embgine.graphics.Shader;
-import embgine.graphics.Texture;
+import cnge.core.Base;
+import cnge.core.Behavior;
+import cnge.core.Entity;
+import cnge.core.group.EntityGroup;
+import cnge.graphics.Camera;
+import cnge.graphics.Shader;
+import cnge.graphics.Texture;
 
 public class PlayerEntity extends EntityGroup<PlayerEntity._PlayerEntity> {
 
@@ -21,8 +21,8 @@ public class PlayerEntity extends EntityGroup<PlayerEntity._PlayerEntity> {
 		int frame;
 		double time;
 		
-		public _PlayerEntity(PlayerEntity g, int np, float x, float y, int l) {
-			super(g, np, x, y, l);
+		public _PlayerEntity(PlayerEntity g, float x, float y, int l) {
+			super(g, x, y, l);
 		}
 
 	}
