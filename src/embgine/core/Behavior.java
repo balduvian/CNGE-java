@@ -1,6 +1,6 @@
 package embgine.core;
 
-import embgine.graphics.Transform;
+import embgine.graphics.Camera;
 
 /**
  * defines a custom set of behaviors for entities,
@@ -8,7 +8,7 @@ import embgine.graphics.Transform;
  * 
  * @author Emmett
  */
-public interface Behavior {
+public interface Behavior<E extends Entity> {
 	
 	/*
 	 * if you would look here at these methods, you will see that each one takes in Object[] p and Transform t
@@ -16,9 +16,9 @@ public interface Behavior {
 	 * these are needed to personalize the actions for each entity instance
 	 */
 	
-	public void  spawn(Entity e, Object[] p, Transform t);
+	public void  spawn(E e);
 	
-	public void update(Entity e, Object[] p, Transform t);
+	public void update(E e);
 	
-	public void render(Entity e, Object[] p, Transform t);
+	public void render(E e, Camera c);
 }

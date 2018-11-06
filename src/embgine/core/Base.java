@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import embgine.core.group.EntityGroup;
 import embgine.graphics.ALManagement;
 import embgine.graphics.Camera;
 import embgine.graphics.FBO;
@@ -88,6 +89,7 @@ public class Base {
 		Scene.giveStuff(camera, this, window);
 		Shape.init(camera);
 		FBO.giveWindow(window);
+		EntityGroup.giveCamera(camera);
 		
 		rect = Shape.RECT;
 		

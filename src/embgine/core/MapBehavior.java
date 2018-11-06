@@ -1,5 +1,6 @@
 package embgine.core;
 
+import embgine.core.group.MapGroup;
 import embgine.graphics.Transform;
 
 /**
@@ -11,7 +12,7 @@ import embgine.graphics.Transform;
  * 
  * @author Emmett
  */
-public interface MapBehavior extends Behavior{
+public interface MapBehavior<G extends MapGroup<M>, M extends Map> extends Behavior<M>{
 	
 	/**
 	 * gets called once per block, render as you will
@@ -24,7 +25,7 @@ public interface MapBehavior extends Behavior{
 	 * @param p - map entity render parameters
 	 * @param t - the transform of the block auto genned, just for you!
 	 */
-	public void mapRender(Object[] mp, Block b, int x, int y, Map m, Object[] p, Transform t);
+	public void mapRender(G g, Block b, int x, int y, M m, Transform t);
 	
 	/**
 	 * gets called when the map is loaded (NO INSTANCES AT THIS POINT)
@@ -33,5 +34,5 @@ public interface MapBehavior extends Behavior{
 	 * @param b - the block set
 	 * @param m - the map's reference tiles
 	 */
-	public void mapSpawn(Object[] p, Block[] b, int[][][] m);
+	public void mapSpawn(G g, Block[] b);
 }

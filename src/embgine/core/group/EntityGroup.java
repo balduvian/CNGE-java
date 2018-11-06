@@ -1,28 +1,30 @@
 package embgine.core.group;
 
+import java.lang.reflect.Array;
+
 import embgine.core.Behavior;
 import embgine.core.Entity;
 import embgine.graphics.Camera;
 
-public class EntityGroup {
+public class EntityGroup<E extends Entity> {
+	
+	protected static Camera camera;
 	
 	protected int[] perLayer;
-	protected Entity[][] screenPool;
+	protected E[][] screenPool;
 	
 	protected int layers;
 	
-	protected Behavior behavior;
-	
-	protected int numParams;
+	protected Behavior<E> behavior;
 	
 	//array system stuff
 	protected int size;
-	protected Entity[] collection;
+	protected E[] collection;
 	private int first; 
 	protected int last; 
 	private boolean full;
-	
-	private String name;
+
+	private Class<E> entityType;
 	
 	/**
 	 * initializes the entity group in the scene
@@ -32,16 +34,21 @@ public class EntityGroup {
 	 * @param mx - the max number of entities in this group
 	 * @param bh - the behavior interface
 	 */
-	public EntityGroup(String na, int np, int mx, Behavior bh) {
+	@SuppressWarnings("unchecked")
+	public EntityGroup(Class<E> et, int mx, Behavior<E> bh) {
+		entityType = et;
+		
 		behavior = bh;
 		
-		numParams = np;
-
 		size = mx;
-		collection = new Entity[size];
+		collection = (E[]) Array.newInstance(entityType, size);
 		first = 0;
 		last = 0;
 		full = false;
+	}
+	
+	public static void giveCamera(Camera c) {
+		camera = c;
 	}
 	
 	public void giveLayers(int la) {
@@ -57,10 +64,17 @@ public class EntityGroup {
 	 * 
 	 * @return the entity created. Or NULL if the entity could not be created
 	 */
-	public Entity createInstance(float x, float y, int l) {
-		Entity create = new Entity(this, numParams, x, y, l);
+	@SuppressWarnings("unchecked")
+	public E createInstance(float x, float y, int l) {
+		E create = null;
+		try {
+			create = (E)entityType.getConstructors()[0].newInstance(this, x, y, l);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.exit(-1);
+		}
 		if( add(create) ) {
-			behavior.spawn(create, create.getParams(), create.getTransform());
+			behavior.spawn(create);
 			return create;
 		}else {
 			return null;
@@ -81,14 +95,15 @@ public class EntityGroup {
 	 * 
 	 * @param camera - the game camera, to be used for screen checking
 	 */
+	@SuppressWarnings("unchecked")
 	public void onScreenUpdate(Camera camera) {
 
 		perLayer = new int[layers];
-		screenPool = new Entity[layers][size];
+		screenPool = (E[][]) new Object[layers][size];
 		
 		for(int i = 0; i < last; ++i) {
-			screenPool[i] = new Entity[size];
-			Entity e = collection[i];
+			screenPool[i] = (E[]) Array.newInstance(entityType, size);
+			E e = collection[i];
 			if(e != null && e.onScreenUpdate(camera)) {
 				int layer = e.getLayer();
 				screenPool[layer][perLayer[layer]] = e;
@@ -100,9 +115,9 @@ public class EntityGroup {
 	
 	public void update() {
 		for(int i = 0; i < last; ++i) {
-			Entity e = collection[i];
+			E e = collection[i];
 			if(e != null) {
-				behavior.update(e, e.getParams(), e.getTransform());
+				behavior.update(e);
 			}
 		}
 	}
@@ -110,13 +125,11 @@ public class EntityGroup {
 	public void render(int layer) {
 		
 		int len = perLayer[layer];
-
-		Entity[] list = screenPool[layer];
 		
 		for(int i = 0; i < len; ++i) {
-			Entity e = list[i];
+			E e = screenPool[layer][i];
 			if(e.getLayer() == layer) {
-				behavior.render(e, e.getParams(), e.getTransform());
+				behavior.render(e, camera);
 			}
 		}
 	}
@@ -136,7 +149,7 @@ public class EntityGroup {
 	 * private methods from here on, used as part of the array system
 	 */
 
-	protected boolean add(Entity o) {
+	protected boolean add(E o) {
 		if(!full) {
 			
 			o.setIndex(first);

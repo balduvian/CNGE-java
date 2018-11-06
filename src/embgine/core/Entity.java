@@ -11,20 +11,14 @@ public class Entity {
 	private int index;
 	private int layer;
 	
-	private EntityGroup group;
+	private EntityGroup<?> group;
 	protected Transform transform;
-	private Object[] params;
 	
-	public Entity(EntityGroup g, int np, float x, float y, int l) {
+	public Entity(EntityGroup<?> g, int np, float x, float y, int l) {
 		group = g;
 		transform = new Transform();
 		transform.setTranslation(x, y);
-		params = new Object[np];
 		layer = l;
-	}
-	
-	public Object[] getParams() {
-		return params;
 	}
 	
 	public Transform getTransform() {
@@ -33,14 +27,6 @@ public class Entity {
 	
 	public void destroy() {
 		group.destroyInstance(index);
-	}
-	
-	public void setParams(Object... values) {
-		params = values;
-	}
-	
-	public void setParam(int i, Object value) {
-		params[i] = value;
 	}
 	
 	public void setIndex(int i) {

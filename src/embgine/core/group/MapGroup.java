@@ -15,7 +15,7 @@ import embgine.graphics.Camera;
 import embgine.graphics.Transform;
 import game.TexBlock;
 
-public class MapGroup extends EntityGroup {
+public class MapGroup<M extends Map> extends EntityGroup<M> {
 
 	private int sections;
 	
@@ -38,7 +38,7 @@ public class MapGroup extends EntityGroup {
 	 * @param ts - transforms for the sections [IT BETTER BE THE SAME LENGTH AS IMAGEPATHS]
 	 * @param bs - the blockset for the map
 	 */
-	public MapGroup(String na, int np, int nmp, int mx, Behavior bh, String[] imagePaths, float[] ts, Block[] bs) {
+	public MapGroup(String na, int np, int nmp, int mx, MapBehavior<> bh, String[] imagePaths, float[] ts, Block[] bs) {
 		super(na, np, mx, bh);
 		mapParams = new Object[nmp];
 		sections = imagePaths.length;
@@ -96,6 +96,8 @@ public class MapGroup extends EntityGroup {
 		}
 		return creates;
 	}
+	
+	//TODO EVERYTHING
 	
 	/**
 	 * use this instead of the {@link EntityGroup} one

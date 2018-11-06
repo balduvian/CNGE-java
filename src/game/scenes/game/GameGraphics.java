@@ -9,7 +9,7 @@ import game.shaders.ColorShader;
 import game.shaders.TileShader;
 
 public class GameGraphics implements Scenery{
-
+	
 	public static TexShape rect;
 	
 	public static TileShader tileShader;
