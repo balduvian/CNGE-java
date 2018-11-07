@@ -4,7 +4,9 @@ import java.lang.reflect.Array;
 
 import cnge.core.Behavior;
 import cnge.core.Entity;
+import cnge.core.Scene;
 import cnge.graphics.Camera;
+import game.scenes.game.groups.PlayerEntity;
 
 public class EntityGroup<E extends Entity> {
 	
@@ -26,6 +28,8 @@ public class EntityGroup<E extends Entity> {
 
 	protected Class<E> entityType;
 	
+	protected static Scene scene;
+	
 	/**
 	 * initializes a new entity group
 	 * 
@@ -44,6 +48,10 @@ public class EntityGroup<E extends Entity> {
 		first = 0;
 		last = 0;
 		full = false;
+	}
+	
+	public static void giveScene(Scene s) {
+		scene = s;
 	}
 	
 	public static void giveCamera(Camera c) {
@@ -67,6 +75,7 @@ public class EntityGroup<E extends Entity> {
 	public E createInstance(float x, float y, int l) {
 		E create = null;
 		try {
+			System.out.println(entityType.getName());
 			create = (E) entityType.getConstructors()[0].newInstance(this, x, y, l);
 		} catch (Exception ex) {
 			ex.printStackTrace();

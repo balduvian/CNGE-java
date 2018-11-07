@@ -44,7 +44,7 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	 * @param ts - the array containing the tile scales for each section of the map
 	 * @param bs - the blockset for the map
 	 */
-	public MapGroup(Class<M> mt, int mx, MapBehavior<MapGroup<M>, M> bh, String[] ip, Map.Access[] as, float[] ts, Block[] bs) {
+	public MapGroup(Class<M> mt, int mx, MapBehavior<M> bh, String[] ip, Map.Access[] as, float[] ts, Block[] bs) {
 		super(mt, mx, bh);
 		sections = ip.length;
 		mapImages = ip;
@@ -63,7 +63,7 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	 * @param ts - tile scale for the map
 	 * @param bs - the blockset for the map
 	 */
-	public MapGroup(Class<M> mt, int mx, MapBehavior<MapGroup<M>, M> bh, String ip, Map.Access as, float ts, Block[] bs) {
+	public MapGroup(Class<M> mt, int mx, MapBehavior<M> bh, String ip, Map.Access as, float ts, Block[] bs) {
 		super(mt, mx, bh);
 		sections = 1;
 		mapImages = new String[] {ip};
@@ -194,13 +194,10 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	 * 
 	 * @param layer - the current render layer
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void render(int layer) {
 		
 		int len = perLayer[layer];
-
-		Entity[] list = screenPool[layer];
 		
 		for(int i = 0; i < len; ++i) {
 			M m = (M)screenPool[layer][i];
@@ -214,8 +211,6 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 			Transform blockTransform = new Transform(wide, tall);
 			
 			if(m.getLayer() == layer) {
-				int w = m.getWidth();
-				int h = m.getHeight();
 				
 				int u = m.getUp();
 				int r = m.getRight();
@@ -228,7 +223,7 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 							int tile = m.access(x, y);
 							if(tile != -1) {
 								blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
-								((MapBehavior<MapGroup<M>, M>)behavior).mapRender(this, blockSet[tile], x, y, m, blockTransform);
+								((MapBehavior<M>)behavior).mapRender(blockSet[tile], x, y, m, blockTransform);
 							}
 						} catch (MapAccessException ex) { }
 					}
@@ -244,7 +239,6 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	 * 
 	 * how much time will it take? Who knows
 	 */
-	@SuppressWarnings("unchecked")
 	public void load() {
 		tiles = new int[sections][][];
 		widths = new int[sections];
@@ -263,7 +257,7 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 			}
 		}
 		
-		((MapBehavior<MapGroup<M>, M>)behavior).mapSpawn(this, blockSet);
+		((MapBehavior<M>)behavior).mapSpawn(tiles, blockSet);
 	}
 	
 	private class LoaderThread implements Runnable {

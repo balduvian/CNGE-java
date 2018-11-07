@@ -131,6 +131,7 @@ public class Base {
 	 */
 	public void setScene(Scene s) {
 		scene = s;
+		EntityGroup.giveScene(s);
 		scene.start();
 	}
 	

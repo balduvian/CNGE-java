@@ -29,11 +29,11 @@ public class Map extends Entity{
 	}
 	
 	public interface Access {
-		int access(int x, int y) throws MapAccessException;
+		int access(Map m, int x, int y) throws MapAccessException;
 	}
 	
 	public int access(int x, int y) throws MapAccessException {
-		return access.access(x, y);
+		return access.access(this, x, y);
 	}
 	
 	public int getUp() {
