@@ -116,6 +116,7 @@ public class Base {
 	public void start(Scene s) {
 		
 		scene = s;
+		EntityGroup.giveScene(s);
 		
 		reFrame(window.getWidth(), window.getHeight());
 		

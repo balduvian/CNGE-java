@@ -130,7 +130,7 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	 * @return returns the map, NULL if could not create
 	 */
 	@SuppressWarnings("unchecked")
-	public Map createMap(float x, float y) {
+	public Map createMap(float x, float y, int l, Object... params) {
 		int w = widths[0];
 		int h = heights[0];
 		int[][] take = tiles[0];
@@ -142,7 +142,15 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 		}
 		M create = null;
 		try {
-			create = (M) entityType.getConstructors()[0].newInstance(this, x, y, 0);
+			create = (M) entityType.getConstructors()[0].newInstance(this, null, 0.5f, params);
+			create.mapSetup(x, y, l, this, give);
+			System.out.println("SUPER: " + entityType.getName());
+			Class<?>[] list = entityType.getConstructors()[0].getParameterTypes();
+			for(int i = 0; i < list.length; ++i) {
+				System.out.println("argument: " + list[i]);
+			}
+			System.out.println("NUM: " + list.length);
+			System.exit(-1);
 		} catch(Exception ex) {
 			ex.printStackTrace();
 			System.exit(-1);

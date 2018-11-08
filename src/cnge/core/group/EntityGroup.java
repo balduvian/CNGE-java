@@ -72,11 +72,11 @@ public class EntityGroup<E extends Entity> {
 	 * @return the entity created. Or NULL if the entity could not be created
 	 */
 	@SuppressWarnings("unchecked")
-	public E createInstance(float x, float y, int l) {
+	public E createInstance(float x, float y, int l, Object... params) {
 		E create = null;
 		try {
-			System.out.println(entityType.getName());
-			create = (E) entityType.getConstructors()[0].newInstance(this, x, y, l);
+			create = (E) entityType.getConstructors()[0].newInstance(this, params);
+			create.setup(x, y, l, this);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			System.exit(-1);

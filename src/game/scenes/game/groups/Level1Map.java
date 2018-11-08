@@ -11,7 +11,6 @@ import cnge.core.Map;
 import cnge.core.Map.Access;
 import cnge.core.Map.MapAccessException;
 import cnge.core.MapBehavior;
-import cnge.core.Scene;
 import cnge.core.group.MapGroup;
 import cnge.graphics.Camera;
 import cnge.graphics.Shader;
@@ -22,15 +21,22 @@ import game.TexBlock;
 import game.scenes.game.GameBlocks;
 import game.scenes.game.GameScene;
 
-public class Level1Map extends MapGroup<Level1Map.M>{
+public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 
-	public class M extends Map {
-
-		public M(MapGroup<?> g, float x, float y, int l, Access a, float s, int[][] t) {
-			super(g, x, y, l, a, s, t);
+	public class _Level1Map extends Map {
+		
+		public _Level1Map(Access a, float s, Object... params) {
+			super(mAccess, 32, params);
+			System.out.println("OSHISO");
 		}
 		
 	}
+	
+	public static Access mAccess = new Access() {
+		public int access(Map m, int x, int y) throws MapAccessException {
+			return m.boundedAccess(x, y);
+		}
+	};
 	
 	private static final int VALUE_TOP = 1;
 	
@@ -38,19 +44,19 @@ public class Level1Map extends MapGroup<Level1Map.M>{
 	
 	public Level1Map() {
 		super(
-			M.class,
+			_Level1Map.class,
 			1,
-			new MapBehavior<M>() {
-				public void spawn(M e) {
+			new MapBehavior<_Level1Map>() {
+				public void spawn(_Level1Map e) {
 					scene.getGroup(GameScene.ENTITY_COIN).createInstance(96, 96, GameScene.LAYER_ACTION);
 				}
-				public void update(M e) {
+				public void update(_Level1Map e) {
 					
 				}
-				public void render(M e, Camera c) {
+				public void render(_Level1Map e, Camera c) {
 					
 				}
-				public void mapRender(Block b, int x, int y, M m, Transform t) {
+				public void mapRender(Block b, int x, int y, _Level1Map m, Transform t) {
 					TexBlock tb = (TexBlock)b;
 					
 					tb.texture.bind();

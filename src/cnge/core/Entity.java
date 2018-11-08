@@ -14,11 +14,28 @@ public class Entity {
 	private EntityGroup<?> group;
 	protected Transform transform;
 	
-	public Entity(EntityGroup<?> g, float x, float y, int l) {
-		group = g;
+	/**
+	 * constructor for entities
+	 * 
+	 * @param params - optional paramters on creation
+	 */
+	public Entity(Object[] params) {
+		System.out.println("yer");
+		System.out.println("mum");
+		System.out.println("gai");
+	}
+	
+	/**
+	 * this is called immeadiately after the entity is constructed.
+	 * this is so that you don't have to put these params in the custom entity constructors
+	 *
+	 * @param g - the entity group this entity belongs to
+	 */
+	public void setup(float x, float y, int l, EntityGroup<?> g) {
 		transform = new Transform();
 		transform.setTranslation(x, y);
 		layer = l;
+		group = g;
 	}
 	
 	public Transform getTransform() {

@@ -54,9 +54,8 @@ public class GameScene extends Scene {
 	
 	@Override
 	public void start() {
-		groups[ENTITY_COIN].createInstance(96, 96, LAYER_ACTION);
 		((MapGroup<?>)groups[MAP_LEVEL1]).load();
-		((MapGroup<?>)groups[MAP_LEVEL1]).createMap(0, 0);
+		((MapGroup<?>)groups[MAP_LEVEL1]).createMap(0, 0, 0);
 	}
 
 	@Override
@@ -74,8 +73,6 @@ public class GameScene extends Scene {
 		if(window.keyPressed(GLFW_KEY_D)) {
 			ct.moveX((float)(32 * Base.time));
 		}
-		
-		System.out.println(ct.abcissa + " " + ct.ordinate);
 	}
 
 	@Override

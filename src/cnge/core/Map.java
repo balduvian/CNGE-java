@@ -18,14 +18,18 @@ public class Map extends Entity{
 	
 	private Access access;
 	
-	public Map(MapGroup<?> g, float x, float y, int l, Access a, float s, int[][] t) {
-		super(g, x, y, l);
+	public Map(Access a, float s, Object... params) {
+		super(params);
 		access = a;
+		transform.setSize(width * s, height * s);
+	}
+	
+	public void mapSetup(float x, float y, int l, MapGroup<?> g, int[][] t) {
+		setup(x, y, l, g);
 		tiles = t;
 		width = t.length;
 		height = t[0].length;
 		set = g.getBlockSet();
-		transform.setSize(width * s, height * s);
 	}
 	
 	public interface Access {

@@ -21,8 +21,10 @@ public class PlayerEntity extends EntityGroup<PlayerEntity._PlayerEntity> {
 		int frame;
 		double time;
 		
-		public _PlayerEntity(PlayerEntity g, float x, float y, int l) {
-			super(g, x, y, l);
+		public _PlayerEntity(Object... params) {
+			super(params);
+			frame = 0;
+			time = 0;
 		}
 
 	}
@@ -30,7 +32,7 @@ public class PlayerEntity extends EntityGroup<PlayerEntity._PlayerEntity> {
 	public PlayerEntity() {
 		super(
 			_PlayerEntity.class,
-			0, 
+			4, 
 			new Behavior<_PlayerEntity>() {
 				public void spawn(_PlayerEntity e) {
 					e.frame = 0;
@@ -40,7 +42,7 @@ public class PlayerEntity extends EntityGroup<PlayerEntity._PlayerEntity> {
 				}
 				public void update(_PlayerEntity e) {
 					e.time += Base.time;
-					if(e.time >= 0.666666666) {
+					if(e.time >= 0.1666666666) {
 						e.time = 0;
 						++e.frame;
 						e.frame %= 14;
