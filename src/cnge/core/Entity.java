@@ -11,19 +11,8 @@ public class Entity {
 	private int index;
 	private int layer;
 	
-	private EntityGroup<?> group;
+	private EntityGroup<?,?> group;
 	protected Transform transform;
-	
-	/**
-	 * constructor for entities
-	 * 
-	 * @param params - optional paramters on creation
-	 */
-	public Entity(Object[] params) {
-		System.out.println("yer");
-		System.out.println("mum");
-		System.out.println("gai");
-	}
 	
 	/**
 	 * this is called immeadiately after the entity is constructed.
@@ -31,7 +20,7 @@ public class Entity {
 	 *
 	 * @param g - the entity group this entity belongs to
 	 */
-	public void setup(float x, float y, int l, EntityGroup<?> g) {
+	public void setup(float x, float y, int l, EntityGroup<?,?> g) {
 		transform = new Transform();
 		transform.setTranslation(x, y);
 		layer = l;

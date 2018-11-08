@@ -6,9 +6,8 @@ import cnge.core.Behavior;
 import cnge.core.Entity;
 import cnge.core.Scene;
 import cnge.graphics.Camera;
-import game.scenes.game.groups.PlayerEntity;
 
-public class EntityGroup<E extends Entity> {
+public class EntityGroup<E extends Entity, G extends EntityGroup<E, G>> {
 	
 	protected static Camera camera;
 	
@@ -17,7 +16,7 @@ public class EntityGroup<E extends Entity> {
 	
 	protected int layers;
 	
-	protected Behavior<E> behavior;
+	protected Behavior<E, G> behavior;
 	
 	//array system stuff
 	protected int size;
@@ -38,7 +37,7 @@ public class EntityGroup<E extends Entity> {
 	 * @param bh - the behavior interface
 	 */
 	@SuppressWarnings("unchecked")
-	public EntityGroup(Class<E> et, int mx, Behavior<E> bh) {
+	public EntityGroup(Class<E> et, int mx, Behavior<E, G> bh) {
 		entityType = et;
 		
 		behavior = bh;
@@ -72,10 +71,10 @@ public class EntityGroup<E extends Entity> {
 	 * @return the entity created. Or NULL if the entity could not be created
 	 */
 	@SuppressWarnings("unchecked")
-	public E createInstance(float x, float y, int l, Object... params) {
+	public E createInstance(float x, float y, int l, Object... p) {
 		E create = null;
 		try {
-			create = (E) entityType.getConstructors()[0].newInstance(this, params);
+			create = (E) behavior.create((G)this, x, y, l, p);
 			create.setup(x, y, l, this);
 		} catch (Exception ex) {
 			ex.printStackTrace();

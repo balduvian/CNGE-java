@@ -1,5 +1,6 @@
 package cnge.core;
 
+import cnge.core.group.MapGroup;
 import cnge.graphics.Transform;
 
 /**
@@ -11,7 +12,7 @@ import cnge.graphics.Transform;
  * 
  * @author Emmett
  */
-public interface MapBehavior<M extends Map> extends Behavior<M>{
+public interface MapBehavior<M extends Map, G extends MapGroup<M, G>> extends Behavior<M, G>{
 	
 	/**
 	 * gets called once per block, render as you will

@@ -54,8 +54,8 @@ public class GameScene extends Scene {
 	
 	@Override
 	public void start() {
-		((MapGroup<?>)groups[MAP_LEVEL1]).load();
-		((MapGroup<?>)groups[MAP_LEVEL1]).createMap(0, 0, 0);
+		((MapGroup<?,?>)groups[MAP_LEVEL1]).load();
+		((MapGroup<?,?>)groups[MAP_LEVEL1]).createMap(0, 0, 0);
 	}
 
 	@Override

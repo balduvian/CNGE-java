@@ -15,10 +15,10 @@ public abstract class Scene {
 	
 	protected int layers;
 	
-	protected static EntityGroup<?>[] groups;
+	protected static EntityGroup<?,?>[] groups;
 	protected int numGroups;
 	
-	public Scene(int l, Scenery[] s, EntityGroup<?>[] g) {
+	public Scene(int l, Scenery[] s, EntityGroup<?,?>[] g) {
 		layers = l;
 		
 		groups = g;
@@ -33,7 +33,7 @@ public abstract class Scene {
 	 * static stuff that the base gives to the scene
 	 */
 
-	public EntityGroup<?> getGroup(int i) {
+	public EntityGroup<?,?> getGroup(int i) {
 		return groups[i];
 	}
 	

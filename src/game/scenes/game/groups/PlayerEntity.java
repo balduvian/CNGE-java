@@ -14,15 +14,15 @@ import cnge.graphics.Camera;
 import cnge.graphics.Shader;
 import cnge.graphics.Texture;
 
-public class PlayerEntity extends EntityGroup<PlayerEntity._PlayerEntity> {
+public class PlayerEntity extends EntityGroup<PlayerEntity.E, PlayerEntity> {
 
-	public class _PlayerEntity extends Entity{
+	public class E extends Entity{
 
 		int frame;
 		double time;
 		
-		public _PlayerEntity(Object... params) {
-			super(params);
+		public E() {
+			super();
 			frame = 0;
 			time = 0;
 		}
@@ -31,16 +31,16 @@ public class PlayerEntity extends EntityGroup<PlayerEntity._PlayerEntity> {
 	
 	public PlayerEntity() {
 		super(
-			_PlayerEntity.class,
+			E.class,
 			4, 
-			new Behavior<_PlayerEntity>() {
-				public void spawn(_PlayerEntity e) {
+			new Behavior<E, PlayerEntity>() {
+				public void spawn(E e) {
 					e.frame = 0;
 					e.time = 0;
 					
 					e.getTransform().setSize(256, 256);
 				}
-				public void update(_PlayerEntity e) {
+				public void update(E e) {
 					e.time += Base.time;
 					if(e.time >= 0.1666666666) {
 						e.time = 0;
@@ -49,7 +49,7 @@ public class PlayerEntity extends EntityGroup<PlayerEntity._PlayerEntity> {
 					}
 					
 				}
-				public void render(_PlayerEntity e, Camera c) {
+				public void render(E e, Camera c) {
 					Vector4f frame = coinTex.getFrame(e.frame);
 					
 					coinTex.bind();
@@ -64,6 +64,10 @@ public class PlayerEntity extends EntityGroup<PlayerEntity._PlayerEntity> {
 					Shader.disable();
 					
 					Texture.unbind();
+				}
+				@Override
+				public Entity create(PlayerEntity g, float x, float y, int l, Object... p) {
+					return g.new E();
 				}
 			}
 		);

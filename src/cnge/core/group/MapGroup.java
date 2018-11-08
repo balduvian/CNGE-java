@@ -6,17 +6,14 @@ import java.lang.reflect.Array;
 
 import javax.imageio.ImageIO;
 
-import cnge.core.Behavior;
 import cnge.core.Block;
-import cnge.core.Entity;
 import cnge.core.Map;
 import cnge.core.Map.MapAccessException;
 import cnge.core.MapBehavior;
 import cnge.graphics.Camera;
 import cnge.graphics.Transform;
-import game.TexBlock;
 
-public class MapGroup<M extends Map> extends EntityGroup<M> {
+public class MapGroup<M extends Map, G extends MapGroup<M, G>> extends EntityGroup<M, G> {
 
 	private int sections;
 	
@@ -24,15 +21,9 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	private int[] widths;
 	private int[] heights;
 	
-	private float[] tileScale;
-	
 	private String[] mapImages;
 	
 	private Block[] blockSet;
-	
-	private Object[] mapParams;
-	
-	private Map.Access[] accesses;
 	
 	/**
 	 * initializes a new map group
@@ -44,13 +35,10 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	 * @param ts - the array containing the tile scales for each section of the map
 	 * @param bs - the blockset for the map
 	 */
-	public MapGroup(Class<M> mt, int mx, MapBehavior<M> bh, String[] ip, Map.Access[] as, float[] ts, Block[] bs) {
+	public MapGroup(Class<M> mt, int mx, MapBehavior<M, G> bh, String[] ip) {
 		super(mt, mx, bh);
 		sections = ip.length;
 		mapImages = ip;
-		accesses = as;
-		tileScale = ts;
-		blockSet = bs;
 	}
 	
 	/**
@@ -63,15 +51,13 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	 * @param ts - tile scale for the map
 	 * @param bs - the blockset for the map
 	 */
-	public MapGroup(Class<M> mt, int mx, MapBehavior<M> bh, String ip, Map.Access as, float ts, Block[] bs) {
+	public MapGroup(Class<M> mt, int mx, MapBehavior<M, G> bh, String ip, Block[] bs) {
 		super(mt, mx, bh);
 		sections = 1;
 		mapImages = new String[] {ip};
-		accesses = new Map.Access[] {as};
-		tileScale = new float[] {ts};
 		blockSet = bs;
 	}
-	
+
 	/**
 	 * use this instead of the {@link EntityGroup} one
 	 * 
@@ -130,7 +116,7 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	 * @return returns the map, NULL if could not create
 	 */
 	@SuppressWarnings("unchecked")
-	public Map createMap(float x, float y, int l, Object... params) {
+	public Map createMap(float x, float y, int l, Object... p) {
 		int w = widths[0];
 		int h = heights[0];
 		int[][] take = tiles[0];
@@ -142,15 +128,8 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 		}
 		M create = null;
 		try {
-			create = (M) entityType.getConstructors()[0].newInstance(this, null, 0.5f, params);
+			create = (M) behavior.create((G)this, x, y, l, p);
 			create.mapSetup(x, y, l, this, give);
-			System.out.println("SUPER: " + entityType.getName());
-			Class<?>[] list = entityType.getConstructors()[0].getParameterTypes();
-			for(int i = 0; i < list.length; ++i) {
-				System.out.println("argument: " + list[i]);
-			}
-			System.out.println("NUM: " + list.length);
-			System.exit(-1);
 		} catch(Exception ex) {
 			ex.printStackTrace();
 			System.exit(-1);
@@ -185,11 +164,10 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 				Transform mt = m.getTransform();
 				Transform ct = camera.getTransform();
 				
-				
-				m. setLeft( (int)Math.floor( ( ct.abcissa - mt.abcissa) / (tileScale[i] * mt.wScale) ));
-				m.setRight( (int) Math.ceil( ((ct.abcissa +   ct.width) - mt.abcissa) / (tileScale[i] * mt.wScale) ));
-				m.   setUp( (int)Math.floor( ( ct.ordinate - mt.ordinate) / (tileScale[i] * mt.hScale) ));
-				m. setDown( (int) Math.ceil( ((ct.ordinate +  ct.height) - mt.ordinate) / (tileScale[i] * mt.hScale) ));
+				m. setLeft( (int)Math.floor( ( ct.abcissa - mt.abcissa) / (mt.getWidth()) ));
+				m.setRight( (int) Math.ceil( ((ct.abcissa +   ct.width) - mt.abcissa) / (mt.getWidth()) ));
+				m.   setUp( (int)Math.floor( ( ct.ordinate - mt.ordinate) / (mt.getHeight()) ));
+				m. setDown( (int) Math.ceil( ((ct.ordinate +  ct.height) - mt.ordinate) / (mt.getHeight()) ));
 				
 				//System.out.println( ( ct.abcissa - mt.abcissa) + " | " + (tileScale[i] * mt.wScale) );
 			}
@@ -214,8 +192,8 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 			 * this transform is the size of a block
 			 */
 			Transform t = m.getTransform();
-			float wide = tileScale[i] * t.wScale;
-			float tall = tileScale[i] * t.hScale;
+			float wide = t.getWidth() / m.getWidth();
+			float tall = t.getHeight() / m.getHeight();
 			Transform blockTransform = new Transform(wide, tall);
 			
 			if(m.getLayer() == layer) {
@@ -231,7 +209,7 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 							int tile = m.access(x, y);
 							if(tile != -1) {
 								blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
-								((MapBehavior<M>)behavior).mapRender(blockSet[tile], x, y, m, blockTransform);
+								((MapBehavior<M, G>)behavior).mapRender(blockSet[tile], x, y, m, blockTransform);
 							}
 						} catch (MapAccessException ex) { }
 					}
@@ -265,7 +243,7 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 			}
 		}
 		
-		((MapBehavior<M>)behavior).mapSpawn(tiles, blockSet);
+		((MapBehavior<M, G>)behavior).mapSpawn(tiles, blockSet);
 	}
 	
 	private class LoaderThread implements Runnable {

@@ -1,5 +1,6 @@
 package cnge.core;
 
+import cnge.core.group.EntityGroup;
 import cnge.graphics.Camera;
 
 /**
@@ -8,13 +9,25 @@ import cnge.graphics.Camera;
  * 
  * @author Emmett
  */
-public interface Behavior<E extends Entity> {
+public interface Behavior<E extends Entity, G extends EntityGroup<E, G>> {
 	
 	/*
 	 * if you would look here at these methods, you will see that each one takes in Object[] p and Transform t
 	 * the entity group will automatically pass in the correct values for these for each entity
 	 * these are needed to personalize the actions for each entity instance
 	 */
+	
+	/**
+	 * this has to defined for this entity group to produce instances of entities
+	 * 
+	 * @param x - x position to create entity at
+	 * @param y - and the y
+	 * @param l - the layer to create entity at
+	 * @param p - additional spawn parameters
+	 * 
+	 * @return - a new instance of the specific entity for this group
+	 */
+	public Entity create(G g, float x, float y, int l, Object... p);
 	
 	public void  spawn(E e);
 	
