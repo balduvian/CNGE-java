@@ -2,6 +2,7 @@ package cnge.core;
 
 import cnge.core.group.EntityGroup;
 import cnge.graphics.Camera;
+import cnge.graphics.Transform;
 import cnge.graphics.Window;
 
 public abstract class Scene {
@@ -50,6 +51,11 @@ public abstract class Scene {
 	
 	public static void changeScene(Scene s) {
 		base.setScene(s);
+	}
+	
+	public void setCameraCenter(float x, float y) {
+		Transform ct = camera.getTransform();
+		ct.setTranslation(x - ct.getWidth() / 2, y - ct.getHeight() / 2);
 	}
 	
 	/*

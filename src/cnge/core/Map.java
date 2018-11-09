@@ -43,7 +43,29 @@ public class Map extends Entity{
 	}
 	
 	public Block block(int b) {
-		return set[b];
+		try {
+			return set[b];
+		}catch(ArrayIndexOutOfBoundsException ex) {
+			return null;
+		}
+	}
+	
+	/**
+	 * converts map coordinates to world coordinates
+	 * @param x - x in map coordinates
+	 * @return x in world coordinates (LEFT SIDE)
+	 */
+	public float getX(int x) {
+		return x * scale * transform.wScale + transform.abcissa;
+	}
+	
+	/**
+	 * converts map coordinates to world coordinates
+	 * @param y - y in map coordinates
+	 * @return y in world coordinates (TOP SIDE)
+	 */
+	public float getY(int y) {
+		return y * scale * transform.hScale + transform.ordinate;
 	}
 	
 	public float getScale() {

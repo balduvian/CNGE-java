@@ -58,7 +58,7 @@ public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 			return new _Level1Map();
 		}
 		public void spawn(_Level1Map e) {
-			scene.getGroup(GameScene.ENTITY_COIN).createInstance(96, 96, GameScene.LAYER_ACTION);
+			((GameScene)scene).player = scene.getGroup(GameScene.ENTITY_PLAYER).createInstance(96, 96, GameScene.LAYER_ACTION);
 		}
 		public void update(_Level1Map e) {
 			

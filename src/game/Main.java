@@ -9,7 +9,7 @@ import game.scenes.game.GameScene;
 
 public class Main {
 	
-	public static final float GRAVITY = 128;
+	public static final float GRAVITY = 512;
 	
 	public static void main(String[] args) {
 		

@@ -5,6 +5,7 @@ import cnge.core.Scenery;
 import cnge.core.group.EntityGroup;
 import cnge.core.group.MapGroup;
 import cnge.core.Base;
+import cnge.core.Entity;
 import cnge.core.Map;
 import cnge.graphics.Transform;
 import game.scenes.game.groups.Level1Map;
@@ -22,11 +23,11 @@ public class GameScene extends Scene {
 	public static int LAYER_ACTION;
 	public static int LAYER_GUI;
 	
-	public static final int ENTITY_COIN = 0;
+	public static final int ENTITY_PLAYER = 0;
 	public static final int MAP_LEVEL1 = 1;
-	public static final int ENTITY_PLAYER = 2;
 	
 	public Map currentMap;
+	public Entity player;
 	
 	public boolean pressJump;
 	public boolean pressLeft;
@@ -40,8 +41,8 @@ public class GameScene extends Scene {
 				new GameBlocks().init()
 			},
 			new EntityGroup[] {
-				new PlayerEntity(),
-				new Level1Map()
+					new PlayerEntity(),
+				new Level1Map(),
 			}
 		);
 	}
@@ -58,7 +59,7 @@ public class GameScene extends Scene {
 	
 	@Override
 	public void preUpdate() {
-		Transform ct = camera.getTransform();
+		//Transform ct = camera.getTransform();
 		
 		pressJump = window.keyPressed(GLFW_KEY_W);
 		pressRight = window.keyPressed(GLFW_KEY_D);
