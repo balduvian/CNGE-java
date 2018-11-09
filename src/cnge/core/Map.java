@@ -42,6 +42,10 @@ public class Map extends Entity{
 		return access.access(this, x, y);
 	}
 	
+	public Block block(int b) {
+		return set[b];
+	}
+	
 	public float getScale() {
 		return scale;
 	}

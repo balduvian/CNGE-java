@@ -1,27 +1,15 @@
 package game.scenes.game;
 
-import org.joml.Vector4f;
-
-import cnge.core.Entity;
-import cnge.core.Map;
-import cnge.core.MapBehavior;
 import cnge.core.Scene;
 import cnge.core.Scenery;
 import cnge.core.group.EntityGroup;
 import cnge.core.group.MapGroup;
 import cnge.core.Base;
-import cnge.core.Behavior;
-import cnge.core.Block;
-import cnge.graphics.Shader;
-import cnge.graphics.Texture;
+import cnge.core.Map;
 import cnge.graphics.Transform;
-import game.SparkBlock;
-import game.TexBlock;
 import game.scenes.game.groups.Level1Map;
 import game.scenes.game.groups.PlayerEntity;
 
-import static game.scenes.game.GameBlocks.*;
-import static game.scenes.game.GameGraphics.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class GameScene extends Scene {
@@ -37,6 +25,12 @@ public class GameScene extends Scene {
 	public static final int ENTITY_COIN = 0;
 	public static final int MAP_LEVEL1 = 1;
 	public static final int ENTITY_PLAYER = 2;
+	
+	public Map currentMap;
+	
+	public boolean pressJump;
+	public boolean pressLeft;
+	public boolean pressRight;
 	
 	public GameScene() {
 		super(
@@ -54,25 +48,21 @@ public class GameScene extends Scene {
 	
 	@Override
 	public void start() {
-		((MapGroup<?>)groups[MAP_LEVEL1]).load();
-		((MapGroup<?>)groups[MAP_LEVEL1]).createMap(0, 0, 0);
+		startMap(MAP_LEVEL1);
 	}
-
+	
+	public void startMap(int m){
+		((MapGroup<?>)groups[m]).load();
+		currentMap = ((MapGroup<?>)groups[m]).createMap(0, 0, 0);
+	}
+	
 	@Override
 	public void preUpdate() {
 		Transform ct = camera.getTransform();
-		if(window.keyPressed(GLFW_KEY_W)) {
-			ct.moveY(-(float)(32 * Base.time));
-		}
-		if(window.keyPressed(GLFW_KEY_A)) {
-			ct.moveX(-(float)(32 * Base.time));
-		}
-		if(window.keyPressed(GLFW_KEY_S)) {
-			ct.moveY((float)(32 * Base.time));
-		}
-		if(window.keyPressed(GLFW_KEY_D)) {
-			ct.moveX((float)(32 * Base.time));
-		}
+		
+		pressJump = window.keyPressed(GLFW_KEY_W);
+		pressRight = window.keyPressed(GLFW_KEY_D);
+		pressLeft = window.keyPressed(GLFW_KEY_A);
 	}
 
 	@Override

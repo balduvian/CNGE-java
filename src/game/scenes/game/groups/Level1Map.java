@@ -12,7 +12,6 @@ import cnge.core.Map;
 import cnge.core.Map.Access;
 import cnge.core.Map.MapAccessException;
 import cnge.core.MapBehavior;
-import cnge.core.group.EntityGroup;
 import cnge.core.group.MapGroup;
 import cnge.graphics.Camera;
 import cnge.graphics.Shader;
@@ -24,7 +23,21 @@ import game.scenes.game.GameBlocks;
 import game.scenes.game.GameScene;
 
 public class Level1Map extends MapGroup<Level1Map._Level1Map>{
-
+	
+	private static final int VALUE_TOP = 1;
+	
+	static int[][] values;
+	
+	public Level1Map() {
+		super(
+			_Level1Map.class,
+			1,
+			mBehavior,
+			"res/levels/level1.png",
+			GameBlocks.world1Blocks
+		);
+	}
+	
 	public static class _Level1Map extends Map {
 		
 		public _Level1Map() {
@@ -35,7 +48,7 @@ public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 	
 	public static Access mAccess = new Access() {
 		public int access(Map m, int x, int y) throws MapAccessException {
-			return m.boundedAccess(x, y);
+			return m.edgeAccess(x, y);
 		}
 	};
 	
@@ -64,9 +77,13 @@ public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 			
 			Vector4f frame = null;
 			
-			if(tb.id == PLAIN_BLOCK && values[x][y] == VALUE_TOP) {
-				frame = tb.texture.getFrame(0, 1);
-			}else {
+			try {
+				if(tb.id == PLAIN_BLOCK && values[x][y] == VALUE_TOP) {
+					frame = tb.texture.getFrame(0, 1);
+				}else {
+					frame = tb.texture.getFrame(tb.texX, tb.texY);
+				}
+			} catch(Exception ex) {
 				frame = tb.texture.getFrame(tb.texX, tb.texY);
 			}
 			
@@ -102,17 +119,4 @@ public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 		}
 	};
 	
-	private static final int VALUE_TOP = 1;
-	
-	static int[][] values;
-	
-	public Level1Map() {
-		super(
-			_Level1Map.class,
-			1,
-			mBehavior,
-			"res/levels/level1.png",
-			GameBlocks.world1Blocks
-		);
-	}
 }

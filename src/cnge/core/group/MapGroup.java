@@ -168,13 +168,11 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 				Transform ct = camera.getTransform();
 				
 				
-				m. setLeft( (int)Math.floor( ( ct.abcissa - mt.abcissa) / (mt.getWidth()) ));
-				m.setRight( (int) Math.ceil( ((ct.abcissa +   ct.width) - mt.abcissa) / (mt.getWidth()) ));
-				m.   setUp( (int)Math.floor( ( ct.ordinate - mt.ordinate) / (mt.getHeight()) ));
-				m. setDown( (int) Math.ceil( ((ct.ordinate +  ct.height) - mt.ordinate) / (mt.getHeight()) ));
+				m. setLeft( (int)Math.floor( ( ct.abcissa - mt.abcissa) / (m.getScale() * mt.wScale) ));
+				m.setRight( (int) Math.ceil( ((ct.abcissa +   ct.width) - mt.abcissa) / (m.getScale() * mt.wScale) ));
+				m.   setUp( (int)Math.floor( ( ct.ordinate - mt.ordinate) / (m.getScale() * mt.wScale) ));
+				m. setDown( (int) Math.ceil( ((ct.ordinate +  ct.height) - mt.ordinate) / (m.getScale() * mt.wScale) ));
 				
-				System.out.println(m.getRight());
-				//System.out.println( ( ct.abcissa - mt.abcissa) + " | " + (tileScale[i] * mt.wScale) );
 			}
 		}
 	}
