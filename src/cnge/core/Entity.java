@@ -11,7 +11,7 @@ public class Entity {
 	private int index;
 	private int layer;
 	
-	private EntityGroup<?,?> group;
+	private EntityGroup<?> group;
 	protected Transform transform;
 	
 	/**
@@ -20,7 +20,7 @@ public class Entity {
 	 *
 	 * @param g - the entity group this entity belongs to
 	 */
-	public void setup(float x, float y, int l, EntityGroup<?,?> g) {
+	public void setup(float x, float y, int l, EntityGroup<?> g) {
 		transform = new Transform();
 		transform.setTranslation(x, y);
 		layer = l;

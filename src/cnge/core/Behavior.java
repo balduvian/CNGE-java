@@ -9,7 +9,7 @@ import cnge.graphics.Camera;
  * 
  * @author Emmett
  */
-public interface Behavior<E extends Entity, G extends EntityGroup<E, G>> {
+public interface Behavior<E extends Entity> {
 	
 	/*
 	 * if you would look here at these methods, you will see that each one takes in Object[] p and Transform t
@@ -27,7 +27,7 @@ public interface Behavior<E extends Entity, G extends EntityGroup<E, G>> {
 	 * 
 	 * @return - a new instance of the specific entity for this group
 	 */
-	public Entity create(G g, float x, float y, int l, Object... p);
+	public Entity create(float x, float y, int l, Object... p);
 	
 	public void  spawn(E e);
 	

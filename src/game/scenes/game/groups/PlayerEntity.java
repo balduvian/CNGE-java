@@ -14,9 +14,9 @@ import cnge.graphics.Camera;
 import cnge.graphics.Shader;
 import cnge.graphics.Texture;
 
-public class PlayerEntity extends EntityGroup<PlayerEntity.E, PlayerEntity> {
+public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 
-	public class E extends Entity{
+	public static class E extends Entity{
 
 		int frame;
 		double time;
@@ -33,7 +33,7 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E, PlayerEntity> {
 		super(
 			E.class,
 			4, 
-			new Behavior<E, PlayerEntity>() {
+			new Behavior<E>() {
 				public void spawn(E e) {
 					e.frame = 0;
 					e.time = 0;
@@ -66,8 +66,8 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E, PlayerEntity> {
 					Texture.unbind();
 				}
 				@Override
-				public Entity create(PlayerEntity g, float x, float y, int l, Object... p) {
-					return g.new E();
+				public Entity create(float x, float y, int l, Object... p) {
+					return new E();
 				}
 			}
 		);

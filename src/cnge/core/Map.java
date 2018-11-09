@@ -25,12 +25,12 @@ public class Map extends Entity{
 		scale = s;
 	}
 	
-	public void mapSetup(float x, float y, int l, MapGroup<?,?> g, int[][] t) {
+	public void mapSetup(float x, float y, int l, MapGroup<?> g, int[][] t) {
 		setup(x, y, l, g);
-		transform.setSize(width * scale, height * scale);
 		tiles = t;
 		width = t.length;
 		height = t[0].length;
+		transform.setSize(width * scale, height * scale);
 		set = g.getBlockSet();
 	}
 	
@@ -40,6 +40,10 @@ public class Map extends Entity{
 	
 	public int access(int x, int y) throws MapAccessException {
 		return access.access(this, x, y);
+	}
+	
+	public float getScale() {
+		return scale;
 	}
 	
 	public int getUp() {

@@ -23,9 +23,9 @@ import game.TexBlock;
 import game.scenes.game.GameBlocks;
 import game.scenes.game.GameScene;
 
-public class Level1Map extends MapGroup<Level1Map._Level1Map, Level1Map>{
+public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 
-	public class _Level1Map extends Map {
+	public static class _Level1Map extends Map {
 		
 		public _Level1Map() {
 			super(mAccess, 32);
@@ -39,10 +39,10 @@ public class Level1Map extends MapGroup<Level1Map._Level1Map, Level1Map>{
 		}
 	};
 	
-	public static MapBehavior<_Level1Map, Level1Map> mBehavior = new MapBehavior<_Level1Map, Level1Map>() {
+	public static MapBehavior<_Level1Map> mBehavior = new MapBehavior<_Level1Map>() {
 		@Override
-		public Entity create(Level1Map g, float x, float y, int l, Object... p) {
-			return g.new _Level1Map();
+		public Entity create(float x, float y, int l, Object... p) {
+			return new _Level1Map();
 		}
 		public void spawn(_Level1Map e) {
 			scene.getGroup(GameScene.ENTITY_COIN).createInstance(96, 96, GameScene.LAYER_ACTION);

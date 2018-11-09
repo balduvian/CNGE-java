@@ -13,7 +13,7 @@ import cnge.core.MapBehavior;
 import cnge.graphics.Camera;
 import cnge.graphics.Transform;
 
-public class MapGroup<M extends Map, G extends MapGroup<M, G>> extends EntityGroup<M, G> {
+public class MapGroup<M extends Map> extends EntityGroup<M> {
 
 	private int sections;
 	
@@ -35,7 +35,7 @@ public class MapGroup<M extends Map, G extends MapGroup<M, G>> extends EntityGro
 	 * @param ts - the array containing the tile scales for each section of the map
 	 * @param bs - the blockset for the map
 	 */
-	public MapGroup(Class<M> mt, int mx, MapBehavior<M, G> bh, String[] ip) {
+	public MapGroup(Class<M> mt, int mx, MapBehavior<M> bh, String[] ip) {
 		super(mt, mx, bh);
 		sections = ip.length;
 		mapImages = ip;
@@ -51,7 +51,7 @@ public class MapGroup<M extends Map, G extends MapGroup<M, G>> extends EntityGro
 	 * @param ts - tile scale for the map
 	 * @param bs - the blockset for the map
 	 */
-	public MapGroup(Class<M> mt, int mx, MapBehavior<M, G> bh, String ip, Block[] bs) {
+	public MapGroup(Class<M> mt, int mx, MapBehavior<M> bh, String ip, Block[] bs) {
 		super(mt, mx, bh);
 		sections = 1;
 		mapImages = new String[] {ip};
@@ -128,7 +128,7 @@ public class MapGroup<M extends Map, G extends MapGroup<M, G>> extends EntityGro
 		}
 		M create = null;
 		try {
-			create = (M) behavior.create((G)this, x, y, l, p);
+			create = (M) behavior.create(x, y, l, p);
 			create.mapSetup(x, y, l, this, give);
 		} catch(Exception ex) {
 			ex.printStackTrace();
@@ -156,7 +156,10 @@ public class MapGroup<M extends Map, G extends MapGroup<M, G>> extends EntityGro
 		
 		for(int i = 0; i < last; ++i) {
 			M m = (M)collection[i];
+			//System.out.println(m.getTransform().width + " | " + m.getTransform().height);
 			if(m != null && m.onScreenUpdate(camera)) {
+				
+				//System.out.println("FOUND");
 				int layer = m.getLayer();
 				screenPool[layer][perLayer[layer]] = m;
 				++perLayer[layer];
@@ -164,15 +167,16 @@ public class MapGroup<M extends Map, G extends MapGroup<M, G>> extends EntityGro
 				Transform mt = m.getTransform();
 				Transform ct = camera.getTransform();
 				
+				
 				m. setLeft( (int)Math.floor( ( ct.abcissa - mt.abcissa) / (mt.getWidth()) ));
 				m.setRight( (int) Math.ceil( ((ct.abcissa +   ct.width) - mt.abcissa) / (mt.getWidth()) ));
 				m.   setUp( (int)Math.floor( ( ct.ordinate - mt.ordinate) / (mt.getHeight()) ));
 				m. setDown( (int) Math.ceil( ((ct.ordinate +  ct.height) - mt.ordinate) / (mt.getHeight()) ));
 				
+				System.out.println(m.getRight());
 				//System.out.println( ( ct.abcissa - mt.abcissa) + " | " + (tileScale[i] * mt.wScale) );
 			}
 		}
-		
 	}
 	
 	/**
@@ -194,6 +198,10 @@ public class MapGroup<M extends Map, G extends MapGroup<M, G>> extends EntityGro
 			Transform t = m.getTransform();
 			float wide = t.getWidth() / m.getWidth();
 			float tall = t.getHeight() / m.getHeight();
+			
+			//System.out.println(wide + " " + tall);
+			//System.exit(-1);
+			
 			Transform blockTransform = new Transform(wide, tall);
 			
 			if(m.getLayer() == layer) {
@@ -209,7 +217,7 @@ public class MapGroup<M extends Map, G extends MapGroup<M, G>> extends EntityGro
 							int tile = m.access(x, y);
 							if(tile != -1) {
 								blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
-								((MapBehavior<M, G>)behavior).mapRender(blockSet[tile], x, y, m, blockTransform);
+								((MapBehavior<M>)behavior).mapRender(blockSet[tile], x, y, m, blockTransform);
 							}
 						} catch (MapAccessException ex) { }
 					}
@@ -243,7 +251,7 @@ public class MapGroup<M extends Map, G extends MapGroup<M, G>> extends EntityGro
 			}
 		}
 		
-		((MapBehavior<M, G>)behavior).mapSpawn(tiles, blockSet);
+		((MapBehavior<M>)behavior).mapSpawn(tiles, blockSet);
 	}
 	
 	private class LoaderThread implements Runnable {
@@ -254,8 +262,6 @@ public class MapGroup<M extends Map, G extends MapGroup<M, G>> extends EntityGro
 		}
 		
 		public void run() {
-			
-			//System.out.println("thrad: " + number + " | " + mapImages[number]);
 			
 			BufferedImage b = null;
 			try {

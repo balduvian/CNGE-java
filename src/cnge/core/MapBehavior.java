@@ -12,7 +12,7 @@ import cnge.graphics.Transform;
  * 
  * @author Emmett
  */
-public interface MapBehavior<M extends Map, G extends MapGroup<M, G>> extends Behavior<M, G>{
+public interface MapBehavior<M extends Map> extends Behavior<M>{
 	
 	/**
 	 * gets called once per block, render as you will
