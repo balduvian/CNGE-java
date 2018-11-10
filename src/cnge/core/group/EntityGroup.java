@@ -74,7 +74,7 @@ public class EntityGroup<E extends Entity> {
 	public E createInstance(float x, float y, int l, Object... p) {
 		E create = null;
 		try {
-			create = (E) behavior.create(x, y, l, p);
+			create = (E) behavior.create(p);
 			create.setup(x, y, l, this);
 		} catch (Exception ex) {
 			ex.printStackTrace();

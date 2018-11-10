@@ -18,9 +18,9 @@ import cnge.graphics.Camera;
 import cnge.graphics.FBO;
 import cnge.graphics.Shader;
 import cnge.graphics.Shape;
-import cnge.graphics.Texture;
 import cnge.graphics.Transform;
 import cnge.graphics.Window;
+import cnge.graphics.texture.Texture;
 
 /**
  * @author Emmet

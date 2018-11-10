@@ -6,6 +6,7 @@ import cnge.graphics.Transform;
 
 public class Entity {
 	
+	private boolean alwaysOn;
 	private boolean onScreen;
 	
 	private int index;
@@ -16,6 +17,10 @@ public class Entity {
 	
 	public Entity() {
 		transform = new Transform();
+	}
+	
+	public void setAlwaysOn(boolean a) {
+		alwaysOn = a;
 	}
 	
 	/**
@@ -55,20 +60,24 @@ public class Entity {
 	}
 	
 	public boolean onScreenUpdate(Camera c) {
-		float ex = transform.    abcissa;
-		float ey = transform.   ordinate;
-		float ew = transform. getWidth();
-		float eh = transform.getHeight();
-		
-		Transform cTransform = c.getTransform();
-		
-		float cx = cTransform.    abcissa;
-		float cy = cTransform.   ordinate;
-		float cw = cTransform. getWidth();
-		float ch = cTransform.getHeight();
-		
-		onScreen = (ex + ew > cx) && (ex < cx + cw) && (ey + eh > cy) && (ey < cy + ch);
-		return onScreen;
+		if(alwaysOn) {
+			return true;
+		}else {
+			float ex = transform.    abcissa;
+			float ey = transform.   ordinate;
+			float ew = transform. getWidth();
+			float eh = transform.getHeight();
+			
+			Transform cTransform = c.getTransform();
+			
+			float cx = cTransform.    abcissa;
+			float cy = cTransform.   ordinate;
+			float cw = cTransform. getWidth();
+			float ch = cTransform.getHeight();
+			
+			onScreen = (ex + ew > cx) && (ex < cx + cw) && (ey + eh > cy) && (ey < cy + ch);
+			return onScreen;
+		}
 	}
 	
 	public void setOnScreen(boolean o) {

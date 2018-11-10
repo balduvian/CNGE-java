@@ -17,8 +17,8 @@ import cnge.core.animation.Anim2D;
 import cnge.core.group.EntityGroup;
 import cnge.graphics.Camera;
 import cnge.graphics.Shader;
-import cnge.graphics.Texture;
 import cnge.graphics.Transform;
+import cnge.graphics.texture.Texture;
 import game.Main;
 import game.SparkBlock;
 import game.scenes.game.GameGraphics;
@@ -32,10 +32,11 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 	public static final float stopA = 1024;
 	public static final float airA = 512;
 	public static final float stopAirA = 128;
-	public static final float jumpV = 320;
+	public static final float jumpV = 270;
 	public static final float wallA = 128;
 	public static final float wallSpeed = 128;
 	public static final double wallJumpTime = 0.5;
+	public static final double jumpTime = 0.125;
 	public static final boolean RIGHT = true;
 	public static final boolean LEFT = false;
 	
@@ -69,6 +70,8 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 		public boolean jumpLock;
 		
 		public double wallJumpTimer;
+		
+		public double jumpTimer;
 		
 		public E() {
 			super();
@@ -123,7 +126,7 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 					
 					if(e.wallJumpTimer > 0) {
 						e.wallJumpTimer -= Base.time;
-						if(e.wallJumpTimer < 0) {
+						if(e.wallJumpTimer < 0 || !gs.pressJump) {
 							e.wallJumpTimer = 0;
 						}
 					}else {
@@ -145,25 +148,34 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 								tempA += walkA;
 							}
 						}
-						if(e.jumpLock) {
-							e.jumpLock = gs.pressJump;
+						if(e.jumpTimer > 0) {
+							e.jumpTimer -= Base.time;
+							e.velocityY = -jumpV;
+							if(e.jumpTimer < 0 || !gs.pressJump) {
+								e.jumpTimer = 0;
+							}
 						}else {
-							if(gs.pressJump) {
-								if(e.wallLeft) {
-									e.velocityX = maxX * 1.25f;
-									e.velocityY = -jumpV * 0.8f;
-									e.wallJumpTimer = wallJumpTime;
-									e.facing = RIGHT;
-									e.jumpLock = true;
-								}else if (e.wallRight){
-									e.velocityX = -maxX * 1.25f;
-									e.velocityY = -jumpV * 0.8f;
-									e.wallJumpTimer = wallJumpTime;
-									e.facing = LEFT;
-									e.jumpLock = true;
-								}else if(!e.air){
-									e.velocityY = -jumpV;
-									e.jumpLock = true;
+							if(e.jumpLock) {
+								e.jumpLock = gs.pressJump;
+							}else {
+								if(gs.pressJump) {
+									if(e.wallLeft) {
+										e.velocityX = maxX * 2.25f;
+										e.velocityY = -jumpV * ( 1 + (float)jumpTime);
+										e.wallJumpTimer = wallJumpTime;
+										e.facing = RIGHT;
+										e.jumpLock = true;
+									}else if (e.wallRight){
+										e.velocityX = -maxX * 2.25f;
+										e.velocityY = -jumpV * ( 1 + (float)jumpTime);
+										e.wallJumpTimer = wallJumpTime;
+										e.facing = LEFT;
+										e.jumpLock = true;
+									}else if(!e.air){
+										e.velocityY = -jumpV;
+										e.jumpTimer = jumpTime;
+										e.jumpLock = true;
+									}
 								}
 							}
 						}
@@ -196,10 +208,14 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 						e.velocityX += (float)(tempA * Base.time);
 					}
 					
-					if(e.wallRight || e.wallLeft) {
-						e.velocityY += wallA * Base.time;
-						if(e.velocityY > wallSpeed) {
-							e.velocityY = wallSpeed;
+					if((e.wallRight || e.wallLeft)) {
+						if(e.velocityY < 0) {
+							e.velocityY += (wallA + Main.GRAVITY) * Base.time;
+						}else {
+							e.velocityY += wallA * Base.time;
+							if(e.velocityY > wallSpeed) {
+								e.velocityY = wallSpeed;
+							}
 						}
 					}else {
 						e.velocityY += e.accelerationY * Base.time;
@@ -241,12 +257,21 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 					float up = baseUp + e.dy;
 					float down = baseDown + e.dy;
 					
-					int l = (int)(Math.min(baseLeft, left) / map.getScale() );
-					int r = (int)(Math.max(baseRight, right + e.dx) / map.getScale() );
+					int l = 0;
+					int r = 0;
+					if(left > 0) {
+						l = (int)(Math.min(baseLeft, left) / map.getScale() );
+					}else {
+						l = (int)(Math.min(baseLeft, left) / map.getScale() - 1);
+					}
+					if(right > 0) {
+						r = (int)(Math.max(baseRight, right) / map.getScale() );
+					}else {
+						r = (int)(Math.max(baseRight, right) / map.getScale() + 1);
+					}
+					
 					int u = (int)(Math.min(baseUp, up) / map.getScale() );
 					int d = (int)(Math.max(baseDown, down) / map.getScale() ) + 1;
-					
-					//System.out.println(l + " " + r + " " + u + " " + d);
 					
 					boolean hasHitGround = false;
 					
@@ -365,7 +390,7 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 					Texture.unbind();
 				}
 				@Override
-				public Entity create(float x, float y, int l, Object... p) {
+				public Entity create(Object... p) {
 					return new E();
 				}
 			}

@@ -1,6 +1,6 @@
 package game;
 
-import cnge.graphics.Texture;
+import cnge.graphics.texture.Texture;
 
 public class TexBlock extends SparkBlock{
 

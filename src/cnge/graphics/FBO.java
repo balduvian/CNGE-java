@@ -4,6 +4,8 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL32.*;
 
+import cnge.graphics.texture.Texture;
+
 public class FBO {
     
 	private static Window window;

@@ -15,8 +15,8 @@ import cnge.core.MapBehavior;
 import cnge.core.group.MapGroup;
 import cnge.graphics.Camera;
 import cnge.graphics.Shader;
-import cnge.graphics.Texture;
 import cnge.graphics.Transform;
+import cnge.graphics.texture.Texture;
 import game.SparkBlock;
 import game.TexBlock;
 import game.scenes.game.GameBlocks;
@@ -55,7 +55,7 @@ public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 	
 	public static MapBehavior<_Level1Map> mBehavior = new MapBehavior<_Level1Map>() {
 		@Override
-		public Entity create(float x, float y, int l, Object... p) {
+		public Entity create(Object... p) {
 			return new _Level1Map();
 		}
 		public void update(_Level1Map e) {

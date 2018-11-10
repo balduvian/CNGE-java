@@ -34,6 +34,10 @@ public abstract class Scene {
 	 * static stuff that the base gives to the scene
 	 */
 
+	public Camera getCamera() {
+		return camera;
+	}
+	
 	public EntityGroup<?> getGroup(int i) {
 		return groups[i];
 	}

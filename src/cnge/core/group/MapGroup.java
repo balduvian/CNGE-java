@@ -127,7 +127,7 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 		}
 		M create = null;
 		try {
-			create = (M) behavior.create(x, y, l, p);
+			create = (M) behavior.create(p);
 			create.mapSetup(x, y, l, this, give);
 		} catch(Exception ex) {
 			ex.printStackTrace();

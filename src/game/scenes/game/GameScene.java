@@ -10,6 +10,7 @@ import cnge.core.Map;
 import cnge.graphics.Transform;
 import game.scenes.game.groups.Level1Map;
 import game.scenes.game.groups.PlayerEntity;
+import game.scenes.game.groups.SparkBackground;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -25,6 +26,7 @@ public class GameScene extends Scene {
 	
 	public static final int ENTITY_PLAYER = 0;
 	public static final int MAP_LEVEL1 = 1;
+	public static final int BACKGROUND = 2;
 	
 	public Map currentMap;
 	public Entity player;
@@ -43,6 +45,7 @@ public class GameScene extends Scene {
 			new EntityGroup[] {
 				new PlayerEntity(),
 				new Level1Map(),
+				new SparkBackground()
 			}
 		);
 	}
@@ -55,6 +58,7 @@ public class GameScene extends Scene {
 	public void startMap(int m){
 		((MapGroup<?>)groups[m]).load();
 		currentMap = ((MapGroup<?>)groups[m]).createMap(0, 0, 0);
+		groups[BACKGROUND].createInstance(0, 0, LAYER_BACKGROUND);
 	}
 	
 	@Override

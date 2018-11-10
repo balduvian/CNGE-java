@@ -1,6 +1,5 @@
 package cnge.core;
 
-import cnge.core.group.EntityGroup;
 import cnge.graphics.Camera;
 
 /**
@@ -27,7 +26,7 @@ public interface Behavior<E extends Entity> {
 	 * 
 	 * @return - a new instance of the specific entity for this group
 	 */
-	public Entity create(float x, float y, int l, Object... p);
+	public Entity create(Object... p);
 	
 	public void update(E e);
 	
