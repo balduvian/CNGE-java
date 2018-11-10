@@ -53,6 +53,12 @@ public class Texture {
 		frameHeight = 1f/ft;
 	}
 	
+	public Texture(String path, int fw, int ft, boolean c){
+		init(path, true, c, c);
+		frameWidth = 1f/fw;
+		frameHeight = 1f/ft;
+	}
+	
 	public Texture(String path, int fw){
 		init(path, true, true, true);
 		frameWidth = 1f/fw;

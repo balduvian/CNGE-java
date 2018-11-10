@@ -42,6 +42,7 @@ public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 		
 		public _Level1Map() {
 			super(mAccess, 32);
+			((GameScene)scene).player = scene.getGroup(GameScene.ENTITY_PLAYER).createInstance(96, 96, GameScene.LAYER_ACTION);
 		}
 		
 	}
@@ -56,9 +57,6 @@ public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 		@Override
 		public Entity create(float x, float y, int l, Object... p) {
 			return new _Level1Map();
-		}
-		public void spawn(_Level1Map e) {
-			((GameScene)scene).player = scene.getGroup(GameScene.ENTITY_PLAYER).createInstance(96, 96, GameScene.LAYER_ACTION);
 		}
 		public void update(_Level1Map e) {
 			

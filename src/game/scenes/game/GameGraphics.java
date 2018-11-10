@@ -31,7 +31,7 @@ public class GameGraphics implements Scenery {
 		playerTex = new Texture("res/textures/icon.png");
 		coinTex = new Texture("res/textures/coin.png", 14);
 		tileSheet = new Texture("res/textures/blocks.png", 3, 3);
-		playerSheet = new Texture("res/textures/sparky.png", 4, 2);
+		playerSheet = new Texture("res/textures/sparky.png", 4, 2, false);
 		
 		return this;
 	}

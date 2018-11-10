@@ -29,8 +29,6 @@ public interface Behavior<E extends Entity> {
 	 */
 	public Entity create(float x, float y, int l, Object... p);
 	
-	public void  spawn(E e);
-	
 	public void update(E e);
 	
 	public void render(E e, Camera c);

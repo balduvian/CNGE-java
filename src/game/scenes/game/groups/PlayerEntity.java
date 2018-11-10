@@ -10,6 +10,7 @@ import org.joml.Vector4f;
 import cnge.core.Base;
 import cnge.core.Behavior;
 import cnge.core.Entity;
+import cnge.core.Hitbox;
 import cnge.core.Map;
 import cnge.core.Map.MapAccessException;
 import cnge.core.animation.Anim2D;
@@ -26,14 +27,21 @@ import game.scenes.game.GameScene;
 public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 
 	public static final float maxX = 192;
-	public static final float maxY = 512;
+	public static final float maxY = 2000;
 	public static final float walkA = 1024;
 	public static final float stopA = 1024;
 	public static final float airA = 512;
-	public static final float stopAirA = 32;
+	public static final float stopAirA = 128;
 	public static final float jumpV = 320;
+	public static final float wallA = 128;
+	public static final float wallSpeed = 128;
+	public static final double wallJumpTime = 0.5;
+	public static final boolean RIGHT = true;
+	public static final boolean LEFT = false;
 	
 	public static class E extends Entity {
+		
+		public Hitbox box;
 		
 		public Anim2D run;
 		public int frameX;
@@ -50,6 +58,18 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 		
 		public boolean air;
 		
+		public boolean facing;
+		
+		public float width = 32;
+		public float height = 48;
+		
+		public boolean wallRight;
+		public boolean wallLeft;
+		
+		public boolean jumpLock;
+		
+		public double wallJumpTimer;
+		
 		public E() {
 			super();
 			frameX = 0;
@@ -59,6 +79,10 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 			air = false;
 			accelerationY = 32;
 			accelerationX = 0;
+			facing = RIGHT;
+			transform.setSize(width, height);
+			jumpLock = false;
+			box = new Hitbox(11, 16, 10, 32);
 			run = new Anim2D(
 				new int[][] {
 					{1, 0},
@@ -86,37 +110,63 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 			E.class,
 			4, 
 			new Behavior<E>() {
-				public void spawn(E e) {
-					
-					e.getTransform().setSize(32, 32);
-				}
 				public void update(E e) {
 					GameScene gs = ((GameScene)scene);
 					Map map = gs.currentMap;
 					Transform t = e.getTransform();
+					Hitbox b = e.box;
 					
 					e.accelerationY = Main.GRAVITY;
 					
 					float tempA = 0;
 					boolean walking = false;
-					if(gs.pressLeft) {
-						walking = true;
-						if(e.air) {
-							tempA -= airA;
-						}else {
-							tempA -= walkA;
+					
+					if(e.wallJumpTimer > 0) {
+						e.wallJumpTimer -= Base.time;
+						if(e.wallJumpTimer < 0) {
+							e.wallJumpTimer = 0;
 						}
-					}
-					if(gs.pressRight) {
-						walking = true;
-						if(e.air) {
-							tempA += airA;
-						}else {
-							tempA += walkA;
+					}else {
+						if(gs.pressLeft) {
+							e.facing = LEFT;
+							walking = true;
+							if(e.air) {
+								tempA -= airA;
+							}else {
+								tempA -= walkA;
+							}
 						}
-					}
-					if(gs.pressJump && !e.air) {
-						e.velocityY = -jumpV;
+						if(gs.pressRight) {
+							e.facing = RIGHT;
+							walking = true;
+							if(e.air) {
+								tempA += airA;
+							}else {
+								tempA += walkA;
+							}
+						}
+						if(e.jumpLock) {
+							e.jumpLock = gs.pressJump;
+						}else {
+							if(gs.pressJump) {
+								if(e.wallLeft) {
+									e.velocityX = maxX * 1.25f;
+									e.velocityY = -jumpV * 0.8f;
+									e.wallJumpTimer = wallJumpTime;
+									e.facing = RIGHT;
+									e.jumpLock = true;
+								}else if (e.wallRight){
+									e.velocityX = -maxX * 1.25f;
+									e.velocityY = -jumpV * 0.8f;
+									e.wallJumpTimer = wallJumpTime;
+									e.facing = LEFT;
+									e.jumpLock = true;
+								}else if(!e.air){
+									e.velocityY = -jumpV;
+									e.jumpLock = true;
+								}
+							}
+						}
 					}
 					if(!walking) {
 						if(e.velocityX > 0) {
@@ -146,23 +196,45 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 						e.velocityX += (float)(tempA * Base.time);
 					}
 					
-					e.velocityY += e.accelerationY * Base.time;
+					if(e.wallRight || e.wallLeft) {
+						e.velocityY += wallA * Base.time;
+						if(e.velocityY > wallSpeed) {
+							e.velocityY = wallSpeed;
+						}
+					}else {
+						e.velocityY += e.accelerationY * Base.time;
+					}
 					
+					//slowdown part for overspeeding
 					if(walking) {
 						if(e.velocityX > maxX) {
-							e.velocityX = maxX;
+							if(e.air) {
+								e.velocityX -= stopAirA;
+							}else {
+								e.velocityX -= stopA;
+							}
+							if(e.velocityX < maxX) {
+								e.velocityX = maxX;
+							}
 						}else if(e.velocityX < -maxX){
-							e.velocityX = -maxX;
+							if(e.air) {
+								e.velocityX += stopAirA;
+							}else {
+								e.velocityX += stopA;
+							}
+							if(e.velocityX > -maxX) {
+								e.velocityX = -maxX;
+							}
 						}
 					}
 					
 					e.dx = (float)(e.velocityX * Base.time);
 					e.dy = (float)(e.velocityY * Base.time);
 					
-					float baseLeft = t.abcissa;
-					float baseRight = t.abcissa + t.width;
-					float baseUp = t.ordinate;
-					float baseDown = t.ordinate + t.height;
+					float baseLeft = t.abcissa + b.x;
+					float baseRight = t.abcissa + b.x + b.width;
+					float baseUp = t.ordinate + b.y;
+					float baseDown = t.ordinate + b.y + b.height;
 					
 					float left = baseLeft + e.dx;
 					float right = baseRight + e.dx;
@@ -172,34 +244,46 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 					int l = (int)(Math.min(baseLeft, left) / map.getScale() );
 					int r = (int)(Math.max(baseRight, right + e.dx) / map.getScale() );
 					int u = (int)(Math.min(baseUp, up) / map.getScale() );
-					int d = (int)(Math.max(baseDown, down) / map.getScale() );
+					int d = (int)(Math.max(baseDown, down) / map.getScale() ) + 1;
 					
 					//System.out.println(l + " " + r + " " + u + " " + d);
 					
 					boolean hasHitGround = false;
 					
+					float downDist = 100;
+					
+					e.wallRight = false;
+					e.wallLeft = false;
+					
 					for(int i = l; i <= r; ++i) {
 						for(int j = u; j <= d; ++j) {
 							try {
-								SparkBlock b = (SparkBlock)map.block(map.access(i, j));
-								if(b != null && b.solid) {
+								SparkBlock sb = (SparkBlock)map.block(map.access(i, j));
+								if(sb != null && sb.solid) {
 									do {
 										float upSide = map.getY(j);
 										float leftSide = map.getX(i);
 										float downSide = map.getY(j + 1);
 										float rightSide = map.getX(i + 1);
 										SparkBlock bc = (SparkBlock)map.block(map.access(i, j - 1));
-										if(e.dy > 0 && (baseLeft < rightSide && baseRight > leftSide) && (down > upSide && down < downSide) && (bc == null || !bc.solid)) {
-											e.velocityY = 0;
-											e.dy = upSide - baseDown;
-											hasHitGround = true;
-											break;
+										if((baseLeft < rightSide && baseRight > leftSide)) {
+											float tempDown = upSide - baseDown;
+											if(tempDown < downDist && tempDown > 0) {
+												downDist = tempDown;
+											}
+											if(e.dy > 0 && (down > upSide && down < downSide) && (bc == null || !bc.solid)) {
+												e.velocityY = 0;
+												e.dy = upSide - baseDown;
+												hasHitGround = true;
+												break;
+											}
 										}
 										
 										bc = (SparkBlock)map.block(map.access(i - 1, j));
 										if(e.dx > 0 && (baseUp < downSide && baseDown > upSide) && (right > leftSide && right < rightSide) && (bc == null || !bc.solid)) {
 											e.velocityX = 0;
 											e.dx = leftSide - baseRight;
+											e.wallRight = true;
 											break;
 										}
 										
@@ -214,6 +298,7 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 										if(e.dx < 0 && (baseUp < downSide && baseDown > upSide) && (left < rightSide && left > leftSide) && (bc == null || !bc.solid)) {
 											e.velocityX = 0;
 											e.dx = rightSide - baseLeft;
+											e.wallLeft = true;
 											break;
 										}
 										
@@ -227,6 +312,32 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 					}
 					e.air = !hasHitGround;
 					
+					if(e.wallRight) {
+						e.wallRight = downDist > 32;
+					}
+					if(e.wallLeft) {
+						e.wallLeft = downDist > 32;
+					}
+					
+					if(e.air) {
+						if(e.wallLeft || e.wallRight){
+							e.frameX = 2;
+							e.frameY = 1;
+						}else {
+							e.frameX = 1;
+							e.frameY = 1;
+						}
+					}else {
+						if(walking) {
+							e.run.update();
+							e.frameX = e.run.getX();
+							e.frameY = e.run.getY();
+						}else {
+							e.frameX = 0;
+							e.frameY = 0;
+						}
+					}
+					
 					t.move(e.dx, e.dy);
 					
 					scene.setCameraCenter(t.abcissa + t.getWidth() / 2, t.ordinate + t.getHeight() / 2);
@@ -236,11 +347,16 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 					
 					playerSheet.bind();
 					
-					colShader.enable();
+					tileShader.enable();
 					
-					colShader.sendUniforms(1, 1, 0, 1);
-					//tileShader.setUniforms(frame.x, frame.y, frame.z, frame.w, 1, 1, 1, 1);
-					colShader.setMvp(c.getModelViewProjectionMatrix(c.getModelMatrix(e.getTransform())));
+					tileShader.setUniforms(frame.x, frame.y, frame.z, frame.w, 1, 1, 1, 1);
+					
+					Transform renderT = new Transform(e.getTransform());
+					if(!e.facing) {
+						renderT.width = -renderT.width;
+						renderT.abcissa -= renderT.width;
+					}
+					tileShader.setMvp(c.getModelViewProjectionMatrix(c.getModelMatrix(renderT)));
 					
 					rect.render();
 					

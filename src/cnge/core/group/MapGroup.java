@@ -92,7 +92,6 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 				System.exit(-1);
 			}
 			if( add(create) ) {
-				behavior.spawn(create);
 			}else {
 				return null;
 			}
@@ -135,7 +134,6 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 			System.exit(-1);
 		}
 		if( add(create) ) {
-			behavior.spawn(create);
 			return create;
 		}else {
 			return null;
@@ -150,19 +148,18 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onScreenUpdate(Camera camera) {
-
-		perLayer = new int[layers];
-		screenPool = (M[][]) Array.newInstance(entityType, layers, size);
+		
+		//onscreen maps are stored only in one layer, blocks determine when they are rendered themselves
+		perLayer = new int[1];
+		screenPool = (M[][]) Array.newInstance(entityType, 1, size);
 		
 		for(int i = 0; i < last; ++i) {
 			M m = (M)collection[i];
-			//System.out.println(m.getTransform().width + " | " + m.getTransform().height);
+			
 			if(m != null && m.onScreenUpdate(camera)) {
 				
-				//System.out.println("FOUND");
-				int layer = m.getLayer();
-				screenPool[layer][perLayer[layer]] = m;
-				++perLayer[layer];
+				screenPool[0][perLayer[0]] = m;
+				++perLayer[0];
 				
 				Transform mt = m.getTransform();
 				Transform ct = camera.getTransform();
@@ -185,10 +182,10 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	@Override
 	public void render(int layer) {
 		
-		int len = perLayer[layer];
+		int len = perLayer[0];
 		
 		for(int i = 0; i < len; ++i) {
-			M m = (M)screenPool[layer][i];
+			M m = (M)screenPool[0][i];
 			
 			/*
 			 * this transform is the size of a block
@@ -197,31 +194,27 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 			float wide = t.getWidth() / m.getWidth();
 			float tall = t.getHeight() / m.getHeight();
 			
-			//System.out.println(wide + " " + tall);
-			//System.exit(-1);
-			
 			Transform blockTransform = new Transform(wide, tall);
 			
-			if(m.getLayer() == layer) {
-				
-				int u = m.getUp();
-				int r = m.getRight();
-				int d = m.getDown();
-				int l = m.getLeft();
-				
-				for(int x = l; x < r; ++x) {
-					for(int y = u; y < d; ++y) {
-						try {
-							int tile = m.access(x, y);
-							if(tile != -1) {
-								blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
+			int u = m.getUp();
+			int r = m.getRight();
+			int d = m.getDown();
+			int l = m.getLeft();
+			
+			for(int x = l; x < r; ++x) {
+				for(int y = u; y < d; ++y) {
+					try {
+						int tile = m.access(x, y);
+						if(tile != -1) {
+							blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
+							if(blockSet[tile].layer == layer) {
 								((MapBehavior<M>)behavior).mapRender(blockSet[tile], x, y, m, blockTransform);
 							}
-						} catch (MapAccessException ex) { }
-					}
+						}
+					} catch (MapAccessException ex) { }
 				}
-					
 			}
+					
 			behavior.render(m, camera);
 		}
 	}

@@ -81,7 +81,6 @@ public class EntityGroup<E extends Entity> {
 			System.exit(-1);
 		}
 		if( add(create) ) {
-			behavior.spawn(create);
 			return create;
 		}else {
 			return null;

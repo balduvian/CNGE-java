@@ -17,11 +17,11 @@ public class GameScene extends Scene {
 	
 	public static int LAYERS = 5;
 	
-	public static int LAYER_BACKGROUND;
-	public static int LAYER_PROP;
-	public static int LAYER_MAP;
-	public static int LAYER_ACTION;
-	public static int LAYER_GUI;
+	public static int LAYER_BACKGROUND = 0;
+	public static int LAYER_PROP = 1;
+	public static int LAYER_MAP = 2;
+	public static int LAYER_ACTION = 3;
+	public static int LAYER_GUI = 4;
 	
 	public static final int ENTITY_PLAYER = 0;
 	public static final int MAP_LEVEL1 = 1;
@@ -41,7 +41,7 @@ public class GameScene extends Scene {
 				new GameBlocks().init()
 			},
 			new EntityGroup[] {
-					new PlayerEntity(),
+				new PlayerEntity(),
 				new Level1Map(),
 			}
 		);
@@ -59,8 +59,6 @@ public class GameScene extends Scene {
 	
 	@Override
 	public void preUpdate() {
-		//Transform ct = camera.getTransform();
-		
 		pressJump = window.keyPressed(GLFW_KEY_W);
 		pressRight = window.keyPressed(GLFW_KEY_D);
 		pressLeft = window.keyPressed(GLFW_KEY_A);

@@ -14,6 +14,10 @@ public class Entity {
 	private EntityGroup<?> group;
 	protected Transform transform;
 	
+	public Entity() {
+		transform = new Transform();
+	}
+	
 	/**
 	 * this is called immeadiately after the entity is constructed.
 	 * this is so that you don't have to put these params in the custom entity constructors
@@ -21,7 +25,6 @@ public class Entity {
 	 * @param g - the entity group this entity belongs to
 	 */
 	public void setup(float x, float y, int l, EntityGroup<?> g) {
-		transform = new Transform();
 		transform.setTranslation(x, y);
 		layer = l;
 		group = g;
