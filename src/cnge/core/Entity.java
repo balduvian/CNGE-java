@@ -9,10 +9,10 @@ public class Entity {
 	private boolean alwaysOn;
 	private boolean onScreen;
 	
-	private int index;
+	protected int index;
 	private int layer;
 	
-	private EntityGroup<?> group;
+	protected EntityGroup<?> group;
 	protected Transform transform;
 	
 	public Entity() {

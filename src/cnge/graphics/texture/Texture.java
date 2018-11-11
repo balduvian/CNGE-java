@@ -29,6 +29,10 @@ public class Texture {
 		init(path, tp.clampHorz, tp.clampVert, tp.nearest);
 	}
 	
+	public Texture(String path) {
+		init(path, TexturePreset.defaultClampHorz, TexturePreset.defaultClampVert, TexturePreset.defaultNearest);
+	}
+	
 	protected void init(String p, boolean ch, boolean cv, boolean n) {
 		BufferedImage b = null;
 		try {

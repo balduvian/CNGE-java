@@ -9,6 +9,7 @@ import cnge.core.Entity;
 import cnge.core.Map;
 import cnge.graphics.Transform;
 import game.scenes.game.groups.Blackening;
+import game.scenes.game.groups.Countdown;
 import game.scenes.game.groups.Level1Map;
 import game.scenes.game.groups.PlayerEntity;
 import game.scenes.game.groups.SparkBackground;
@@ -41,6 +42,7 @@ public class GameScene extends Scene {
 	public static Level1Map MAP_LEVEL1;
 	public static SparkBackground BACKGROUND_SKY;
 	public static Blackening ENTITY_BLACKENING;
+	public static Countdown ENTITY_COUNTDOWN;
 	
 	public GameScene() {
 		super(
@@ -53,7 +55,8 @@ public class GameScene extends Scene {
 				ENTITY_PLAYER = new PlayerEntity(),
 				MAP_LEVEL1 = new Level1Map(),
 				BACKGROUND_SKY = new SparkBackground(),
-				ENTITY_BLACKENING = new Blackening()
+				ENTITY_BLACKENING = new Blackening(),
+				ENTITY_COUNTDOWN = new Countdown()
 			}
 		);
 	}
@@ -63,7 +66,7 @@ public class GameScene extends Scene {
 		startMap(MAP_LEVEL1);
 	}
 	
-	//routine when we start a 
+	//routine when we start a new map in the scene
 	public void startMap(MapGroup<?> m){
 		for(int i = 0; i < numGroups; ++i) {
 			groups[i].clear();
@@ -72,6 +75,7 @@ public class GameScene extends Scene {
 		currentMap = m.createMap(0, 0, 0);
 		BACKGROUND_SKY.createInstance(0, 0, LAYER_BACKGROUND);
 		blackening = ENTITY_BLACKENING.createInstance(0, 0, LAYER_GUI);
+		ENTITY_COUNTDOWN.createInstance(128, 80, LAYER_GUI);
 		startTimer = START_TIME;
 	}
 	
@@ -82,8 +86,7 @@ public class GameScene extends Scene {
 		pressLeft = window.keyPressed(GLFW_KEY_A);
 		
 		if(startTimer > 0) {
-			startTimer -= Base.time;
-			blackening.alpha = (float)(startTimer / START_TIME);		
+			startTimer -= Base.time;	
 		} else {
 			player.controllable = true;
 		}

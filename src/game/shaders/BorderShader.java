@@ -59,7 +59,7 @@ public class BorderShader extends Shader{
 	 * @param bw - width of border in pixels
 	 * @param o - offset mode for the border | 0: centered | 1: inside | 2: outside
 	 */
-	public void sendUniforms(float fcr, float fcg, float fcb, float fca, float bcr, float bcg, float bcb, float bca, float ww, float wh, float l, float u, float w, float h, float bw, float o) {
+	public void setUniforms(float fcr, float fcg, float fcb, float fca, float bcr, float bcg, float bcb, float bca, float ww, float wh, float l, float u, float w, float h, float bw, float o) {
 		glUniform4f(fillColorLoc, fcr, fcg, fcb, fca);
 		glUniform4f(borderColorLoc, bcr, bcg, bcb, bca);
 		glUniform1f(windowWidthLoc, ww);

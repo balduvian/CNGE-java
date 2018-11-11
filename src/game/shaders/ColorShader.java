@@ -26,7 +26,7 @@ public class ColorShader extends Shader {
 	 * @param b - blue value
 	 * @param a - alpha value
 	 */
-	public void sendUniforms(float r, float g, float b, float a) {
+	public void setUniforms(float r, float g, float b, float a) {
 		glUniform4f(colorLoc, r, g, b, a);
 	}
 

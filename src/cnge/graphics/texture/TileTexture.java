@@ -17,6 +17,18 @@ public class TileTexture extends Texture {
 		frameHeight = 1;
 	}
 	
+	public TileTexture(String path, int fw, int ft) {
+		init(path, TexturePreset.defaultClampHorz, TexturePreset.defaultClampVert, TexturePreset.defaultNearest);
+		frameWidth = 1f/fw;
+		frameHeight = 1f/ft;
+	}
+	
+	public TileTexture(String path, int fw) {
+		init(path, TexturePreset.defaultClampHorz, TexturePreset.defaultClampVert, TexturePreset.defaultNearest);
+		frameWidth = 1f/fw;
+		frameHeight = 1;
+	}
+	
 	public float getX() {
 		return frameWidth;
 	}

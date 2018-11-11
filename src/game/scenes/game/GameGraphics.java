@@ -22,6 +22,7 @@ public class GameGraphics implements Scenery {
 	public static TileTexture playerSheet; 
 	public static TileTexture skyTex;
 	public static TileTexture batteryTex;
+	public static TileTexture countdownTex;
 	
 	public Scenery init() {
 		rect = Shape.RECT;
@@ -30,10 +31,11 @@ public class GameGraphics implements Scenery {
 		colShader = new ColorShader();
 		borShader = new BorderShader();
 		
-		tileSheet = new TileTexture("res/textures/blocks.png", 4, 4, new TexturePreset());
-		playerSheet = new TileTexture("res/textures/sparky.png", 4, 2, new TexturePreset());
+		tileSheet = new TileTexture("res/textures/blocks.png", 4, 4);
+		playerSheet = new TileTexture("res/textures/sparky.png", 4, 2);
 		skyTex = new TileTexture("res/textures/sky.png", 4, new TexturePreset().clampHorz(false).clampVert(false));
-		batteryTex = new TileTexture("res/textures/battery.png", 8, 2, new TexturePreset());
+		batteryTex = new TileTexture("res/textures/battery.png", 8, 2);
+		countdownTex = new TileTexture("res/textures/countdown.png", 2, 2);
 		
 		return this;
 	}

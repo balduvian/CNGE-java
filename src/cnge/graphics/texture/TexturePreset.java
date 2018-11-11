@@ -9,11 +9,6 @@ package cnge.graphics.texture;
  */
 public class TexturePreset {
 	
-	/**
-	 * if it's gonna be default anyways, might as well use this one
-	 */
-	public static TexturePreset defaultPreset;
-	
 	public static boolean defaultClampHorz;
 	public static boolean defaultClampVert;
 	public static boolean defaultNearest;
@@ -21,6 +16,8 @@ public class TexturePreset {
 	public boolean clampHorz;
 	public boolean clampVert;
 	public boolean nearest;
+	
+	//TODO big and skeker
 	
 	/**
 	 * use this to set the default parameters for textures
@@ -35,7 +32,6 @@ public class TexturePreset {
 		defaultClampHorz = ch;
 		defaultClampVert = cv;
 		defaultNearest = nr;
-		defaultPreset = new TexturePreset();
 	}
 	
 	/**

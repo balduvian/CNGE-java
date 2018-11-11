@@ -1,4 +1,4 @@
-package cnge.core.animation;
+package cnge.core.morph;
 
 import cnge.core.Base;
 import cnge.graphics.Transform;
@@ -112,7 +112,10 @@ public class Morph {
 		return ((end - start) * interpolated + start);
 	}
 	
-	public Morph(Transform start, Interpolator i) {
+	public Morph(Transform start, Interpolator i, double t) {
+		timer = 0;
+		time = t;
+		
 		modify = start;
 		interpolator = i;
 		
@@ -164,25 +167,33 @@ public class Morph {
 		return this;
 	}
 	
-	public void update(Transform t) {
+	public void update() {
 		timer += Base.time;
 		if(timer > time) {
 			timer = time;
 		}
 		float along = (float)(timer / time);
-		translatorX.morph(t, interpolator, oXPos, xPos, along);
-		translatorY.morph(t, interpolator, oYPos, yPos, along);
-		rotator.morph(t, interpolator, oRotation, rotation, along);
-		scalorX.morph(t, interpolator, oWScale, wScale, along);
-		scalorY.morph(t, interpolator, oHScale, hScale, along);
+		translatorX.morph(modify, interpolator, oXPos, xPos, along);
+		translatorY.morph(modify, interpolator, oYPos, yPos, along);
+		rotator.morph(modify, interpolator, oRotation, rotation, along);
+		scalorX.morph(modify, interpolator, oWScale, wScale, along);
+		scalorY.morph(modify, interpolator, oHScale, hScale, along);
 	}
 
+	public void reset() {
+		timer = 0;
+		oXPos = modify.abcissa;
+		oYPos = modify.ordinate;
+		oRotation = modify.rotation;
+		oWScale = modify.wScale;
+		oHScale = modify.hScale;
+	}
 	
 	private interface Morpher {
 		public void morph(Transform t, Interpolator i, float start, float end, float along);
 	}
 	
-	private interface Interpolator {
+	protected interface Interpolator {
 		public float interpolate(float start, float end, float along);
 	}
 	

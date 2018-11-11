@@ -35,7 +35,7 @@ public class Camera {
 	 * @return the model matrix in world coordiantes
 	 */
 	public Matrix4f getModelMatrix(Transform transform) {
-		return new Matrix4f().translate(transform.abcissa, transform.ordinate, 1).rotateZ(transform.rotation).scale(transform.getWidth(), transform.getHeight(), 1);
+		return new Matrix4f().translate(transform.abcissa + ((-transform.width * transform.wScale) / 2) + (transform.width / 2), transform.ordinate + ((-transform.height * transform.hScale) / 2) + (transform.height / 2), 0).rotateZ(transform.rotation).scale(transform.getWidth(), transform.getHeight(), 1);
 	}
 	
 	/**
