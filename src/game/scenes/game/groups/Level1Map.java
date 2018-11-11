@@ -17,6 +17,7 @@ import cnge.graphics.Camera;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
 import cnge.graphics.texture.Texture;
+import cnge.graphics.texture.TileTexture;
 import game.SparkBlock;
 import game.TexBlock;
 import game.scenes.game.GameBlocks;
@@ -42,7 +43,7 @@ public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 		
 		public _Level1Map() {
 			super(mAccess, 32);
-			((GameScene)scene).player = scene.getGroup(GameScene.ENTITY_PLAYER).createInstance(96, 96, GameScene.LAYER_ACTION);
+			((GameScene)scene).player = GameScene.ENTITY_PLAYER.createInstance(96, 96, GameScene.LAYER_ACTION);
 		}
 		
 	}
@@ -66,26 +67,23 @@ public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 		}
 		public void mapRender(Block b, int x, int y, _Level1Map m, Transform t) {
 			TexBlock tb = (TexBlock)b;
+			TileTexture tex = tb.texture;
 			
-			tb.texture.bind();
+			tex.bind();
 			
 			tileShader.enable();
 			
 			tileShader.setMvp(camera.getModelViewProjectionMatrix(camera.getModelMatrix(t)));
 			
-			Vector4f frame = null;
-			
 			try {
 				if(tb.id == PLAIN_BLOCK && values[x][y] == VALUE_TOP) {
-					frame = tb.texture.getFrame(0, 1);
+					tileShader.setUniforms(tex.getX(), tex.getY(), tex.getZ(0), tex.getW(1), 1, 1, 1, 1);
 				}else {
-					frame = tb.texture.getFrame(tb.texX, tb.texY);
+					tileShader.setUniforms(tex.getX(), tex.getY(), tex.getZ(tb.texX), tex.getW(tb.texY), 1, 1, 1, 1);
 				}
 			} catch(Exception ex) {
-				frame = tb.texture.getFrame(tb.texX, tb.texY);
+				tileShader.setUniforms(tex.getX(), tex.getY(), tex.getZ(tb.texX), tex.getW(tb.texY), 1, 1, 1, 1);
 			}
-			
-			tileShader.setUniforms(frame.x, frame.y, frame.z, frame.w, 1, 1, 1, 1);
 			
 			rect.render();
 			

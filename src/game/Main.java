@@ -5,6 +5,7 @@ import java.io.IOException;
 import cnge.core.Base;
 import cnge.core.BasePreset;
 import cnge.graphics.Window;
+import cnge.graphics.texture.TexturePreset;
 import game.scenes.game.GameScene;
 
 public class Main {
@@ -35,6 +36,8 @@ public class Main {
 		Window window = new Window(false, "Spark Runner 2", true);
 		
 		window.setIcon("res/textures/icon.png");
+		
+		TexturePreset.setDefaults(true, true, true);
 		
 		Base base = new Base(window, new BasePreset(BasePreset.ASPECT_FIXED, BasePreset.UNIT_SCREEN_PIXELS, 512, 288));
 		

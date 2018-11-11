@@ -21,6 +21,7 @@ import cnge.graphics.Shape;
 import cnge.graphics.Transform;
 import cnge.graphics.Window;
 import cnge.graphics.texture.Texture;
+import cnge.graphics.texture.TexturePreset;
 
 /**
  * @author Emmet
@@ -204,9 +205,9 @@ public class Base {
 		}
 		
 		if(gamePixelType) {
-			screenBuffer.replaceTexture(new Texture(gameWidth, gameHeight));
+			screenBuffer.replaceTexture(new Texture(gameWidth, gameHeight, new TexturePreset().nearest(true)));
 		} else {
-			screenBuffer.replaceTexture(new Texture(frameWidth, frameHeight));
+			screenBuffer.replaceTexture(new Texture(frameWidth, frameHeight, new TexturePreset().nearest(true)));
 		}
 		
 		camera.setDims(gameWidth, gameHeight);

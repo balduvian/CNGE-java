@@ -1,11 +1,6 @@
 package game.scenes.game.groups;
 
-import static game.scenes.game.GameGraphics.coinTex;
-import static game.scenes.game.GameGraphics.rect;
-import static game.scenes.game.GameGraphics.tileShader;
 import static game.scenes.game.GameGraphics.*;
-
-import org.joml.Vector4f;
 
 import cnge.core.Base;
 import cnge.core.Behavior;
@@ -21,7 +16,6 @@ import cnge.graphics.Transform;
 import cnge.graphics.texture.Texture;
 import game.Main;
 import game.SparkBlock;
-import game.scenes.game.GameGraphics;
 import game.scenes.game.GameScene;
 
 public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
@@ -73,6 +67,8 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 		
 		public double jumpTimer;
 		
+		public boolean controllable;
+		
 		public E() {
 			super();
 			frameX = 0;
@@ -85,6 +81,7 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 			facing = RIGHT;
 			transform.setSize(width, height);
 			jumpLock = false;
+			controllable = false;
 			box = new Hitbox(11, 16, 10, 32);
 			run = new Anim2D(
 				new int[][] {
@@ -124,57 +121,59 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 					float tempA = 0;
 					boolean walking = false;
 					
-					if(e.wallJumpTimer > 0) {
-						e.wallJumpTimer -= Base.time;
-						if(e.wallJumpTimer < 0 || !gs.pressJump) {
-							e.wallJumpTimer = 0;
-						}
-					}else {
-						if(gs.pressLeft) {
-							e.facing = LEFT;
-							walking = true;
-							if(e.air) {
-								tempA -= airA;
-							}else {
-								tempA -= walkA;
-							}
-						}
-						if(gs.pressRight) {
-							e.facing = RIGHT;
-							walking = true;
-							if(e.air) {
-								tempA += airA;
-							}else {
-								tempA += walkA;
-							}
-						}
-						if(e.jumpTimer > 0) {
-							e.jumpTimer -= Base.time;
-							e.velocityY = -jumpV;
-							if(e.jumpTimer < 0 || !gs.pressJump) {
-								e.jumpTimer = 0;
+					if(e.controllable) {
+						if(e.wallJumpTimer > 0) {
+							e.wallJumpTimer -= Base.time;
+							if(e.wallJumpTimer < 0 || !gs.pressJump) {
+								e.wallJumpTimer = 0;
 							}
 						}else {
-							if(e.jumpLock) {
-								e.jumpLock = gs.pressJump;
+							if(gs.pressLeft) {
+								e.facing = LEFT;
+								walking = true;
+								if(e.air) {
+									tempA -= airA;
+								}else {
+									tempA -= walkA;
+								}
+							}
+							if(gs.pressRight) {
+								e.facing = RIGHT;
+								walking = true;
+								if(e.air) {
+									tempA += airA;
+								}else {
+									tempA += walkA;
+								}
+							}
+							if(e.jumpTimer > 0) {
+								e.jumpTimer -= Base.time;
+								e.velocityY = -jumpV;
+								if(e.jumpTimer < 0 || !gs.pressJump) {
+									e.jumpTimer = 0;
+								}
 							}else {
-								if(gs.pressJump) {
-									if(e.wallLeft) {
-										e.velocityX = maxX * 2.25f;
-										e.velocityY = -jumpV * ( 1 + (float)jumpTime);
-										e.wallJumpTimer = wallJumpTime;
-										e.facing = RIGHT;
-										e.jumpLock = true;
-									}else if (e.wallRight){
-										e.velocityX = -maxX * 2.25f;
-										e.velocityY = -jumpV * ( 1 + (float)jumpTime);
-										e.wallJumpTimer = wallJumpTime;
-										e.facing = LEFT;
-										e.jumpLock = true;
-									}else if(!e.air){
-										e.velocityY = -jumpV;
-										e.jumpTimer = jumpTime;
-										e.jumpLock = true;
+								if(e.jumpLock) {
+									e.jumpLock = gs.pressJump;
+								}else {
+									if(gs.pressJump) {
+										if(e.wallLeft) {
+											e.velocityX = maxX * 2.25f;
+											e.velocityY = -jumpV * ( 1 + (float)jumpTime);
+											e.wallJumpTimer = wallJumpTime;
+											e.facing = RIGHT;
+											e.jumpLock = true;
+										}else if (e.wallRight){
+											e.velocityX = -maxX * 2.25f;
+											e.velocityY = -jumpV * ( 1 + (float)jumpTime);
+											e.wallJumpTimer = wallJumpTime;
+											e.facing = LEFT;
+											e.jumpLock = true;
+										}else if(!e.air){
+											e.velocityY = -jumpV;
+											e.jumpTimer = jumpTime;
+											e.jumpLock = true;
+										}
 									}
 								}
 							}
@@ -368,13 +367,11 @@ public class PlayerEntity extends EntityGroup<PlayerEntity.E> {
 					scene.setCameraCenter(t.abcissa + t.getWidth() / 2, t.ordinate + t.getHeight() / 2);
 				}
 				public void render(E e, Camera c) {
-					Vector4f frame = playerSheet.getFrame(e.frameX, e.frameY);
-					
 					playerSheet.bind();
 					
 					tileShader.enable();
 					
-					tileShader.setUniforms(frame.x, frame.y, frame.z, frame.w, 1, 1, 1, 1);
+					tileShader.setUniforms(playerSheet.getX(), playerSheet.getY(), playerSheet.getZ(e.frameX), playerSheet.getW(e.frameY), 1, 1, 1, 1);
 					
 					Transform renderT = new Transform(e.getTransform());
 					if(!e.facing) {

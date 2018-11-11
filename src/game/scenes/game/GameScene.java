@@ -8,6 +8,7 @@ import cnge.core.Base;
 import cnge.core.Entity;
 import cnge.core.Map;
 import cnge.graphics.Transform;
+import game.scenes.game.groups.Blackening;
 import game.scenes.game.groups.Level1Map;
 import game.scenes.game.groups.PlayerEntity;
 import game.scenes.game.groups.SparkBackground;
@@ -24,16 +25,22 @@ public class GameScene extends Scene {
 	public static int LAYER_ACTION = 3;
 	public static int LAYER_GUI = 4;
 	
-	public static final int ENTITY_PLAYER = 0;
-	public static final int MAP_LEVEL1 = 1;
-	public static final int BACKGROUND = 2;
+	public static final double START_TIME = 3;
 	
 	public Map currentMap;
-	public Entity player;
+	public PlayerEntity.E player;
+	public Blackening._Blackening blackening;
 	
 	public boolean pressJump;
 	public boolean pressLeft;
 	public boolean pressRight;
+	
+	public double startTimer;
+	
+	public static PlayerEntity ENTITY_PLAYER;
+	public static Level1Map MAP_LEVEL1;
+	public static SparkBackground BACKGROUND_SKY;
+	public static Blackening ENTITY_BLACKENING;
 	
 	public GameScene() {
 		super(
@@ -43,9 +50,10 @@ public class GameScene extends Scene {
 				new GameBlocks().init()
 			},
 			new EntityGroup[] {
-				new PlayerEntity(),
-				new Level1Map(),
-				new SparkBackground()
+				ENTITY_PLAYER = new PlayerEntity(),
+				MAP_LEVEL1 = new Level1Map(),
+				BACKGROUND_SKY = new SparkBackground(),
+				ENTITY_BLACKENING = new Blackening()
 			}
 		);
 	}
@@ -55,10 +63,16 @@ public class GameScene extends Scene {
 		startMap(MAP_LEVEL1);
 	}
 	
-	public void startMap(int m){
-		((MapGroup<?>)groups[m]).load();
-		currentMap = ((MapGroup<?>)groups[m]).createMap(0, 0, 0);
-		groups[BACKGROUND].createInstance(0, 0, LAYER_BACKGROUND);
+	//routine when we start a 
+	public void startMap(MapGroup<?> m){
+		for(int i = 0; i < numGroups; ++i) {
+			groups[i].clear();
+		}
+		m.load();
+		currentMap = m.createMap(0, 0, 0);
+		BACKGROUND_SKY.createInstance(0, 0, LAYER_BACKGROUND);
+		blackening = ENTITY_BLACKENING.createInstance(0, 0, LAYER_GUI);
+		startTimer = START_TIME;
 	}
 	
 	@Override
@@ -66,6 +80,13 @@ public class GameScene extends Scene {
 		pressJump = window.keyPressed(GLFW_KEY_W);
 		pressRight = window.keyPressed(GLFW_KEY_D);
 		pressLeft = window.keyPressed(GLFW_KEY_A);
+		
+		if(startTimer > 0) {
+			startTimer -= Base.time;
+			blackening.alpha = (float)(startTimer / START_TIME);		
+		} else {
+			player.controllable = true;
+		}
 	}
 
 	@Override

@@ -8,12 +8,18 @@ abstract public class Anim {
 	protected double[] frameTimes;
 	protected int frame;
 	protected int numFrames;
+	protected AnimEvent[] events;
 	
 	public Anim(double[] f) {
 		frameTimes = f;
 		numFrames = f.length;
+		events = new AnimEvent[numFrames];
 		timer = 0;
 		frame = 0;
+	}
+	
+	public void addEvent(int i, AnimEvent e) {
+		events[i] = e;
 	}
 	
 	abstract public int getX();
@@ -24,6 +30,9 @@ abstract public class Anim {
 			++frame;
 			frame %= numFrames;
 			timer = 0;
+			if(events[frame] != null) {
+				events[frame].event();
+			}
 		}
 	}
 	
