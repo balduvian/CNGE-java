@@ -6,49 +6,41 @@ import java.lang.reflect.Array;
 
 import javax.imageio.ImageIO;
 
+import cnge.core.Map.MapAccessException;
 import cnge.graphics.Camera;
 import cnge.graphics.Transform;
 
-public class MapGroup<M extends Map> extends EntityGroup<M> {
+public abstract class MapGroup {
 
 	private int sections;
 	
-	private int[][][] tiles;
-	private int[] widths;
-	private int[] heights;
+	protected int[][][] tiles;
+	protected int[] widths;
+	protected int[] heights;
 	
 	private String[] mapImages;
 	
-	private Block[] blockSet;
+	protected Block[] blockSet;
 	
 	/**
-	 * initializes a new map group
+	 * constructs a new mapgroup for the scene
 	 * 
-	 * @param et - the class of the entity being created
-	 * @param mx - the max number of entities in this group
-	 * @param bh - the behavior interface
-	 * @param ip - paths to the map images
-	 * @param ts - the array containing the tile scales for each section of the map
-	 * @param bs - the blockset for the map
+	 * @param ip - the paths to the map loader images
+	 * @param bs - the blockset for the maps
 	 */
-	public MapGroup(Class<M> mt, int mx, MapBehavior<M> bh, String[] ip) {
-		super(mt, mx, bh);
+	public MapGroup(String[] ip, Block[] bs) {
 		sections = ip.length;
 		mapImages = ip;
+		blockSet = bs;
 	}
 	
 	/**
-	 * defines a new map type for the scene, BUT it only has one section
+	 * constructs a new mapgroup for the scene with only 1 section
 	 * 
-	 * @param imagePath - link to map image
-	 * @param t - transform
-	 * @param bs - the blockset for the map
-	 * @param ip - path to the map image
-	 * @param ts - tile scale for the map
-	 * @param bs - the blockset for the map
+	 * @param ip - the paths to the map loader images
+	 * @param bs - the blockset for the maps
 	 */
-	public MapGroup(Class<M> mt, int mx, MapBehavior<M> bh, String ip, Block[] bs) {
-		super(mt, mx, bh);
+	public MapGroup(String ip, Block[] bs) {
 		sections = 1;
 		mapImages = new String[] {ip};
 		blockSet = bs;
@@ -66,37 +58,25 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	 * @return returns the maps, NULL if could not create.
 	 * NOTE: all maps must be successfully created to be returned
 	 */
-	@SuppressWarnings("unchecked")
-	public M[] createMaps(float x, float y) {
-		M[] creates = (M[]) Array.newInstance(entityType, sections);
+	public Map[] createMaps(float[] x, float[] y, Object... params) {
+		Map[] creates = new Map[sections];//(M[]) Array.newInstance(mClass, sections);
 		for(int i = 0; i < sections; ++i) {
 			int w = widths[i];
 			int h = heights[i];
 			int[][] take = tiles[i];
 			int[][] give = new int[w][h];
+			/*
+			 * we make a clone array that we give to the map instance
+			 */
 			for(int j = 0; j < w; ++j) {
 				for(int k = 0; k < h; ++k) {
 					give[j][k] = take[j][k];
 				}
 			}
-			M create = null;
-			try {
-				creates[i] = create;
-				create = (M) entityType.getConstructors()[0].newInstance(this, x, y, 0);
-			} catch(Exception ex) {
-				ex.printStackTrace();
-				System.exit(-1);
-			}
-			if( add(create) ) {
-			}else {
-				return null;
-			}
+			creates[i] = mapCreate(i, params);
+			creates[i].mapSetup(x[i], y[i], 0, blockSet, give);
 		}
 		return creates;
-	}
-	
-	public Block[] getBlockSet() {
-		return blockSet;
 	}
 	
 	/**
@@ -110,109 +90,66 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 	 * 
 	 * @return returns the map, NULL if could not create
 	 */
-	@SuppressWarnings("unchecked")
-	public Map createMap(float x, float y, int l, Object... p) {
+	public Map createMap(float x, float y, Object... params) {
 		int w = widths[0];
 		int h = heights[0];
 		int[][] take = tiles[0];
 		int[][] give = new int[w][h];
+		/*
+		 * we make a clone array that we give to the map instance
+		 */
 		for(int j = 0; j < w; ++j) {
 			for(int k = 0; k < h; ++k) {
 				give[j][k] = take[j][k];
 			}
 		}
-		M create = null;
-		try {
-			create = (M) behavior.create(p);
-			create.mapSetup(x, y, l, this, give);
-		} catch(Exception ex) {
-			ex.printStackTrace();
-			System.exit(-1);
-		}
-		if( add(create) ) {
-			return create;
-		}else {
-			return null;
-		}
+		Map create = mapCreate(0, params);
+		create.mapSetup(x, y, 0, blockSet, give);
+		return create;
 	}
 	
-	/**
-	 * updates the list of entities on screen
-	 * 
-	 * @param camera - the game camera, to be used for screen checking
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onScreenUpdate(Camera camera) {
-		
-		//onscreen maps are stored only in one layer, blocks determine when they are rendered themselves
-		perLayer = new int[1];
-		screenPool = (M[][]) Array.newInstance(entityType, 1, size);
-		
-		for(int i = 0; i < last; ++i) {
-			M m = (M)collection[i];
-			
-			if(m != null && m.onScreenUpdate(camera)) {
-				
-				screenPool[0][perLayer[0]] = m;
-				++perLayer[0];
-				
-				Transform mt = m.getTransform();
-				Transform ct = camera.getTransform();
-				
-				
-				m. setLeft( (int)Math.floor( ( ct.abcissa - mt.abcissa) / (m.getScale() * mt.wScale) ));
-				m.setRight( (int) Math.ceil( ((ct.abcissa +   ct.width) - mt.abcissa) / (m.getScale() * mt.wScale) ));
-				m.   setUp( (int)Math.floor( ( ct.ordinate - mt.ordinate) / (m.getScale() * mt.wScale) ));
-				m. setDown( (int) Math.ceil( ((ct.ordinate +  ct.height) - mt.ordinate) / (m.getScale() * mt.wScale) ));
-				
-			}
-		}
+	public Block[] getBlockSet() {
+		return blockSet;
 	}
+	
+	abstract public Map mapCreate(int i, Object... params);
 	
 	/**
 	 * overrides render from entity group 
 	 * 
+	 * @param m - the map to render
 	 * @param layer - the current render layer
 	 */
-	@Override
-	public void render(int layer) {
+	public void render(Map m, float layer) {
+		/*
+		 * this transform is the size of a block
+		 */
+		Transform t = m.getTransform();
+		float wide = t.getWidth() / m.getWidth();
+		float tall = t.getHeight() / m.getHeight();
 		
-		int len = perLayer[0];
+		Transform blockTransform = new Transform(wide, tall);
 		
-		for(int i = 0; i < len; ++i) {
-			M m = (M)screenPool[0][i];
-			
-			/*
-			 * this transform is the size of a block
-			 */
-			Transform t = m.getTransform();
-			float wide = t.getWidth() / m.getWidth();
-			float tall = t.getHeight() / m.getHeight();
-			
-			Transform blockTransform = new Transform(wide, tall);
-			
-			int u = m.getUp();
-			int r = m.getRight();
-			int d = m.getDown();
-			int l = m.getLeft();
-			
-			for(int x = l; x < r; ++x) {
-				for(int y = u; y < d; ++y) {
-					try {
-						int tile = m.access(x, y);
-						if(tile != -1) {
-							blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
-							if(blockSet[tile].layer == layer) {
-								((MapBehavior<M>)behavior).mapRender(blockSet[tile], x, y, m, blockTransform);
-							}
+		int u = m.getUp();
+		int r = m.getRight();
+		int d = m.getDown();
+		int l = m.getLeft();
+		
+		for(int x = l; x < r; ++x) {
+			for(int y = u; y < d; ++y) {
+				try {
+					int tile = m.access(x, y);
+					if(tile != -1) {
+						blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
+						if(blockSet[tile].layer == layer) {
+							m.mapRender(tile, x, y, blockTransform);
 						}
-					} catch (MapAccessException ex) { }
-				}
+					}
+				} catch (MapAccessException ex) { }
 			}
-					
-			behavior.render(m, camera);
 		}
+		
+		m.render();
 	}
 
 	/**
@@ -238,8 +175,10 @@ public class MapGroup<M extends Map> extends EntityGroup<M> {
 			}
 		}
 		
-		((MapBehavior<M>)behavior).mapSpawn(tiles, blockSet);
+		mapSpawn();
 	}
+	
+	abstract public void mapSpawn();
 	
 	private class LoaderThread implements Runnable {
 		int number;

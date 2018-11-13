@@ -13,14 +13,12 @@ public class GameBlocks implements Scenery{
 	
 	public static TexBlock[] world1Blocks;
 	
-	public Scenery init() {
+	public void init() {
 		world1Blocks = new TexBlock[] {
 			new TexBlock(0xff000000, GameScene.LAYER_MAP, PLAIN_BLOCK,  true, tileSheet, 0, 2),
 			new TexBlock(0xff646464, GameScene.LAYER_MAP, PANEL_BLOCK,  true, tileSheet, 2, 1),
 			new TexBlock(0xffc8c8c8, GameScene.LAYER_MAP,  SIGN_BLOCK, false, tileSheet, 0, 0),
 		};
-
-		return this;
 	}
 
 }

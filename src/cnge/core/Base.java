@@ -236,7 +236,7 @@ public class Base {
 	private void update() {
 		window.update();
 		
-		scene.overUpdate();
+		scene.update();
 		
 		camera.update();
 	}
@@ -249,7 +249,7 @@ public class Base {
 		glClearColor(1, 0, 1, 1);
 		Window.clear(); //clear the game screenBuffer
 		
-		scene.overRender();
+		scene.render();
 		
 		screenBuffer.disable();
 		//close down that mf screenBuffer

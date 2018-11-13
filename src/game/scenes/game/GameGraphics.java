@@ -24,7 +24,7 @@ public class GameGraphics implements Scenery {
 	public static TileTexture batteryTex;
 	public static TileTexture countdownTex;
 	
-	public Scenery init() {
+	public void init() {
 		rect = Shape.RECT;
 		
 		tileShader = new TileShader();
@@ -36,8 +36,6 @@ public class GameGraphics implements Scenery {
 		skyTex = new TileTexture("res/textures/sky.png", 4, new TexturePreset().clampHorz(false).clampVert(false));
 		batteryTex = new TileTexture("res/textures/battery.png", 8, 2);
 		countdownTex = new TileTexture("res/textures/countdown.png", 2, 2);
-		
-		return this;
 	}
 
 }

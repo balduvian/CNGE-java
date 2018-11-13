@@ -1,6 +1,5 @@
 package cnge.core;
 
-import cnge.core.group.EntityGroup;
 import cnge.graphics.Camera;
 import cnge.graphics.Transform;
 import cnge.graphics.Window;
@@ -16,18 +15,10 @@ public abstract class Scene {
 	
 	protected int layers;
 	
-	protected static EntityGroup<?>[] groups;
 	protected int numGroups;
 	
-	public Scene(int l, Scenery[] s, EntityGroup<?>[] g) {
+	public Scene(int l) {
 		layers = l;
-		
-		groups = g;
-		numGroups = g.length;
-		
-		for(int i = 0; i < numGroups; ++i) {
-			groups[i].giveLayers(layers);
-		}
 	}
 	
 	/*
@@ -36,10 +27,6 @@ public abstract class Scene {
 
 	public Camera getCamera() {
 		return camera;
-	}
-	
-	public EntityGroup<?> getGroup(int i) {
-		return groups[i];
 	}
 	
 	public static void giveStuff(Camera c, Base b, Window w) {
@@ -74,31 +61,11 @@ public abstract class Scene {
 	 * override this stuff to do stuff with the scene
 	 */
 	
-	public void overRender() {
-		for(int i = 0; i < layers; ++i) {
-			for(int j = 0; j < numGroups; ++j) {
-				groups[j].render(i);
-			}
-		}
-		postRender();
-	}
+	abstract public void render();
 	
-	public void overUpdate() {
-		preUpdate();
-		for(int j = 0; j < numGroups; ++j) {
-			groups[j].onScreenUpdate(camera);
-			groups[j].update();
-		}
-		postUpdate();
-	}
+	abstract public void update();
 	
 	abstract public void start();
-	
-	abstract public void preUpdate();
-	
-	abstract public void postUpdate();
-	
-	abstract public void postRender();
 	
 	abstract public void resizeUpdate();
 	

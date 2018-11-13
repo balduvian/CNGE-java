@@ -2,7 +2,6 @@ package game.scenes.game;
 
 import cnge.core.Scene;
 import cnge.core.Scenery;
-import cnge.core.group.EntityGroup;
 import cnge.core.Base;
 import cnge.core.Entity;
 import cnge.core.Map;
@@ -11,10 +10,11 @@ import cnge.graphics.Transform;
 import game.scenes.game.groups.Blackening;
 import game.scenes.game.groups.Countdown;
 import game.scenes.game.groups.Level1Map;
-import game.scenes.game.groups.PlayerEntity;
-import game.scenes.game.groups.SparkBackground;
+import game.scenes.game.groups.Sky;
 
 import static org.lwjgl.glfw.GLFW.*;
+
+import static game.scenes.game.GameEntities.*;
 
 public class GameScene extends Scene {
 	
@@ -28,57 +28,39 @@ public class GameScene extends Scene {
 	
 	public static final double START_TIME = 3;
 	
-	public Map currentMap;
-	public PlayerEntity.E player;
-	
 	public boolean pressJump;
 	public boolean pressLeft;
 	public boolean pressRight;
 	
 	public double startTimer;
 	
-	public static PlayerEntity ENTITY_PLAYER;
-	public static Level1Map MAP_LEVEL1;
-	public static SparkBackground BACKGROUND_SKY;
-	public static Countdown ENTITY_COUNTDOWN;
-	
 	public GameScene() {
 		super(
-			LAYERS,
-			new Scenery[] {
-				new GameGraphics().init(),
-				new GameBlocks().init()
-			},
-			new EntityGroup[] {
-				ENTITY_PLAYER = new PlayerEntity(),
-				MAP_LEVEL1 = new Level1Map(),
-				BACKGROUND_SKY = new SparkBackground(),
-				ENTITY_BLACKENING = new Blackening(),
-				ENTITY_COUNTDOWN = new Countdown()
-			}
+			LAYERS
 		);
+		new GameGraphics().init();
+		new GameBlocks().init();
+		new GameEntities().init();
 	}
 	
 	@Override
 	public void start() {
-		startMap(MAP_LEVEL1);
+		startMap(level1);
 	}
 	
 	//routine when we start a new map in the scene
-	public void startMap(MapGroup<?> m){
-		for(int i = 0; i < numGroups; ++i) {
-			groups[i].clear();
-		}
+	public void startMap(MapGroup m){
+		//TODO some clearing stuff rh
 		m.load();
 		currentMap = m.createMap(0, 0, 0);
-		BACKGROUND_SKY.createInstance(0, 0, LAYER_BACKGROUND);
-		createEntity(new Blackening(), 0, 0, LAYER_GUI);
-		ENTITY_COUNTDOWN.createInstance(128, 80, LAYER_GUI);
+		createEntity(background = new Sky(), 0, 0, 0);
+		createEntity(blackening = new Blackening(), 0, 0, LAYER_GUI);
+		createEntity(countdown = new Countdown(), 128, 80, LAYER_GUI);
 		startTimer = START_TIME;
 	}
 	
 	@Override
-	public void preUpdate() {
+	public void update() {
 		pressJump = window.keyPressed(GLFW_KEY_W);
 		pressRight = window.keyPressed(GLFW_KEY_D);
 		pressLeft = window.keyPressed(GLFW_KEY_A);
@@ -89,14 +71,8 @@ public class GameScene extends Scene {
 			player.controllable = true;
 		}
 	}
-
-	@Override
-	public void postUpdate() {
-		
-	}
-
-	@Override
-	public void postRender() {
+	
+	public void render() {
 		
 	}
 	

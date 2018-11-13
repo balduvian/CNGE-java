@@ -1,10 +1,13 @@
 package cnge.core;
 
-abstract public class Map extends Entity{
+import cnge.graphics.Camera;
+import cnge.graphics.Transform;
+
+abstract public class Map<M extends MapGroup> extends Entity {
 	
 	public static final int NO_BLOCK = -1;
 	
-	private Block[] set;
+	protected Block[] blockSet;
 	private int[][] tiles;
 	private int width;
 	private int height;
@@ -18,17 +21,17 @@ abstract public class Map extends Entity{
 	
 	private float scale;
 	
-	public Map(Access a, Block[] b, float s) {
+	public Map(Access a, float s) {
 		access = a;
-		set = b;
 		scale = s;
 	}
 	
-	public void mapSetup(float x, float y, int l, int[][] t) {
+	public void mapSetup(float x, float y, int l, Block[] bs, int[][] t) {
 		setup(x, y, l);
 		tiles = t;
 		width = t.length;
 		height = t[0].length;
+		blockSet = bs;
 		transform.setSize(width * scale, height * scale);
 	}
 	
@@ -40,9 +43,14 @@ abstract public class Map extends Entity{
 		return access.access(this, x, y);
 	}
 	
+	/**
+	 * called once per block
+	 */
+	abstract public void mapRender(int b, int x, int y, Transform t);
+	
 	public Block block(int b) {
 		try {
-			return set[b];
+			return blockSet[b];
 		}catch(ArrayIndexOutOfBoundsException ex) {
 			return null;
 		}
@@ -73,26 +81,17 @@ abstract public class Map extends Entity{
 	public int getUp() {
 		return up;
 	}
+	
 	public int getLeft() {
 		return left;
 	}
+	
 	public int getDown() {
 		return down;
 	}
+	
 	public int getRight() {
 		return right;
-	}
-	public void setUp(int u) {
-		up = u;
-	}
-	public void setLeft(int l) {
-		left = l;
-	}
-	public void setDown(int d) {
-		down = d;
-	}
-	public void setRight(int r) {
-		right = r;
 	}
 	
 	public int[][] getTies() {
@@ -104,7 +103,7 @@ abstract public class Map extends Entity{
 	}
 	
 	public Block[] getSet() {
-		return set;
+		return blockSet;
 	}
 	
 	public int getWidth() {
@@ -113,6 +112,35 @@ abstract public class Map extends Entity{
 	
 	public int getHeight() {
 		return height;
+	}
+	
+	public boolean onScreenUpdate(Camera c) {
+		if(!(onScreen = alwaysOn)) {
+			float ex = transform.    abcissa;
+			float ey = transform.   ordinate;
+			float ew = transform. getWidth();
+			float eh = transform.getHeight();
+			
+			Transform cTransform = c.getTransform();
+			
+			float cx = cTransform.    abcissa;
+			float cy = cTransform.   ordinate;
+			float cw = cTransform. getWidth();
+			float ch = cTransform.getHeight();
+			
+			onScreen = (ex + ew > cx) && (ex < cx + cw) && (ey + eh > cy) && (ey < cy + ch);
+		}
+		
+		if(onScreen) {
+			Transform ct = camera.getTransform();
+			
+			 left = (int)Math.floor( ( ct.abcissa - transform.abcissa) / (scale * transform.wScale) );
+			right = (int) Math.ceil( ((ct.abcissa +   ct.width) - transform.abcissa) / (scale * transform.wScale) );
+			   up = (int)Math.floor( ( ct.ordinate - transform.ordinate) / (scale * transform.wScale) );
+			 down = (int) Math.ceil( ((ct.ordinate +  ct.height) - transform.ordinate) / (scale * transform.wScale) );
+		}
+		
+		return onScreen;
 	}
 	
 	/**
@@ -295,7 +323,7 @@ abstract public class Map extends Entity{
 	 * 
 	 * @author Emmet
 	 */
-	public class MapAccessException extends Exception {
+	public static class MapAccessException extends Exception {
 		private static final long serialVersionUID = 9197260479519042104L;
 	}
 	

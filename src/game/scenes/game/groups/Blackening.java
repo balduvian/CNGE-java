@@ -2,7 +2,6 @@ package game.scenes.game.groups;
 
 import static game.scenes.game.GameGraphics.*;
 
-import cnge.core.Behavior;
 import cnge.core.Entity;
 import cnge.core.morph.CustomMorph;
 import cnge.core.morph.Morph;

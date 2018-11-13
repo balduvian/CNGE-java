@@ -5,8 +5,8 @@ import cnge.graphics.Transform;
 
 abstract public class Entity {
 	
-	private boolean alwaysOn;
-	private boolean onScreen;
+	protected boolean alwaysOn;
+	protected boolean onScreen;
 	
 	protected int index;
 	private int layer;

@@ -3,7 +3,6 @@ package game.scenes.game.groups;
 import static game.scenes.game.GameGraphics.*;
 
 import cnge.core.Base;
-import cnge.core.Behavior;
 import cnge.core.Entity;
 import cnge.core.Hitbox;
 import cnge.core.Map;
@@ -15,6 +14,7 @@ import cnge.graphics.Transform;
 import cnge.graphics.texture.Texture;
 import game.Main;
 import game.SparkBlock;
+import game.scenes.game.GameEntities;
 import game.scenes.game.GameScene;
 
 public class Player extends Entity {
@@ -102,7 +102,7 @@ public class Player extends Entity {
 	
 	public void update() {
 		GameScene gs = ((GameScene)scene);
-		Map map = gs.currentMap;
+		Map map = GameEntities.currentMap;
 		Transform t = getTransform();
 		Hitbox b = box;
 		
