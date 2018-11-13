@@ -3,7 +3,6 @@ package game.scenes.game.groups;
 import cnge.core.Behavior;
 import cnge.core.Entity;
 import cnge.core.animation.Anim1D;
-import cnge.core.group.EntityGroup;
 import cnge.graphics.Camera;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
@@ -11,34 +10,30 @@ import cnge.graphics.texture.Texture;
 
 import static game.scenes.game.GameGraphics.*;
 
-public class SparkBackground extends EntityGroup<SparkBackground.B>{
+public class SparkBackground extends Entity {
 
 	public static final float parallax = 0.1f;
 	
-	public static class B extends Entity{
+	public Anim1D skyAnim;
 		
-		public Anim1D skyAnim;
-		
-		public B() {
-			super();
-			transform.setSize(256, 256);
-			setAlwaysOn(true);
-			skyAnim = new Anim1D(
-				new int[] {
-					0,
-					1,
-					2,
-					3,
-				},
-				new double[] {
-					0.8,
-					0.8,
-					0.8,
-					0.8,
-				}
-			);
-		}
-		
+	public SparkBackground() {
+		super();
+		transform.setSize(256, 256);
+		setAlwaysOn(true);
+		skyAnim = new Anim1D(
+			new int[] {
+				0,
+				1,
+				2,
+				3,
+			},
+			new double[] {
+				0.8,
+				0.8,
+				0.8,
+				0.8,
+			}
+		);
 	}
 	
 	public SparkBackground() {

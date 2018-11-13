@@ -1,6 +1,5 @@
 package cnge.core;
 
-import cnge.core.group.MapGroup;
 import cnge.graphics.Transform;
 
 /**

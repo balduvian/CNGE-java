@@ -4,51 +4,35 @@ import static game.scenes.game.GameGraphics.*;
 
 import cnge.core.Behavior;
 import cnge.core.Entity;
-import cnge.core.group.EntityGroup;
 import cnge.core.morph.CustomMorph;
 import cnge.core.morph.Morph;
 import cnge.graphics.Camera;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
 
-public class Blackening extends EntityGroup<Blackening._Blackening> {
-
+public class Blackening extends Entity {
+	
+	public float alpha;
+	public CustomMorph alphaMorph;
+	
 	public Blackening() {
-		super(
-			_Blackening.class, 
-			1, 
-			new Behavior<_Blackening>() {
-				public _Blackening create(Object... p) {
-					return new _Blackening();
-				}
-				public void update(_Blackening e) {
-					e.alpha = e.alphaMorph.update();
-				}
-				public void render(_Blackening e, Camera c) {
-					colShader.enable();
-					colShader.setUniforms(0, 0, 0, e.alpha);
-					colShader.setMvp(c.getModelProjectionMatrix(c.getModelMatrix(new Transform(c.getTransform().width, c.getTransform().height))));
-					
-					rect.render();
-					
-					Shader.disable();
-				}
-			}
-		);
-	}
-
-	public static class _Blackening extends Entity {
-		
-		public float alpha;
-		public CustomMorph alphaMorph;
-		
-		public _Blackening() {
-			super();
-			alpha = 1;
-			alphaMorph = new CustomMorph(1, 0, Morph.OVERCIRCLE, 1);
-			setAlwaysOn(true);
-		}
-		
+		super();
+		alpha = 1;
+		alphaMorph = new CustomMorph(1, 0, Morph.OVERCIRCLE, 1);
+		setAlwaysOn(true);
 	}
 	
+	public void update() {
+		alpha = alphaMorph.update();
+	}
+	
+	public void render() {
+		colShader.enable();
+		colShader.setUniforms(0, 0, 0, alpha);
+		colShader.setMvp(camera.getModelProjectionMatrix(camera.getModelMatrix(new Transform(camera.getTransform().width, camera.getTransform().height))));
+		
+		rect.render();
+		
+		Shader.disable();
+	}
 }

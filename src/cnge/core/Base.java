@@ -4,21 +4,13 @@ package cnge.core;
 
 import static org.lwjgl.opengl.GL11.glClearColor;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.nio.ByteBuffer;
-
-import javax.imageio.ImageIO;
-
 import static org.lwjgl.opengl.GL11.*;
 
-import cnge.core.group.EntityGroup;
 import cnge.graphics.ALManagement;
 import cnge.graphics.Camera;
 import cnge.graphics.FBO;
 import cnge.graphics.Shader;
 import cnge.graphics.Shape;
-import cnge.graphics.Transform;
 import cnge.graphics.Window;
 import cnge.graphics.texture.Texture;
 import cnge.graphics.texture.TexturePreset;
@@ -90,7 +82,7 @@ public class Base {
 		Scene.giveStuff(camera, this, window);
 		Shape.init(camera);
 		FBO.giveWindow(window);
-		EntityGroup.giveCamera(camera);
+		Entity.giveCamera(camera);
 		
 		rect = Shape.RECT;
 		
@@ -115,9 +107,8 @@ public class Base {
 	 * @param s - the scene to start on
 	 */
 	public void start(Scene s) {
-		
 		scene = s;
-		EntityGroup.giveScene(s);
+		Entity.giveScene(s);
 		
 		reFrame(window.getWidth(), window.getHeight());
 		
@@ -133,7 +124,7 @@ public class Base {
 	 */
 	public void setScene(Scene s) {
 		scene = s;
-		EntityGroup.giveScene(s);
+		Entity.giveScene(s);
 		scene.start();
 	}
 	

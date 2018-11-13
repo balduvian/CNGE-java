@@ -1,4 +1,4 @@
-package cnge.core.group;
+package cnge.core;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -6,10 +6,6 @@ import java.lang.reflect.Array;
 
 import javax.imageio.ImageIO;
 
-import cnge.core.Block;
-import cnge.core.Map;
-import cnge.core.Map.MapAccessException;
-import cnge.core.MapBehavior;
 import cnge.graphics.Camera;
 import cnge.graphics.Transform;
 

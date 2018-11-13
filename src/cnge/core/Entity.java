@@ -1,10 +1,9 @@
 package cnge.core;
 
-import cnge.core.group.EntityGroup;
 import cnge.graphics.Camera;
 import cnge.graphics.Transform;
 
-public class Entity {
+abstract public class Entity {
 	
 	private boolean alwaysOn;
 	private boolean onScreen;
@@ -12,15 +11,13 @@ public class Entity {
 	protected int index;
 	private int layer;
 	
-	protected EntityGroup<?> group;
 	protected Transform transform;
+	
+	protected static Scene scene;
+	protected static Camera camera;
 	
 	public Entity() {
 		transform = new Transform();
-	}
-	
-	public void setAlwaysOn(boolean a) {
-		alwaysOn = a;
 	}
 	
 	/**
@@ -29,18 +26,32 @@ public class Entity {
 	 *
 	 * @param g - the entity group this entity belongs to
 	 */
-	public void setup(float x, float y, int l, EntityGroup<?> g) {
+	public void setup(float x, float y, int l) {
 		transform.setTranslation(x, y);
 		layer = l;
-		group = g;
+	}
+	
+	public static void giveCamera(Camera c) {	
+		camera = c;
+	}
+	
+	public static void giveScene(Scene s) {
+		scene = s;
+	}
+	
+	/*
+	 * the big abstract methods
+	 */
+	abstract public void update();
+	
+	abstract public void render();
+	
+	public void setAlwaysOn(boolean a) {
+		alwaysOn = a;
 	}
 	
 	public Transform getTransform() {
 		return transform;
-	}
-	
-	public void destroy() {
-		group.destroyInstance(index);
 	}
 	
 	public void setIndex(int i) {

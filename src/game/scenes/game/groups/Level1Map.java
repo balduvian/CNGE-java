@@ -12,7 +12,7 @@ import cnge.core.Map;
 import cnge.core.Map.Access;
 import cnge.core.Map.MapAccessException;
 import cnge.core.MapBehavior;
-import cnge.core.group.MapGroup;
+import cnge.core.MapGroup;
 import cnge.graphics.Camera;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
@@ -43,7 +43,7 @@ public class Level1Map extends MapGroup<Level1Map._Level1Map>{
 		
 		public _Level1Map() {
 			super(mAccess, 32);
-			((GameScene)scene).player = GameScene.ENTITY_PLAYER.createInstance(96, 96, GameScene.LAYER_ACTION);
+			((GameScene)scene).player = GameScene.ENTITY_PLAYER.createInstance(96, 128, GameScene.LAYER_ACTION);
 		}
 		
 	}

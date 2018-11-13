@@ -3,10 +3,10 @@ package game.scenes.game;
 import cnge.core.Scene;
 import cnge.core.Scenery;
 import cnge.core.group.EntityGroup;
-import cnge.core.group.MapGroup;
 import cnge.core.Base;
 import cnge.core.Entity;
 import cnge.core.Map;
+import cnge.core.MapGroup;
 import cnge.graphics.Transform;
 import game.scenes.game.groups.Blackening;
 import game.scenes.game.groups.Countdown;
@@ -30,7 +30,6 @@ public class GameScene extends Scene {
 	
 	public Map currentMap;
 	public PlayerEntity.E player;
-	public Blackening._Blackening blackening;
 	
 	public boolean pressJump;
 	public boolean pressLeft;
@@ -41,7 +40,6 @@ public class GameScene extends Scene {
 	public static PlayerEntity ENTITY_PLAYER;
 	public static Level1Map MAP_LEVEL1;
 	public static SparkBackground BACKGROUND_SKY;
-	public static Blackening ENTITY_BLACKENING;
 	public static Countdown ENTITY_COUNTDOWN;
 	
 	public GameScene() {
@@ -74,7 +72,7 @@ public class GameScene extends Scene {
 		m.load();
 		currentMap = m.createMap(0, 0, 0);
 		BACKGROUND_SKY.createInstance(0, 0, LAYER_BACKGROUND);
-		blackening = ENTITY_BLACKENING.createInstance(0, 0, LAYER_GUI);
+		createEntity(new Blackening(), 0, 0, LAYER_GUI);
 		ENTITY_COUNTDOWN.createInstance(128, 80, LAYER_GUI);
 		startTimer = START_TIME;
 	}

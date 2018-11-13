@@ -189,6 +189,10 @@ public class Morph {
 		oHScale = modify.hScale;
 	}
 	
+	public void setTime(double t) {
+		time = t;
+	}
+	
 	private interface Morpher {
 		public void morph(Transform t, Interpolator i, float start, float end, float along);
 	}

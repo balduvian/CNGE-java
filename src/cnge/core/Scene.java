@@ -62,6 +62,14 @@ public abstract class Scene {
 		ct.setTranslation(x - ct.getWidth() / 2, y - ct.getHeight() / 2);
 	}
 	
+	public void createEntity(Entity e, float x, float y, int l) {
+		e.setup(x, y, l);
+	}
+	
+	public void destroyEntity(Entity e) {
+		e = null;
+	}
+	
 	/*
 	 * override this stuff to do stuff with the scene
 	 */

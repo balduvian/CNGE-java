@@ -1,8 +1,6 @@
 package cnge.core;
 
-import cnge.core.group.MapGroup;
-
-public class Map extends Entity{
+abstract public class Map extends Entity{
 	
 	public static final int NO_BLOCK = -1;
 	
@@ -20,18 +18,18 @@ public class Map extends Entity{
 	
 	private float scale;
 	
-	public Map(Access a, float s) {
+	public Map(Access a, Block[] b, float s) {
 		access = a;
+		set = b;
 		scale = s;
 	}
 	
-	public void mapSetup(float x, float y, int l, MapGroup<?> g, int[][] t) {
-		setup(x, y, l, g);
+	public void mapSetup(float x, float y, int l, int[][] t) {
+		setup(x, y, l);
 		tiles = t;
 		width = t.length;
 		height = t[0].length;
 		transform.setSize(width * scale, height * scale);
-		set = g.getBlockSet();
 	}
 	
 	public interface Access {
