@@ -6,11 +6,11 @@ import cnge.core.Block;
 import cnge.core.MapGroup;
 import game.SparkBlock;
 
-abstract public class SparkLevel extends MapGroup{
+abstract public class SparkLevel extends MapGroup<SparkMap> {
 	
 	public static final int VALUE_TOP = 1;
 	
-	static int[][] values;
+	public static int[][] values;
 
 	public int startX;
 	public int startY;
@@ -43,6 +43,9 @@ abstract public class SparkLevel extends MapGroup{
 				}
 			}
 		}
+		
+		startX = 32;
+		startY = 64;
 	}
 
 }

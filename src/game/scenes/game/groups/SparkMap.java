@@ -5,8 +5,6 @@ import static game.scenes.game.GameGraphics.rect;
 import static game.scenes.game.GameGraphics.tileShader;
 
 import cnge.core.Map;
-import cnge.core.Map.Access;
-import cnge.core.Map.MapAccessException;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
 import cnge.graphics.texture.Texture;
@@ -14,7 +12,7 @@ import cnge.graphics.texture.TileTexture;
 import game.TexBlock;
 
 public class SparkMap extends Map {
-
+	
 	public SparkMap() {
 		super(mAccess, 32);
 	}
@@ -36,7 +34,7 @@ public class SparkMap extends Map {
 		tileShader.setMvp(camera.getModelViewProjectionMatrix(camera.getModelMatrix(t)));
 		
 		try {
-			if(tb.id == PLAIN_BLOCK && values[x][y] == VALUE_TOP) {
+			if(tb.id == PLAIN_BLOCK && SparkLevel.values[x][y] == SparkLevel.VALUE_TOP) {
 				tileShader.setUniforms(tex.getX(), tex.getY(), tex.getZ(0), tex.getW(1), 1, 1, 1, 1);
 			}else {
 				tileShader.setUniforms(tex.getX(), tex.getY(), tex.getZ(tb.texX), tex.getW(tb.texY), 1, 1, 1, 1);

@@ -8,7 +8,6 @@ import cnge.core.Hitbox;
 import cnge.core.Map;
 import cnge.core.Map.MapAccessException;
 import cnge.core.animation.Anim2D;
-import cnge.graphics.Camera;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
 import cnge.graphics.texture.Texture;

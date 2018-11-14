@@ -2,15 +2,13 @@ package cnge.core;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.lang.reflect.Array;
 
 import javax.imageio.ImageIO;
 
 import cnge.core.Map.MapAccessException;
-import cnge.graphics.Camera;
 import cnge.graphics.Transform;
 
-public abstract class MapGroup {
+public abstract class MapGroup<M extends Map> {
 
 	private int sections;
 	
@@ -47,36 +45,24 @@ public abstract class MapGroup {
 	}
 
 	/**
-	 * use this instead of the {@link EntityGroup} one
-	 * 
-	 * creates all the map sections into indiviudal maps
-	 * 
-	 * @param x - the x position of the map
-	 * @param y - the y position of the map
-	 * @param l - the layer the map is on
-	 * 
-	 * @return returns the maps, NULL if could not create.
-	 * NOTE: all maps must be successfully created to be returned
+	 * BOIIIIIIIIIII TODO
 	 */
-	public Map[] createMaps(float[] x, float[] y, Object... params) {
-		Map[] creates = new Map[sections];//(M[]) Array.newInstance(mClass, sections);
-		for(int i = 0; i < sections; ++i) {
-			int w = widths[i];
-			int h = heights[i];
-			int[][] take = tiles[i];
-			int[][] give = new int[w][h];
-			/*
-			 * we make a clone array that we give to the map instance
-			 */
-			for(int j = 0; j < w; ++j) {
-				for(int k = 0; k < h; ++k) {
-					give[j][k] = take[j][k];
-				}
+	public M createMaps(int i, float x, float y, Object... params) {
+		int w = widths[i];
+		int h = heights[i];
+		int[][] take = tiles[i];
+		int[][] give = new int[w][h];
+		/*
+		 * we make a clone array that we give to the map instance
+		 */
+		for(int j = 0; j < w; ++j) {
+			for(int k = 0; k < h; ++k) {
+				give[j][k] = take[j][k];
 			}
-			creates[i] = mapCreate(i, params);
-			creates[i].mapSetup(x[i], y[i], 0, blockSet, give);
 		}
-		return creates;
+		M create = mapCreate(i, params);
+		create.mapSetup(x, y, blockSet, give);
+		return create;
 	}
 	
 	/**
@@ -90,7 +76,7 @@ public abstract class MapGroup {
 	 * 
 	 * @return returns the map, NULL if could not create
 	 */
-	public Map createMap(float x, float y, Object... params) {
+	public M createMap(float x, float y, Object... params) {
 		int w = widths[0];
 		int h = heights[0];
 		int[][] take = tiles[0];
@@ -103,8 +89,8 @@ public abstract class MapGroup {
 				give[j][k] = take[j][k];
 			}
 		}
-		Map create = mapCreate(0, params);
-		create.mapSetup(x, y, 0, blockSet, give);
+		M create = mapCreate(0, params);
+		create.mapSetup(x, y, blockSet, give);
 		return create;
 	}
 	
@@ -112,7 +98,7 @@ public abstract class MapGroup {
 		return blockSet;
 	}
 	
-	abstract public Map mapCreate(int i, Object... params);
+	abstract public M mapCreate(int i, Object... params);
 	
 	/**
 	 * overrides render from entity group 
@@ -120,7 +106,7 @@ public abstract class MapGroup {
 	 * @param m - the map to render
 	 * @param layer - the current render layer
 	 */
-	public void render(Map m, float layer) {
+	public void render(Map m, int layer) {
 		/*
 		 * this transform is the size of a block
 		 */

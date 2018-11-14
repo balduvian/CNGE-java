@@ -5,7 +5,6 @@ import static game.scenes.game.GameGraphics.*;
 import cnge.core.Entity;
 import cnge.core.morph.CustomMorph;
 import cnge.core.morph.Morph;
-import cnge.graphics.Camera;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
 

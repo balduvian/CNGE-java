@@ -3,7 +3,7 @@ package cnge.core;
 import cnge.graphics.Camera;
 import cnge.graphics.Transform;
 
-abstract public class Map<M extends MapGroup> extends Entity {
+abstract public class Map extends Entity {
 	
 	public static final int NO_BLOCK = -1;
 	
@@ -20,14 +20,13 @@ abstract public class Map<M extends MapGroup> extends Entity {
 	private Access access;
 	
 	private float scale;
-	
 	public Map(Access a, float s) {
 		access = a;
 		scale = s;
 	}
 	
-	public void mapSetup(float x, float y, int l, Block[] bs, int[][] t) {
-		setup(x, y, l);
+	public void mapSetup(float x, float y, Block[] bs, int[][] t) {
+		setup(x, y);
 		tiles = t;
 		width = t.length;
 		height = t[0].length;

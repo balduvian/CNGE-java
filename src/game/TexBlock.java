@@ -1,6 +1,5 @@
 package game;
 
-import cnge.graphics.texture.Texture;
 import cnge.graphics.texture.TileTexture;
 
 public class TexBlock extends SparkBlock{

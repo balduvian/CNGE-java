@@ -9,7 +9,6 @@ abstract public class Entity {
 	protected boolean onScreen;
 	
 	protected int index;
-	private int layer;
 	
 	protected Transform transform;
 	
@@ -26,9 +25,8 @@ abstract public class Entity {
 	 *
 	 * @param g - the entity group this entity belongs to
 	 */
-	public void setup(float x, float y, int l) {
+	public void setup(float x, float y) {
 		transform.setTranslation(x, y);
-		layer = l;
 	}
 	
 	public static void giveCamera(Camera c) {	
@@ -60,14 +58,6 @@ abstract public class Entity {
 	
 	public int getIndex() {
 		return index;
-	}
-	
-	public void setLayer(int l) {
-		layer = l;
-	}
-	
-	public int getLayer() {
-		return layer;
 	}
 	
 	public boolean onScreenUpdate(Camera c) {

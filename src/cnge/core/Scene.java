@@ -13,14 +13,6 @@ public abstract class Scene {
 	protected static int screenWidth;
 	protected static int screenHeight;
 	
-	protected int layers;
-	
-	protected int numGroups;
-	
-	public Scene(int l) {
-		layers = l;
-	}
-	
 	/*
 	 * static stuff that the base gives to the scene
 	 */
@@ -49,8 +41,8 @@ public abstract class Scene {
 		ct.setTranslation(x - ct.getWidth() / 2, y - ct.getHeight() / 2);
 	}
 	
-	public void createEntity(Entity e, float x, float y, int l) {
-		e.setup(x, y, l);
+	public void createEntity(Entity e, float x, float y) {
+		e.setup(x, y);
 	}
 	
 	public void destroyEntity(Entity e) {

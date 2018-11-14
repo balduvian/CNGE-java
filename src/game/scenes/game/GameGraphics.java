@@ -3,7 +3,6 @@ package game.scenes.game;
 import cnge.core.Scenery;
 import cnge.graphics.Shape;
 import cnge.graphics.TexShape;
-import cnge.graphics.texture.Texture;
 import cnge.graphics.texture.TexturePreset;
 import cnge.graphics.texture.TileTexture;
 import game.shaders.BorderShader;
