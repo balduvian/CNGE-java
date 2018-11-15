@@ -34,7 +34,7 @@ public class Base {
 	
 	private BaseShader baseShader;
 	
-	private FBO screenBuffer;
+	public static FBO screenBuffer;
 	
 	private boolean fullWidth;
 	
@@ -49,6 +49,8 @@ public class Base {
 	private int gameLimit;
 	
 	private Shape rect;
+	
+	private boolean beingResized;
 	
 	/**
 	 * The base of the entire program. Create one in your own main method
@@ -136,6 +138,8 @@ public class Base {
 	 */
 	private void reFrame(int w, int h) {
 		
+		beingResized = true;
+		time = 0;
 		//alrighty, now let's set the frame that will be rendered in the window based on the height and width of the window
 		switch(gameScreenType) {
 			case BasePreset.SCREEN_PIXEL:
@@ -216,7 +220,16 @@ public class Base {
 			long now = System.nanoTime();
 			if(now-last > usingFPS) {
 				nanos = (now-last);
-				time = (nanos)/1000000000d;
+				
+				//resize time lock
+				//beingResized will be enabled by the reframe method
+				if(beingResized) {
+					time = 0;
+				} else {
+					time = (nanos)/1000000000d;
+				}
+				beingResized = false;
+				
 				update();
 				render();
 				window.swap();

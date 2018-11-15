@@ -6,7 +6,11 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 import cnge.core.Map.MapAccessException;
+import cnge.graphics.Camera;
+import cnge.graphics.FBO;
 import cnge.graphics.Transform;
+import cnge.graphics.texture.Texture;
+import cnge.graphics.texture.TexturePreset;
 
 public abstract class MapGroup<M extends Map> {
 
@@ -20,6 +24,8 @@ public abstract class MapGroup<M extends Map> {
 	
 	protected Block[] blockSet;
 	
+	private FBO mapBuffer;
+	
 	/**
 	 * constructs a new mapgroup for the scene
 	 * 
@@ -30,6 +36,7 @@ public abstract class MapGroup<M extends Map> {
 		sections = ip.length;
 		mapImages = ip;
 		blockSet = bs;
+		mapBuffer = new FBO();
 	}
 	
 	/**
@@ -42,6 +49,7 @@ public abstract class MapGroup<M extends Map> {
 		sections = 1;
 		mapImages = new String[] {ip};
 		blockSet = bs;
+		mapBuffer = new FBO();
 	}
 
 	/**
@@ -107,35 +115,49 @@ public abstract class MapGroup<M extends Map> {
 	 * @param layer - the current render layer
 	 */
 	public void render(Map m, int layer) {
-		/*
-		 * this transform is the size of a block
-		 */
-		Transform t = m.getTransform();
-		float wide = t.getWidth() / m.getWidth();
-		float tall = t.getHeight() / m.getHeight();
-		
-		Transform blockTransform = new Transform(wide, tall);
 		
 		int u = m.getUp();
 		int r = m.getRight();
 		int d = m.getDown();
 		int l = m.getLeft();
 		
-		for(int x = l; x < r; ++x) {
-			for(int y = u; y < d; ++y) {
+		//System.out.println(l);
+		
+		int acr = (r - l);
+		int dow = (d - u);
+		
+		//System.out.println(acr + " " + dow);
+		
+		int size = (int)(m.getScale());
+		mapBuffer.replaceTexture(new Texture(acr * size, dow * size));
+		mapBuffer.enable();
+		
+		//System.out.println(m.getScale() + " " + size + " | " + l + " " + r + " " + d + " " + u);
+		//System.out.println("width" + mapBuffer.getBoundTexture().getWidth());
+		//int times = 0;
+		for(int x = 0; x < acr; ++x) {
+			//++times;
+			for(int y = 0; y < dow; ++y) {
 				try {
 					int tile = m.access(x, y);
 					if(tile != -1) {
-						blockTransform.setTranslation(x * wide + t.abcissa, y * tall + t.ordinate);
 						if(blockSet[tile].layer == layer) {
-							m.mapRender(tile, x, y, blockTransform);
+							m.blockRender(tile, x - l, y - u, x * size, (x + 1) * size, y * size, (y + 1) * size);
 						}
+						//System.out.println("left: " + (x)*size + " right: " + (x+1)*size);
 					}
 				} catch (MapAccessException ex) { }
 			}
+			//System.exit(-1);
 		}
 		
-		m.render();
+		//System.out.println(times);
+		//System.exit(-1);
+		
+		Base.screenBuffer.enable();
+		
+		System.out.println(acr*size + " | " + dow * size);
+		m.mapRender(new Transform(l * size, u * size, acr * size, dow * size), mapBuffer.getBoundTexture());
 	}
 
 	/**

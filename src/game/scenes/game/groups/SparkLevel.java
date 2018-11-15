@@ -1,10 +1,16 @@
 package game.scenes.game.groups;
 
 import static game.scenes.game.GameBlocks.PLAIN_BLOCK;
+import static game.scenes.game.GameGraphics.rect;
+import static game.scenes.game.GameGraphics.tileShader;
 
 import cnge.core.Block;
 import cnge.core.MapGroup;
+import cnge.graphics.Shader;
+import cnge.graphics.texture.Texture;
+import cnge.graphics.texture.TileTexture;
 import game.SparkBlock;
+import game.TexBlock;
 
 abstract public class SparkLevel extends MapGroup<SparkMap> {
 	

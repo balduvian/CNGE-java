@@ -36,17 +36,18 @@ public class Camera {
 	}
 	
 	/**
-	 * gets the model matrix from manually inputted transform parameters
+	 * gets a model matrix based on manually inputted bounds.
+	 * If you need something to be as exact as possible
 	 * 
-	 * @param x - abcissa
-	 * @param y - ordinate
-	 * @param w - width
-	 * @param h - height
+	 * @param up
+	 * @param right
+	 * @param down
+	 * @param left
 	 * 
 	 * @return the model matrix in world coordiantes
 	 */
-	public Matrix4f getModelMatrix(float x, float y, float w, float h) {
-		return new Matrix4f().translate(transform.abcissa, transform.ordinate, 1).rotateZ(transform.rotation).scale(transform.getWidth(), transform.getHeight(), 1);
+	public Matrix4f getModelMatrix(float left, float right, float up, float down) {
+		return new Matrix4f().translate(left, up, 0).scale(right - left, down - up, 1);
 	}
 	
 	/**

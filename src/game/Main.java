@@ -37,7 +37,7 @@ public class Main {
 		
 		window.setIcon("res/textures/icon.png");
 		
-		TexturePreset.setDefaults(true, true, true);
+		TexturePreset.setDefaults(false, false, true);
 		
 		Base base = new Base(window, new BasePreset(BasePreset.ASPECT_FIXED, BasePreset.UNIT_SCREEN_PIXELS, 512, 288));
 		

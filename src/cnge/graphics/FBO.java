@@ -36,6 +36,28 @@ public class FBO {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
+    /**
+     * makes a dummy fbo with not yet a real texture
+     */
+    public FBO() {
+    	Texture tex = new Texture();
+    	
+        id = glGenFramebuffers();
+        
+        //bind
+        glBindFramebuffer(GL_FRAMEBUFFER, id);
+        
+        glDrawBuffer(GL_COLOR_ATTACHMENT0);
+        
+        //binding the texture
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, tex.getId(), 0);
+        boundTexture = tex;
+        bindDepthRenderBuffer(tex.getWidth(), tex.getHeight());
+        
+        //unbind
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    
     public static void giveWindow(Window w) {
     	window = w;
     }

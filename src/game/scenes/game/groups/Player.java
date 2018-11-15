@@ -364,7 +364,7 @@ public class Player extends Entity {
 		tileShader.setUniforms(playerSheet.getX(), playerSheet.getY(), playerSheet.getZ(frameX), playerSheet.getW(frameY), 1, 1, 1, 1);
 		
 		Transform renderT = new Transform(transform);
-		if(facing) {
+		if(!facing) {
 			renderT.width = -renderT.width;
 			renderT.abcissa -= renderT.width;
 		}

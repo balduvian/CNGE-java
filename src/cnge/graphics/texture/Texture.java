@@ -133,6 +133,34 @@ public class Texture {
         unbind();
     }
 	
+	/**
+	 * creates a blank texture with default texture presets
+	 * 
+	 * @param w
+	 * @param h
+	 */
+	public Texture(int w, int h) {
+        width = w;
+        height = h;
+        id = glGenTextures();
+        bind();
+        if(TexturePreset.defaultClampHorz) {
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+		}
+		if(TexturePreset.defaultClampVert) {
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+		}
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (ByteBuffer) null);
+        if(TexturePreset.defaultNearest) {
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}else {
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		}
+        unbind();
+    }
+	
 	public void bind() {
 		glBindTexture(GL_TEXTURE_2D, id);
 	}

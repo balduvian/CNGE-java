@@ -2,6 +2,7 @@ package cnge.core;
 
 import cnge.graphics.Camera;
 import cnge.graphics.Transform;
+import cnge.graphics.texture.Texture;
 
 abstract public class Map extends Entity {
 	
@@ -12,14 +13,15 @@ abstract public class Map extends Entity {
 	private int width;
 	private int height;
 	
-	private int up;
-	private int left;
-	private int down;
-	private int right;
+	protected int up;
+	protected int left;
+	protected int down;
+	protected int right;
 	
 	private Access access;
 	
-	private float scale;
+	protected float scale;
+	
 	public Map(Access a, float s) {
 		access = a;
 		scale = s;
@@ -34,6 +36,18 @@ abstract public class Map extends Entity {
 		transform.setSize(width * scale, height * scale);
 	}
 	
+	/**
+	 * called once per block
+	 */
+	abstract public void blockRender(int b, int x, int y, float left, float right, float up, float down);
+	
+	/**
+	 * renders the map texture to the main buffer
+	 * 
+	 * @param t - the texture from the map buffer
+	 */
+	abstract public void mapRender(Transform t, Texture tx);
+	
 	public interface Access {
 		int access(Map m, int x, int y) throws MapAccessException;
 	}
@@ -41,11 +55,6 @@ abstract public class Map extends Entity {
 	public int access(int x, int y) throws MapAccessException {
 		return access.access(this, x, y);
 	}
-	
-	/**
-	 * called once per block
-	 */
-	abstract public void mapRender(int b, int x, int y, Transform t);
 	
 	public Block block(int b) {
 		try {
@@ -324,6 +333,12 @@ abstract public class Map extends Entity {
 	 */
 	public static class MapAccessException extends Exception {
 		private static final long serialVersionUID = 9197260479519042104L;
+	}
+	
+	public void render() {
+		//haha you get nothing
+		//but seriously, this is not meant to be used by maps
+		//use the level's mapRender instead
 	}
 	
 }
