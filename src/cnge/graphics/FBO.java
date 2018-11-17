@@ -12,7 +12,9 @@ public class FBO {
 	
     private int id;
     private int depthRenderBufferID;
-    private Texture boundTexture;
+    private Texture texture;
+    
+    private static Camera camera;
     
     /**
      * creates a new fbo that is linked to the given texture
@@ -29,7 +31,7 @@ public class FBO {
         
         //binding the texture
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, tex.getId(), 0);
-        boundTexture = tex;
+        texture = tex;
         bindDepthRenderBuffer(tex.getWidth(), tex.getHeight());
         
         //unbind
@@ -51,15 +53,16 @@ public class FBO {
         
         //binding the texture
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, tex.getId(), 0);
-        boundTexture = tex;
+        texture = tex;
         bindDepthRenderBuffer(tex.getWidth(), tex.getHeight());
         
         //unbind
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
-    public static void giveWindow(Window w) {
+    public static void giveStuff(Window w, Camera c) {
     	window = w;
+    	camera = c;
     }
     
     /**
@@ -70,7 +73,7 @@ public class FBO {
     public void replaceTexture(Texture tex) {
     	glBindFramebuffer(GL_FRAMEBUFFER, id);
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, tex.getId(), 0);
-        boundTexture = tex;
+        texture = tex;
         bindDepthRenderBuffer(tex.getWidth(), tex.getHeight());
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -95,7 +98,11 @@ public class FBO {
     public void enable() {
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, id);
-        glViewport(0, 0, boundTexture.getWidth(), boundTexture.getHeight());
+        glViewport(0, 0, texture.getWidth(), texture.getHeight());
+        //camera.setDims(texture.getWidth(), texture.getHeight());
+        //camera.update();
+        
+        System.out.println(texture.getWidth() + " " + texture.getHeight());
     }
     
     /**
@@ -111,8 +118,8 @@ public class FBO {
      * 
      * @return current texture
      */
-    public Texture getBoundTexture() {
-        return boundTexture;
+    public Texture getTexture() {
+        return texture;
     }
     
     /**

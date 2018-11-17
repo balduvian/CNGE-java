@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.glColorMask;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -23,6 +24,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import cnge.core.Resizer;
@@ -175,6 +177,43 @@ public class Window {
 	    img.pixels(buffer);   // pass image data
 	    
 	    return img;
+	}
+	
+	/**
+	 * saves a bufferedimage of the current render buffer
+	 * performance = bad
+	 */
+	public void takeScreenShot() {
+		int scw = vidMode.width();
+		int sch = vidMode.height();
+		ByteBuffer buffer = BufferUtils.createByteBuffer(scw * sch * 4);
+		GL11.glReadPixels(0, 0, scw, sch, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+		
+		int num = 0;
+		File file;
+		do {
+			file = new File("Sc"); // The file to save to.
+			
+		} while(file.exists());
+		String format = "PNG"; // Example: "PNG" or "JPG"
+		BufferedImage image = new BufferedImage(scw, sch, BufferedImage.TYPE_INT_RGB);
+		   
+		for(int x = 0; x < scw; x++) 
+		{
+		    for(int y = 0; y < sch; y++)
+		    {
+		        int i = (x + (scw * y)) * 4;
+		        int red = buffer.get(i) & 0xFF;
+		        int green = buffer.get(i + 1) & 0xFF;
+		        int blue = buffer.get(i + 2) & 0xFF;
+		        int alpha = buffer.get(1 + 3) & 0xff;
+		        image.setRGB(x, sch - (y + 1), (alpha << 24) | (red << 16) | (green << 8) | blue);
+		    }
+		}
+		   
+		try {
+		    ImageIO.write(image, format, file);
+		} catch (IOException e) { e.printStackTrace(); }
 	}
 	
 	public void setCursor(String cursorPath) {

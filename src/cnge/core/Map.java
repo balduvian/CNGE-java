@@ -1,14 +1,15 @@
 package cnge.core;
 
 import cnge.graphics.Camera;
+import cnge.graphics.FBO;
 import cnge.graphics.Transform;
 import cnge.graphics.texture.Texture;
 
-abstract public class Map extends Entity {
+abstract public class Map<B extends Block> extends Entity {
 	
 	public static final int NO_BLOCK = -1;
 	
-	protected Block[] blockSet;
+	protected B[] blockSet;
 	private int[][] tiles;
 	private int width;
 	private int height;
@@ -18,16 +19,23 @@ abstract public class Map extends Entity {
 	protected int down;
 	protected int right;
 	
+	protected int acr;
+	protected int dow;
+	
 	private Access access;
 	
-	protected float scale;
+	protected int scale;
 	
-	public Map(Access a, float s) {
+	private FBO mapBuffer;
+	
+	public Map(Access a, int s) {
 		access = a;
 		scale = s;
+		mapBuffer = new FBO();
+		getOnScreenDims();
 	}
 	
-	public void mapSetup(float x, float y, Block[] bs, int[][] t) {
+	public void mapSetup(float x, float y, B[] bs, int[][] t) {
 		setup(x, y);
 		tiles = t;
 		width = t.length;
@@ -39,7 +47,7 @@ abstract public class Map extends Entity {
 	/**
 	 * called once per block
 	 */
-	abstract public void blockRender(int b, int x, int y, float left, float right, float up, float down);
+	abstract public void blockRender(int l, int x, int y, float left, float right, float up, float down);
 	
 	/**
 	 * renders the map texture to the main buffer
@@ -49,19 +57,26 @@ abstract public class Map extends Entity {
 	abstract public void mapRender(Transform t, Texture tx);
 	
 	public interface Access {
-		int access(Map m, int x, int y) throws MapAccessException;
+		int access(Map<?> m, int x, int y) throws MapAccessException;
 	}
 	
 	public int access(int x, int y) throws MapAccessException {
 		return access.access(this, x, y);
 	}
 	
-	public Block block(int b) {
-		try {
+	public B block(int b) throws NullBlockException {
+		if(b == -1) {
+			throw new NullBlockException();
+		}else {
 			return blockSet[b];
-		}catch(ArrayIndexOutOfBoundsException ex) {
-			return null;
 		}
+	}
+	
+	public void getOnScreenDims() {
+		Transform t = camera.getTransform();
+		acr = (int)Math.ceil(t.getWidth() / scale) + 1;
+		dow = (int)Math.ceil(t.getHeight() / scale) + 1;
+		mapBuffer.replaceTexture(new Texture(acr * scale, dow * scale));
 	}
 	
 	/**
@@ -139,14 +154,13 @@ abstract public class Map extends Entity {
 			onScreen = (ex + ew > cx) && (ex < cx + cw) && (ey + eh > cy) && (ey < cy + ch);
 		}
 		
-		if(onScreen) {
-			Transform ct = camera.getTransform();
-			
-			 left = (int)Math.floor( ( ct.abcissa - transform.abcissa) / (scale * transform.wScale) );
-			right = (int) Math.ceil( ((ct.abcissa +   ct.width) - transform.abcissa) / (scale * transform.wScale) );
-			   up = (int)Math.floor( ( ct.ordinate - transform.ordinate) / (scale * transform.wScale) );
-			 down = (int) Math.ceil( ((ct.ordinate +  ct.height) - transform.ordinate) / (scale * transform.wScale) );
-		}
+		Transform ct = camera.getTransform();
+		
+		 left  = (int)Math.floor( ( ct.abcissa - transform.abcissa) / (scale * transform.wScale) );
+		 up    = (int)Math.floor( ( ct.ordinate - transform.ordinate) / (scale * transform.wScale) );
+		   
+		 right = left + acr;
+		 down  = up + dow;
 		
 		return onScreen;
 	}
@@ -171,6 +185,10 @@ abstract public class Map extends Entity {
 	 */
 	public int atY(float y) {
 		return (int)((y-transform.ordinate) * height / transform.height);
+	}
+	
+	public FBO getMapBuffer() {
+		return mapBuffer;
 	}
 	
 	/**
@@ -333,6 +351,15 @@ abstract public class Map extends Entity {
 	 */
 	public static class MapAccessException extends Exception {
 		private static final long serialVersionUID = 9197260479519042104L;
+	}
+	
+	/**
+	 * will be thrown when you try to access a block and there's nothing there
+	 * 
+	 * @author Emmet
+	 */
+	public static class NullBlockException extends Exception {
+		private static final long serialVersionUID = 9197260478519042104L;
 	}
 	
 	public void render() {

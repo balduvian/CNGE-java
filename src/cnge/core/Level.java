@@ -1,9 +1,19 @@
 package cnge.core;
 
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
 import cnge.core.Map.MapAccessException;
 import cnge.graphics.Camera;
@@ -12,7 +22,7 @@ import cnge.graphics.Transform;
 import cnge.graphics.texture.Texture;
 import cnge.graphics.texture.TexturePreset;
 
-public abstract class MapGroup<M extends Map> {
+public abstract class Level<M extends Map> {
 
 	private int sections;
 	
@@ -24,19 +34,16 @@ public abstract class MapGroup<M extends Map> {
 	
 	protected Block[] blockSet;
 	
-	private FBO mapBuffer;
-	
 	/**
 	 * constructs a new mapgroup for the scene
 	 * 
 	 * @param ip - the paths to the map loader images
 	 * @param bs - the blockset for the maps
 	 */
-	public MapGroup(String[] ip, Block[] bs) {
+	public Level(String[] ip, Block[] bs) {
 		sections = ip.length;
 		mapImages = ip;
 		blockSet = bs;
-		mapBuffer = new FBO();
 	}
 	
 	/**
@@ -45,13 +52,12 @@ public abstract class MapGroup<M extends Map> {
 	 * @param ip - the paths to the map loader images
 	 * @param bs - the blockset for the maps
 	 */
-	public MapGroup(String ip, Block[] bs) {
+	public Level(String ip, Block[] bs) {
 		sections = 1;
 		mapImages = new String[] {ip};
 		blockSet = bs;
-		mapBuffer = new FBO();
 	}
-
+	
 	/**
 	 * BOIIIIIIIIIII TODO
 	 */
@@ -114,50 +120,34 @@ public abstract class MapGroup<M extends Map> {
 	 * @param m - the map to render
 	 * @param layer - the current render layer
 	 */
-	public void render(Map m, int layer) {
+	public void render(Camera c, Map<?> m, int layer) {
 		
 		int u = m.getUp();
 		int r = m.getRight();
 		int d = m.getDown();
 		int l = m.getLeft();
 		
-		//System.out.println(l);
-		
-		int acr = (r - l);
-		int dow = (d - u);
-		
-		//System.out.println(acr + " " + dow);
+		int acr = m.acr;
+		int dow = m.dow;
 		
 		int size = (int)(m.getScale());
-		mapBuffer.replaceTexture(new Texture(acr * size, dow * size));
+		
+		FBO mapBuffer = m.getMapBuffer();
 		mapBuffer.enable();
 		
-		//System.out.println(m.getScale() + " " + size + " | " + l + " " + r + " " + d + " " + u);
-		//System.out.println("width" + mapBuffer.getBoundTexture().getWidth());
-		//int times = 0;
-		for(int x = 0; x < acr; ++x) {
-			//++times;
-			for(int y = 0; y < dow; ++y) {
-				try {
-					int tile = m.access(x, y);
-					if(tile != -1) {
-						if(blockSet[tile].layer == layer) {
-							m.blockRender(tile, x - l, y - u, x * size, (x + 1) * size, y * size, (y + 1) * size);
-						}
-						//System.out.println("left: " + (x)*size + " right: " + (x+1)*size);
-					}
-				} catch (MapAccessException ex) { }
-			}
-			//System.exit(-1);
-		}
+		//clear the buffer
+		glClearColor(0, 0, 0, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		//System.out.println(times);
-		//System.exit(-1);
+		for(int x = 0; x < acr; ++x) {
+			for(int y = 0; y < dow; ++y) {
+				m.blockRender(layer, x + l, y + u, x * size, (x + 1) * size, y * size, (y + 1) * size);
+			}
+		}
 		
 		Base.screenBuffer.enable();
 		
-		System.out.println(acr*size + " | " + dow * size);
-		m.mapRender(new Transform(l * size, u * size, acr * size, dow * size), mapBuffer.getBoundTexture());
+		m.mapRender(new Transform(l * size, u * size, acr * size, dow * size), mapBuffer.getTexture());
 	}
 
 	/**

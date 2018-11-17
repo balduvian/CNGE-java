@@ -7,6 +7,7 @@ import cnge.core.Entity;
 import cnge.core.Hitbox;
 import cnge.core.Map;
 import cnge.core.Map.MapAccessException;
+import cnge.core.Map.NullBlockException;
 import cnge.core.animation.Anim2D;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
@@ -271,56 +272,73 @@ public class Player extends Entity {
 		for(int i = l; i <= r; ++i) {
 			for(int j = u; j <= d; ++j) {
 				try {
-					SparkBlock sb = (SparkBlock)map.block(map.access(i, j));
-					if(sb != null && sb.solid) {
-						do {
-							float upSide = map.getY(j);
-							float leftSide = map.getX(i);
-							float downSide = map.getY(j + 1);
-							float rightSide = map.getX(i + 1);
-							SparkBlock bc = (SparkBlock)map.block(map.access(i, j - 1));
-							if((baseLeft < rightSide && baseRight > leftSide)) {
-								float tempDown = upSide - baseDown;
-								if(tempDown < downDist && tempDown > 0) {
-									downDist = tempDown;
+					try {
+						SparkBlock sb = (SparkBlock)map.block(map.access(i, j));
+						if(sb.solid) {
+							do {
+								float upSide = map.getY(j);
+								float leftSide = map.getX(i);
+								float downSide = map.getY(j + 1);
+								float rightSide = map.getX(i + 1);
+								
+								SparkBlock bc;
+								boolean adjacent;
+								
+								try {
+									bc = (SparkBlock)map.block(map.access(i, j - 1));
+									adjacent = !bc.solid;
+								} catch(NullBlockException ex) {
+									adjacent = true;
 								}
-								if(dy > 0 && (down > upSide && down < downSide) && (bc == null || !bc.solid)) {
-									velocityY = 0;
-									dy = upSide - baseDown;
-									hasHitGround = true;
-									break;
+								if(adjacent) {
+									if((baseLeft < rightSide && baseRight > leftSide)) {
+										float tempDown = upSide - baseDown;
+										if(tempDown < downDist && tempDown > 0) {
+											downDist = tempDown;
+										}
+										if(dy > 0 && (down > upSide && down < downSide)) {
+											velocityY = 0;
+											dy = upSide - baseDown;
+											hasHitGround = true;
+											break;
+										}
+									}
 								}
-							}
-							
-							bc = (SparkBlock)map.block(map.access(i - 1, j));
-							if(dx > 0 && (baseUp < downSide && baseDown > upSide) && (right > leftSide && right < rightSide) && (bc == null || !bc.solid)) {
-								velocityX = 0;
-								dx = leftSide - baseRight;
-								wallRight = true;
-								break;
-							}
-							
-							bc = (SparkBlock)map.block(map.access(i, j + 1));
-							if(dy < 0 && (baseLeft < rightSide && baseRight > leftSide) && (up < downSide && up > upSide) && (bc == null || !bc.solid)) {
-								velocityY = 0;
-								dy = downSide - baseUp;
-								break;
-							}
-							
-							bc = (SparkBlock)map.block(map.access(i + 1, j));
-							if(dx < 0 && (baseUp < downSide && baseDown > upSide) && (left < rightSide && left > leftSide) && (bc == null || !bc.solid)) {
-								velocityX = 0;
-								dx = rightSide - baseLeft;
-								wallLeft = true;
-								break;
-							}
-							
-						} while(false);
+								
+								try {
+									bc = (SparkBlock)map.block(map.access(i - 1, j));
+									if(dx > 0 && (baseUp < downSide && baseDown > upSide) && (right > leftSide && right < rightSide) && (!bc.solid)) {
+										velocityX = 0;
+										dx = leftSide - baseRight;
+										wallRight = true;
+										break;
+									}
+								} catch(NullBlockException ex) {}
+								
+								try {
+									bc = (SparkBlock)map.block(map.access(i, j + 1));
+									if(dy < 0 && (baseLeft < rightSide && baseRight > leftSide) && (up < downSide && up > upSide) && (!bc.solid)) {
+										velocityY = 0;
+										dy = downSide - baseUp;
+										break;
+									}
+								} catch(NullBlockException ex) {}
+								
+								try {
+									bc = (SparkBlock)map.block(map.access(i + 1, j));
+									if(dx < 0 && (baseUp < downSide && baseDown > upSide) && (left < rightSide && left > leftSide) && (!bc.solid)) {
+										velocityX = 0;
+										dx = rightSide - baseLeft;
+										wallLeft = true;
+										break;
+									}
+								} catch(NullBlockException ex) {}
+								
+							} while(false);
+						}
+					} catch (NullBlockException ex) {
 					}
-				} catch (MapAccessException ex) {
-					ex.printStackTrace();
-				}
-				
+				} catch (MapAccessException ex) { }
 			}
 		}
 		air = !hasHitGround;

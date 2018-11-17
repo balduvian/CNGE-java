@@ -5,14 +5,14 @@ import static game.scenes.game.GameGraphics.rect;
 import static game.scenes.game.GameGraphics.tileShader;
 
 import cnge.core.Block;
-import cnge.core.MapGroup;
+import cnge.core.Level;
 import cnge.graphics.Shader;
 import cnge.graphics.texture.Texture;
 import cnge.graphics.texture.TileTexture;
 import game.SparkBlock;
 import game.TexBlock;
 
-abstract public class SparkLevel extends MapGroup<SparkMap> {
+abstract public class SparkLevel extends Level<SparkMap> {
 	
 	public static final int VALUE_TOP = 1;
 	

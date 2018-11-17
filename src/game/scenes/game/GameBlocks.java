@@ -21,7 +21,7 @@ public class GameBlocks implements Scenery{
 		world1Blocks = new TexBlock[] {
 			new TexBlock(0xff000000, LAYER_MID, PLAIN_BLOCK,  true, tileSheet, 0, 2),
 			new TexBlock(0xff646464, LAYER_MID, PANEL_BLOCK,  true, tileSheet, 2, 1),
-			new TexBlock(0xffc8c8c8, LAYER_BACK,  SIGN_BLOCK, false, tileSheet, 0, 0),
+			new TexBlock(0xffc8c8c8, LAYER_MID,  SIGN_BLOCK, false, tileSheet, 0, 0),
 		};
 	}
 

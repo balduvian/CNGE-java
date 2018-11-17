@@ -82,8 +82,8 @@ public class Base {
 		baseShader = new BaseShader();
 		
 		Scene.giveStuff(camera, this, window);
-		Shape.init(camera);
-		FBO.giveWindow(window);
+		Shape.giveCamera(camera);
+		FBO.giveStuff(window, camera);
 		Entity.giveCamera(camera);
 		
 		rect = Shape.RECT;
@@ -271,7 +271,7 @@ public class Base {
 		glClearColor(0, 0, 0, 1);
 		Window.clear();
 		
-		screenBuffer.getBoundTexture().bind();
+		screenBuffer.getTexture().bind();
 		
 		baseShader.enable();
 		

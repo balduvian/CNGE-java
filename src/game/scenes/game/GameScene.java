@@ -2,7 +2,7 @@ package game.scenes.game;
 
 import cnge.core.Scene;
 import cnge.core.Base;
-import cnge.core.MapGroup;
+import cnge.core.Level;
 import game.scenes.game.groups.Blackening;
 import game.scenes.game.groups.Countdown;
 import game.scenes.game.groups.Player;
@@ -73,12 +73,12 @@ public class GameScene extends Scene {
 	public void render() {
 		background.render();
 		
-		currentLevel.render(currentMap, GameBlocks.LAYER_BACK);
-		currentLevel.render(currentMap, GameBlocks.LAYER_MID);
+		//currentLevel.render(currentMap, GameBlocks.LAYER_BACK);
+		currentLevel.render(camera, currentMap, GameBlocks.LAYER_MID);
 		
 		player.render();
 		
-		currentLevel.render(currentMap, GameBlocks.LAYER_FRONT);
+		//currentLevel.render(currentMap, GameBlocks.LAYER_FRONT);
 		
 		if(blackening != null) {
 			blackening.render();

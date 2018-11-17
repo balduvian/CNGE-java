@@ -10,7 +10,7 @@ abstract public class Shape {
 	public static RectShape RECT;
 	public static ArrowShape ARROW;
 	
-	public static void init(Camera c) {
+	public static void giveCamera(Camera c) {
 		RECT = new RectShape();
 		ARROW = new ArrowShape();
 	}
