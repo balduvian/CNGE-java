@@ -99,16 +99,12 @@ public class FBO {
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, id);
         glViewport(0, 0, texture.getWidth(), texture.getHeight());
-        //camera.setDims(texture.getWidth(), texture.getHeight());
-        //camera.update();
-        
-        System.out.println(texture.getWidth() + " " + texture.getHeight());
     }
     
     /**
      * switches the frameBuffer back to the window
      */
-    public void disable() {
+    public static void enableDefault() {
     	glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, window.getWidth(), window.getHeight());
     }

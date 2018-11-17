@@ -51,7 +51,7 @@ abstract public class SparkLevel extends Level<SparkMap> {
 		}
 		
 		startX = 32;
-		startY = 64;
+		startY = 128;
 	}
 
 }

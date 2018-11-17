@@ -7,17 +7,46 @@ public class Camera {
 	
 	private Matrix4f projection, projectionView;
 	
+	private float defaultWidth;
+	private float defaultHeight;
+	
 	public Camera(float w, float h) {
 		transform = new Transform();
-		setDims(w, h);
 		projectionView = new Matrix4f();
+		setDims(w, h);
 	}
 	
+	public void giveDefaults(float w, float h) {
+		defaultWidth = w;
+		defaultHeight = h;
+	}
+	
+	/**
+	 * sets virtual space back to the dimensions of the game
+	 */
+	public void defaultDims() {
+		transform.setSize(defaultWidth, defaultHeight);
+		projection = new Matrix4f().setOrtho(0, defaultWidth, defaultHeight, 0, 1, -1);
+		update();
+	}
+	
+	/**
+	 * sets the virtual space the camera renders to
+	 * 
+	 * @param w - virtual width
+	 * @param h - virtual height
+	 */
 	public void setDims(float w, float h) {
 		transform.setSize(w, h);
 		projection = new Matrix4f().setOrtho(0, w, h, 0, 1, -1);
+		update();
 	}
 	
+	/**
+	 * sets the projection view of the camera.
+	 * 
+	 * you need to do this after every transformation or else things won't render with the new camera transformation
+	 */
 	public void update() {
 		projection.scale(transform.wScale, transform.hScale, 1, projectionView);
 		projection.rotateZ(-transform.rotation, projectionView);
@@ -39,10 +68,10 @@ public class Camera {
 	 * gets a model matrix based on manually inputted bounds.
 	 * If you need something to be as exact as possible
 	 * 
-	 * @param up
-	 * @param right
-	 * @param down
 	 * @param left
+	 * @param right
+	 * @param up
+	 * @param down
 	 * 
 	 * @return the model matrix in world coordiantes
 	 */

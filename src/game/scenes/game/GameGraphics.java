@@ -30,7 +30,8 @@ public class GameGraphics implements Scenery {
 		colShader = new ColorShader();
 		textureShader = new TextureShader();
 		
-		tileSheet = new TileTexture("res/textures/blocks.png", 4, 4, new TexturePreset().clampHorz(false).clampVert(false));
+		tileSheet = new TileTexture("res/textures/blocks.png", 4, 4, new TexturePreset().clampHorz(true).clampVert(true));
+		
 		playerSheet = new TileTexture("res/textures/sparky.png", 4, 2);
 		skyTex = new TileTexture("res/textures/sky.png", 4, new TexturePreset().clampHorz(false).clampVert(false));
 		batteryTex = new TileTexture("res/textures/battery.png", 8, 2);

@@ -183,17 +183,15 @@ public class Window {
 	 * saves a bufferedimage of the current render buffer
 	 * performance = bad
 	 */
-	public void takeScreenShot() {
-		int scw = vidMode.width();
-		int sch = vidMode.height();
+	public void takeScreenShot(int scw, int sch) {
 		ByteBuffer buffer = BufferUtils.createByteBuffer(scw * sch * 4);
 		GL11.glReadPixels(0, 0, scw, sch, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
 		
 		int num = 0;
 		File file;
 		do {
-			file = new File("Sc"); // The file to save to.
-			
+			file = new File("screenshot" + num + ".png"); // The file to save to.
+			++num;
 		} while(file.exists());
 		String format = "PNG"; // Example: "PNG" or "JPG"
 		BufferedImage image = new BufferedImage(scw, sch, BufferedImage.TYPE_INT_RGB);

@@ -147,19 +147,21 @@ public class Player extends Entity {
 						jumpLock = gs.pressJump;
 					}else {
 						if(gs.pressJump) {
-							if(wallLeft) {
-								velocityX = maxX * 2.25f;
-								velocityY = -jumpV * ( 1 + (float)jumpTime);
-								wallJumpTimer = wallJumpTime;
-								facing = RIGHT;
-								jumpLock = true;
-							}else if (wallRight){
-								velocityX = -maxX * 2.25f;
-								velocityY = -jumpV * ( 1 + (float)jumpTime);
-								wallJumpTimer = wallJumpTime;
-								facing = LEFT;
-								jumpLock = true;
-							}else if(!air){
+							if(air) {
+								if(wallLeft) {
+									velocityX = maxX * 2.25f;
+									velocityY = -jumpV * ( 1 + (float)jumpTime);
+									wallJumpTimer = wallJumpTime;
+									facing = RIGHT;
+									jumpLock = true;
+								}else if (wallRight){
+									velocityX = -maxX * 2.25f;
+									velocityY = -jumpV * ( 1 + (float)jumpTime);
+									wallJumpTimer = wallJumpTime;
+									facing = LEFT;
+									jumpLock = true;
+								}
+							}else {
 								velocityY = -jumpV;
 								jumpTimer = jumpTime;
 								jumpLock = true;
@@ -281,58 +283,73 @@ public class Player extends Entity {
 								float downSide = map.getY(j + 1);
 								float rightSide = map.getX(i + 1);
 								
-								SparkBlock bc;
+								SparkBlock adjacentBlock;
+								
+								/**
+								 * kinda a misnomer, it means that there is no solid block adjacent to it
+								 */
 								boolean adjacent;
 								
 								try {
-									bc = (SparkBlock)map.block(map.access(i, j - 1));
-									adjacent = !bc.solid;
+									adjacentBlock = (SparkBlock)map.block(map.access(i, j - 1));
+									adjacent = !adjacentBlock.solid;
 								} catch(NullBlockException ex) {
 									adjacent = true;
 								}
 								if(adjacent) {
 									if((baseLeft < rightSide && baseRight > leftSide)) {
 										float tempDown = upSide - baseDown;
-										if(tempDown < downDist && tempDown > 0) {
+										if(tempDown < downDist && !(tempDown < 0)) {
 											downDist = tempDown;
 										}
-										if(dy > 0 && (down > upSide && down < downSide)) {
-											velocityY = 0;
-											dy = upSide - baseDown;
-											hasHitGround = true;
-											break;
-										}
+									}
+									if(dy > 0 && (down > upSide && down < downSide)) {
+										velocityY = 0;
+										dy = upSide - baseDown;
+										hasHitGround = true;
+										break;
 									}
 								}
 								
 								try {
-									bc = (SparkBlock)map.block(map.access(i - 1, j));
-									if(dx > 0 && (baseUp < downSide && baseDown > upSide) && (right > leftSide && right < rightSide) && (!bc.solid)) {
-										velocityX = 0;
-										dx = leftSide - baseRight;
-										wallRight = true;
-										break;
-									}
-								} catch(NullBlockException ex) {}
+									adjacentBlock = (SparkBlock)map.block(map.access(i - 1, j));
+									adjacent = !adjacentBlock.solid;
+								} catch(NullBlockException ex) {
+									adjacent = true;
+								}
+								if(adjacent && dx > 0 && (baseUp < downSide && baseDown > upSide) && (right > leftSide && right < rightSide)) {
+									velocityX = 0;
+									dx = leftSide - baseRight;
+									wallRight = true;
+									break;
+								}
+								
 								
 								try {
-									bc = (SparkBlock)map.block(map.access(i, j + 1));
-									if(dy < 0 && (baseLeft < rightSide && baseRight > leftSide) && (up < downSide && up > upSide) && (!bc.solid)) {
-										velocityY = 0;
-										dy = downSide - baseUp;
-										break;
-									}
-								} catch(NullBlockException ex) {}
+									adjacentBlock = (SparkBlock)map.block(map.access(i, j + 1));
+									adjacent = !adjacentBlock.solid;
+								} catch(NullBlockException ex) {
+									adjacent = true;
+								}
+								if(adjacent && dy < 0 && (baseLeft < rightSide && baseRight > leftSide) && (up < downSide && up > upSide)) {
+									velocityY = 0;
+									dy = downSide - baseUp;
+									break;
+								}
+								
 								
 								try {
-									bc = (SparkBlock)map.block(map.access(i + 1, j));
-									if(dx < 0 && (baseUp < downSide && baseDown > upSide) && (left < rightSide && left > leftSide) && (!bc.solid)) {
-										velocityX = 0;
-										dx = rightSide - baseLeft;
-										wallLeft = true;
-										break;
-									}
-								} catch(NullBlockException ex) {}
+									adjacentBlock = (SparkBlock)map.block(map.access(i + 1, j));
+									adjacent = !adjacentBlock.solid;
+								} catch(NullBlockException ex) {
+									adjacent = true;
+								}
+								if(adjacent && dx < 0 && (baseUp < downSide && baseDown > upSide) && (left < rightSide && left > leftSide)) {
+									velocityX = 0;
+									dx = rightSide - baseLeft;
+									wallLeft = true;
+									break;
+								}
 								
 							} while(false);
 						}

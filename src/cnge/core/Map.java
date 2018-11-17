@@ -1,5 +1,10 @@
 package cnge.core;
 
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+
 import cnge.graphics.Camera;
 import cnge.graphics.FBO;
 import cnge.graphics.Transform;
@@ -362,10 +367,37 @@ abstract public class Map<B extends Block> extends Entity {
 		private static final long serialVersionUID = 9197260478519042104L;
 	}
 	
+	public void render(int layer) {
+		
+		mapBuffer.enable();
+		camera.setDims(acr * scale, dow * scale);
+		
+		//clear the buffer
+		glClearColor(0, 0, 0, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		for(int x = 0; x < acr; ++x) {
+			for(int y = 0; y < dow; ++y) {
+				blockRender(layer, x + left, y + up, x * scale, (x + 1) * scale, y * scale, (y + 1) * scale);
+			}
+		}
+		
+		Base.screenBuffer.enable();
+		camera.defaultDims();
+        
+		mapRender(new Transform(left * scale, up * scale, acr * scale, dow * scale), mapBuffer.getTexture());
+	}
+	
+	/**
+	 * the default inherited render method from entity is not used
+	 * 
+	 * @deprecated FUCK FUCK FUCK FUCK DONT USE THIS METHOD
+	 * 
+	 * THIS WILL CLOSE DOWN YOUR PROGRAM
+	 */
 	public void render() {
-		//haha you get nothing
-		//but seriously, this is not meant to be used by maps
-		//use the level's mapRender instead
+		System.err.println("I TOLD YOU NOT TO USE THIS YOU SKEKER");
+		System.exit(-3);
 	}
 	
 }

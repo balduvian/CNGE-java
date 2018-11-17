@@ -38,7 +38,7 @@ public class GameScene extends Scene {
 	//routine when we start a new map in the scene
 	public void startMap(SparkLevel m){
 		currentLevel = m;
-		//TODO some clearing stuff rh
+		
 		m.load();
 		currentMap = m.createMap(0, 0, 0);
 		createEntity(background = new Sky(), 0, 0);
@@ -73,12 +73,9 @@ public class GameScene extends Scene {
 	public void render() {
 		background.render();
 		
-		//currentLevel.render(currentMap, GameBlocks.LAYER_BACK);
-		currentLevel.render(camera, currentMap, GameBlocks.LAYER_MID);
+		currentMap.render(GameBlocks.LAYER_MID);
 		
 		player.render();
-		
-		//currentLevel.render(currentMap, GameBlocks.LAYER_FRONT);
 		
 		if(blackening != null) {
 			blackening.render();

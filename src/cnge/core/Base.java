@@ -24,7 +24,7 @@ public class Base {
 	public static double time;
 	public static long nanos;
 	
-	protected Window window;
+	public static Window window;
 	protected Camera camera;
 	protected ALManagement audio;
 
@@ -95,6 +95,8 @@ public class Base {
 		gameWidth = set.width;
 		gameHeight = set.height;
 		gameLimit = set.limit;
+		
+		camera.giveDefaults(gameWidth, gameHeight);
 		
 		window.setResize(
 			(w, h) -> {
@@ -264,7 +266,7 @@ public class Base {
 		
 		scene.render();
 		
-		screenBuffer.disable();
+		FBO.enableDefault();
 		//close down that mf screenBuffer
 		
 		//clear the bars with black

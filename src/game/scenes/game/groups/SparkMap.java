@@ -37,7 +37,7 @@ public class SparkMap extends Map<TexBlock> {
 				
 				tileShader.enable();
 				
-				tileShader.setMvp(camera.getModelViewProjectionMatrix(camera.getModelMatrix(left, right, up, down)));
+				tileShader.setMvp(camera.getModelProjectionMatrix(camera.getModelMatrix(left, right, up, down)));
 				
 				try {
 					if(tb.id == PLAIN_BLOCK && SparkLevel.values[x][y] == SparkLevel.VALUE_TOP) {

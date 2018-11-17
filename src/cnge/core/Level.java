@@ -115,42 +115,6 @@ public abstract class Level<M extends Map> {
 	abstract public M mapCreate(int i, Object... params);
 	
 	/**
-	 * overrides render from entity group 
-	 * 
-	 * @param m - the map to render
-	 * @param layer - the current render layer
-	 */
-	public void render(Camera c, Map<?> m, int layer) {
-		
-		int u = m.getUp();
-		int r = m.getRight();
-		int d = m.getDown();
-		int l = m.getLeft();
-		
-		int acr = m.acr;
-		int dow = m.dow;
-		
-		int size = (int)(m.getScale());
-		
-		FBO mapBuffer = m.getMapBuffer();
-		mapBuffer.enable();
-		
-		//clear the buffer
-		glClearColor(0, 0, 0, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		for(int x = 0; x < acr; ++x) {
-			for(int y = 0; y < dow; ++y) {
-				m.blockRender(layer, x + l, y + u, x * size, (x + 1) * size, y * size, (y + 1) * size);
-			}
-		}
-		
-		Base.screenBuffer.enable();
-		
-		m.mapRender(new Transform(l * size, u * size, acr * size, dow * size), mapBuffer.getTexture());
-	}
-
-	/**
 	 * when the map needs to actually be used, call this one. Loads in the map,
 	 * 
 	 * how much time will it take? Who knows
