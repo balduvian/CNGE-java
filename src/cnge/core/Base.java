@@ -85,6 +85,7 @@ public class Base {
 		Shape.giveCamera(camera);
 		FBO.giveStuff(window, camera);
 		Entity.giveCamera(camera);
+		Font.giveCamera(camera);
 		
 		rect = Shape.RECT;
 		

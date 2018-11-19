@@ -1,8 +1,8 @@
-package game.scenes.game.groups;
+package game.scenes.game;
 
-import static game.scenes.game.GameBlocks.PLAIN_BLOCK;
-import static game.scenes.game.GameGraphics.rect;
-import static game.scenes.game.GameGraphics.tileShader;
+import static game.scenes.game.scenery.GameBlocks.PLAIN_BLOCK;
+import static game.scenes.game.scenery.GameGraphics.rect;
+import static game.scenes.game.scenery.GameGraphics.tileShader;
 
 import cnge.core.Block;
 import cnge.core.Level;

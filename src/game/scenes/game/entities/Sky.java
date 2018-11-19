@@ -1,12 +1,12 @@
-package game.scenes.game.groups;
+package game.scenes.game.entities;
+
+import static game.scenes.game.scenery.GameGraphics.*;
 
 import cnge.core.Entity;
 import cnge.core.animation.Anim1D;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
 import cnge.graphics.texture.Texture;
-
-import static game.scenes.game.GameGraphics.*;
 
 public class Sky extends Entity {
 

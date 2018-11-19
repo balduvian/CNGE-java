@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import cnge.core.Base;
 import cnge.core.BasePreset;
+import cnge.core.Font;
 import cnge.graphics.Window;
 import cnge.graphics.texture.TexturePreset;
 import game.scenes.game.GameScene;
@@ -14,15 +15,19 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
+		/*
+		 * mac startup sequence
+		 * 
+		 * have to add the command beforehand then re run jar
+		 */
 		String os = System.getProperty("os.name");
 		
 		if (os.indexOf("mac") >= 0){
 			if (args.length == 0) {
 				try {
-	                Runtime.getRuntime().exec(new String[]{"java", "-XstartOnFirstThread", "-jar", "Spark Runner 2.jar"});
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	            }
+	                Runtime.getRuntime().exec(new String[]{"java", "-XstartOnFirstThread", "-jar", "Spark Runner 2.jar", "noReRun"});
+	                System.exit(-1);
+	            } catch (IOException ex) { ex.printStackTrace(); }
 			}else {
 				new Main();
 			}

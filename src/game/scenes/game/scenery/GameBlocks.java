@@ -1,6 +1,6 @@
-package game.scenes.game;
+package game.scenes.game.scenery;
 
-import static game.scenes.game.GameGraphics.tileSheet;
+import static game.scenes.game.scenery.GameGraphics.tileSheet;
 
 import cnge.core.Scenery;
 import game.TexBlock;

@@ -1,6 +1,6 @@
-package game.scenes.game.groups;
+package game.scenes.game.entities;
 
-import static game.scenes.game.GameGraphics.*;
+import static game.scenes.game.scenery.GameGraphics.*;
 
 import cnge.core.Entity;
 import cnge.core.animation.Anim2D;

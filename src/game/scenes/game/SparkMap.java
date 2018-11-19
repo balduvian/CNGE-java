@@ -1,9 +1,9 @@
-package game.scenes.game.groups;
+package game.scenes.game;
 
-import static game.scenes.game.GameBlocks.PLAIN_BLOCK;
-import static game.scenes.game.GameGraphics.rect;
-import static game.scenes.game.GameGraphics.tileShader;
-import static game.scenes.game.GameGraphics.textureShader;
+import static game.scenes.game.scenery.GameBlocks.PLAIN_BLOCK;
+import static game.scenes.game.scenery.GameGraphics.rect;
+import static game.scenes.game.scenery.GameGraphics.textureShader;
+import static game.scenes.game.scenery.GameGraphics.tileShader;
 
 import cnge.core.Map;
 import cnge.graphics.Shader;
@@ -12,7 +12,6 @@ import cnge.graphics.texture.Texture;
 import cnge.graphics.texture.TileTexture;
 import game.SparkBlock;
 import game.TexBlock;
-import game.scenes.game.GameGraphics;
 import game.shaders.TextureShader;
 
 public class SparkMap extends Map<TexBlock> {

@@ -1,4 +1,4 @@
-package game.scenes.game;
+package game.scenes.game.scenery;
 
 import cnge.core.Scenery;
 import cnge.graphics.Shape;
@@ -6,6 +6,7 @@ import cnge.graphics.TexShape;
 import cnge.graphics.texture.TexturePreset;
 import cnge.graphics.texture.TileTexture;
 import game.shaders.ColorShader;
+import game.shaders.TextShader;
 import game.shaders.TextureShader;
 import game.shaders.TileShader;
 
@@ -16,6 +17,7 @@ public class GameGraphics implements Scenery {
 	public static TileShader tileShader;
 	public static ColorShader colShader;
 	public static TextureShader textureShader;
+	public static TextShader textShader;
 	
 	public static TileTexture tileSheet;
 	public static TileTexture playerSheet; 
@@ -29,6 +31,7 @@ public class GameGraphics implements Scenery {
 		tileShader = new TileShader();
 		colShader = new ColorShader();
 		textureShader = new TextureShader();
+		textShader = new TextShader();
 		
 		tileSheet = new TileTexture("res/textures/blocks.png", 4, 4, new TexturePreset().clampHorz(true).clampVert(true));
 		

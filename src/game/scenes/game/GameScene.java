@@ -1,18 +1,18 @@
 package game.scenes.game;
 
 import cnge.core.Scene;
+import game.scenes.game.entities.Blackening;
+import game.scenes.game.entities.Countdown;
+import game.scenes.game.entities.Player;
+import game.scenes.game.entities.Sky;
+import game.scenes.game.scenery.GameBlocks;
+import game.scenes.game.scenery.GameEntities;
+import game.scenes.game.scenery.GameGraphics;
 import cnge.core.Base;
 import cnge.core.Level;
-import game.scenes.game.groups.Blackening;
-import game.scenes.game.groups.Countdown;
-import game.scenes.game.groups.Player;
-import game.scenes.game.groups.Sky;
-import game.scenes.game.groups.SparkLevel;
-import game.scenes.game.groups.SparkMap;
 
+import static game.scenes.game.scenery.GameEntities.*;
 import static org.lwjgl.glfw.GLFW.*;
-
-import static game.scenes.game.GameEntities.*;
 
 public class GameScene extends Scene {
 	
@@ -83,6 +83,10 @@ public class GameScene extends Scene {
 		if(countdown != null) {
 			countdown.render();
 		}
+		
+		sparkFont.render(new char[] {'y','o',' ','w','h','a','t',' ','u','p'}, 0, 0, 1, false);
+		
+		sparkFont.render(new char[] {'c','e','n','t','e','r',' ','t','h','i','s',' ','m','f',' ','t','e','x','t'}, 256, 124, 2, true);
 	}
 	
 	@Override

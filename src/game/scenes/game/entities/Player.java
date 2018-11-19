@@ -1,6 +1,6 @@
-package game.scenes.game.groups;
+package game.scenes.game.entities;
 
-import static game.scenes.game.GameGraphics.*;
+import static game.scenes.game.scenery.GameGraphics.*;
 
 import cnge.core.Base;
 import cnge.core.Entity;
@@ -14,8 +14,8 @@ import cnge.graphics.Transform;
 import cnge.graphics.texture.Texture;
 import game.Main;
 import game.SparkBlock;
-import game.scenes.game.GameEntities;
 import game.scenes.game.GameScene;
+import game.scenes.game.scenery.GameEntities;
 
 public class Player extends Entity {
 
