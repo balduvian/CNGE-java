@@ -37,7 +37,7 @@ public class GameGraphics implements Scenery {
 		
 		playerSheet = new TileTexture("res/textures/sparky.png", 4, 2);
 		skyTex = new TileTexture("res/textures/sky.png", 4, new TexturePreset().clampHorz(false).clampVert(false));
-		batteryTex = new TileTexture("res/textures/battery.png", 8, 2);
+		batteryTex = new TileTexture("res/textures/battery.png", 7, 2);
 		countdownTex = new TileTexture("res/textures/countdown.png", 2, 2);
 	}
 

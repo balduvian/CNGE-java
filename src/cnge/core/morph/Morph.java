@@ -15,13 +15,13 @@ public class Morph {
 	
 	private static final Morpher doTransX = new Morpher() {
 		public void morph(Transform t, Interpolator i, float start, float end, float along) {
-			t.abcissa = i.interpolate(start, end, along);
+			t.x = i.interpolate(start, end, along);
 		}
 	};
 	
 	private static final Morpher doTransY = new Morpher() {
 		public void morph(Transform t, Interpolator i, float start, float end, float along) {
-			t.ordinate = i.interpolate(start, end, along);
+			t.y = i.interpolate(start, end, along);
 		}
 	};
 	
@@ -119,8 +119,8 @@ public class Morph {
 		modify = start;
 		interpolator = i;
 		
-		oXPos = modify.abcissa;
-		oYPos = modify.ordinate;
+		oXPos = modify.x;
+		oYPos = modify.y;
 		oRotation = modify.rotation;
 		oWScale = modify.wScale;
 		oHScale = modify.hScale;
@@ -182,8 +182,8 @@ public class Morph {
 
 	public void reset() {
 		timer = 0;
-		oXPos = modify.abcissa;
-		oYPos = modify.ordinate;
+		oXPos = modify.x;
+		oYPos = modify.y;
 		oRotation = modify.rotation;
 		oWScale = modify.wScale;
 		oHScale = modify.hScale;

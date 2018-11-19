@@ -16,6 +16,7 @@ abstract public class Entity {
 	protected static Camera camera;
 	
 	public Entity() {
+		onScreen = true;
 		transform = new Transform();
 	}
 	
@@ -60,19 +61,19 @@ abstract public class Entity {
 		return index;
 	}
 	
-	public boolean onScreenUpdate(Camera c) {
+	public boolean onScreenUpdate() {
 		if(alwaysOn) {
 			return true;
 		}else {
-			float ex = transform.    abcissa;
-			float ey = transform.   ordinate;
+			float ex = transform.x;
+			float ey = transform.y;
 			float ew = transform. getWidth();
 			float eh = transform.getHeight();
 			
-			Transform cTransform = c.getTransform();
+			Transform cTransform = camera.getTransform();
 			
-			float cx = cTransform.    abcissa;
-			float cy = cTransform.   ordinate;
+			float cx = cTransform.x;
+			float cy = cTransform.y;
 			float cw = cTransform. getWidth();
 			float ch = cTransform.getHeight();
 			

@@ -7,18 +7,18 @@ package cnge.graphics;
 public class Transform {
 	
 	/** the x coordinate */
-	public float abcissa;
+	public float x;
 	/** the y coordinate */
-	public float ordinate;
+	public float y;
 	public float width;
 	public float height;
 	public float wScale;
 	public float hScale;
 	public float rotation;
 	
-	public Transform(float x, float y, float w, float h, float r) {
-		abcissa = x;
-		ordinate = y;
+	public Transform(float a, float o, float w, float h, float r) {
+		x = a;
+		y = o;
 		width = w;
 		height = h;
 		wScale = 1;
@@ -26,9 +26,9 @@ public class Transform {
 		rotation = r;
 	}
 	
-	public Transform(float x, float y, float w, float h) {
-		abcissa = x;
-		ordinate = y;
+	public Transform(float a, float o, float w, float h) {
+		x = a;
+		y = o;
 		width = w;
 		height = h;
 		wScale = 1;
@@ -37,8 +37,8 @@ public class Transform {
 	}
 	
 	public Transform(float w, float h) {
-		abcissa = 0;
-		ordinate = 0;
+		x = 0;
+		y = 0;
 		width = w;
 		height = h;
 		wScale = 1;
@@ -47,8 +47,8 @@ public class Transform {
 	}
 	
 	public Transform() {
-		abcissa = 0;
-		ordinate = 0;
+		x = 0;
+		y = 0;
 		width = 1;
 		height = 1;
 		wScale = 1;
@@ -57,8 +57,8 @@ public class Transform {
 	}
 	
 	public Transform(Transform t) {
-		abcissa = t.abcissa;
-		ordinate = t.ordinate;
+		x = t.x;
+		y = t.y;
 		width = t.width;
 		height = t.height;
 		wScale = t.wScale;
@@ -67,8 +67,8 @@ public class Transform {
 	}
 	
 	public void set(Transform t) {
-		abcissa = t.abcissa;
-		ordinate = t.ordinate;
+		x = t.x;
+		y = t.y;
 		width = t.width;
 		height = t.height;
 		wScale = t.wScale;
@@ -76,24 +76,24 @@ public class Transform {
 		rotation = t.rotation;
 	}
 	
-	public void set(float x, float y, float w, float h, float r) {
-		abcissa = x;
-		ordinate = y;
+	public void set(float a, float o, float w, float h, float r) {
+		x = a;
+		y = o;
 		width = w;
 		height = h;
 		rotation = r;
 	}
 	
-	public void set(float x, float y, float w, float h) {
-		abcissa = x;
-		ordinate = y;
+	public void set(float a, float o, float w, float h) {
+		x = a;
+		y = o;
 		width = w;
 		height = h;
 	}
 	
-	public void setTranslation(float x, float y) {
-		abcissa = x;
-		ordinate = y;
+	public void setTranslation(float a, float o) {
+		x = a;
+		y = o;
 	}
 	
 	public void setScale(float w, float h) {
@@ -106,17 +106,17 @@ public class Transform {
 		height = h;
 	}
 
-	public void move(float x, float y) {
-		abcissa += x;
-		ordinate += y;
+	public void move(float a, float o) {
+		x += a;
+		y += o;
 	}
 	
-	public void moveX(float x) {
-		abcissa += x;
+	public void moveX(float a) {
+		x += a;
 	}
 	
-	public void moveY(float y) {
-		ordinate += y;
+	public void moveY(float o) {
+		y += o;
 	}
 	
 	public float getWidth() {

@@ -33,7 +33,8 @@ public class Player extends Entity {
 	public static final boolean RIGHT = true;
 	public static final boolean LEFT = false;
 	
-	public Hitbox box;
+	public Hitbox collisionBox;
+	public Hitbox collectBox;
 	
 	public Anim2D run;
 	public int frameX;
@@ -79,7 +80,8 @@ public class Player extends Entity {
 		transform.setSize(width, height);
 		jumpLock = false;
 		controllable = false;
-		box = new Hitbox(11, 16, 10, 32);
+		collisionBox = new Hitbox(11, 16, 10, 32);
+		collectBox = new Hitbox(5, 16, 23, 32);
 		run = new Anim2D(
 			new int[][] {
 				{1, 0},
@@ -104,7 +106,7 @@ public class Player extends Entity {
 		GameScene gs = ((GameScene)scene);
 		Map map = GameEntities.currentMap;
 		Transform t = getTransform();
-		Hitbox b = box;
+		Hitbox b = collisionBox;
 		
 		accelerationY = Main.GRAVITY;
 		
@@ -238,10 +240,10 @@ public class Player extends Entity {
 		dx = (float)(velocityX * Base.time);
 		dy = (float)(velocityY * Base.time);
 		
-		float baseLeft = t.abcissa + b.x;
-		float baseRight = t.abcissa + b.x + b.width;
-		float baseUp = t.ordinate + b.y;
-		float baseDown = t.ordinate + b.y + b.height;
+		float baseLeft = t.x + b.x;
+		float baseRight = t.x + b.x + b.width;
+		float baseUp = t.y + b.y;
+		float baseDown = t.y + b.y + b.height;
 		
 		float left = baseLeft + dx;
 		float right = baseRight + dx;
@@ -388,7 +390,7 @@ public class Player extends Entity {
 		
 		t.move(dx, dy);
 		
-		scene.setCameraCenter(t.abcissa + t.getWidth() / 2, t.ordinate + t.getHeight() / 2);
+		scene.setCameraCenter(t.x + t.getWidth() / 2, t.y + t.getHeight() / 2);
 	}
 	
 	public void render() {
@@ -401,7 +403,7 @@ public class Player extends Entity {
 		Transform renderT = new Transform(transform);
 		if(!facing) {
 			renderT.width = -renderT.width;
-			renderT.abcissa -= renderT.width;
+			renderT.x -= renderT.width;
 		}
 		tileShader.setMvp(camera.getModelViewProjectionMatrix(camera.getModelMatrix(renderT)));
 		

@@ -1,6 +1,7 @@
 package game.scenes.game;
 
 import cnge.core.Scene;
+import game.scenes.game.entities.Battery;
 import game.scenes.game.entities.Blackening;
 import game.scenes.game.entities.Countdown;
 import game.scenes.game.entities.Player;
@@ -46,6 +47,12 @@ public class GameScene extends Scene {
 		createEntity(countdown = new Countdown(), 128, 80);
 		startTimer = START_TIME;
 		
+		numBatteries = m.batteryPlacements.length;
+		batteries = new Battery[numBatteries];
+		for(int i = 0; i < numBatteries; ++i) {
+			createEntity(batteries[i] = new Battery(i), m.batteryPlacements[i][0], m.batteryPlacements[i][1]);
+		}
+		
 		createEntity(player = new Player(), currentLevel.startX, currentLevel.startY);
 	}
 	
@@ -61,32 +68,38 @@ public class GameScene extends Scene {
 			player.controllable = true;
 		}
 		
-		background.update();
-		blackening.update();
-		countdown.update();
-		player.update();
+		eUpdate(background);
 		
-		currentMap.onScreenUpdate(camera);
+		eUpdate(blackening);
+		eUpdate(countdown);
+		
+		eUpdate(player);
+		
+		for(int i = 0; i < numBatteries; ++i) {
+			eUpdate_OS(batteries[i]);
+		}
+		
+		currentMap.onScreenUpdate();
 		currentMap.update();
+		//eUpdate_S(currentMap);
 	}
 	
 	public void render() {
-		background.render();
+		eRender(background);
 		
 		currentMap.render(GameBlocks.LAYER_MID);
 		
-		player.render();
+		for(int i = 0; i < numBatteries; ++i) {
+			eRender_OS(batteries[i]);
+		}
 		
-		if(blackening != null) {
-			blackening.render();
-		}
-		if(countdown != null) {
-			countdown.render();
-		}
+		eRender(player);
+		
+		eRender_S(blackening);
+		eRender_S(countdown);
 		
 		sparkFont.render(new char[] {'y','o',' ','w','h','a','t',' ','u','p'}, 0, 0, 1, false);
-		
-		sparkFont.render(new char[] {'c','e','n','t','e','r',' ','t','h','i','s',' ','m','f',' ','t','e','x','t'}, 256, 124, 2, true);
+		//sparkFont.render(new char[] {'c','e','n','t','e','r',' ','t','h','i','s',' ','m','f',' ','t','e','x','t'}, 256, 124, 2, true);
 	}
 	
 	@Override

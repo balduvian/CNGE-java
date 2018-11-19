@@ -45,7 +45,7 @@ public class Sky extends Entity {
 		
 		Transform ct = camera.getTransform();
 		
-		tileShader.setUniforms(0.25f * (ct.width / transform.width), (ct.height / transform.height), (float)(ct.abcissa * parallax - transform.abcissa) / ct.getWidth() + (skyAnim.getX() * 0.25f), (float)(ct.ordinate * parallax - transform.ordinate) / ct.getHeight(), 1, 1, 1, 1);
+		tileShader.setUniforms(0.25f * (ct.width / transform.width), (ct.height / transform.height), (float)(ct.x * parallax - transform.x) / ct.getWidth() + (skyAnim.getX() * 0.25f), (float)(ct.y * parallax - transform.y) / ct.getHeight(), 1, 1, 1, 1);
 		
 		tileShader.setMvp(camera.getModelViewProjectionMatrix(camera.getModelMatrix(camera.getTransform())));
 		

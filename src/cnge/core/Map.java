@@ -90,7 +90,7 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @return x in world coordinates (LEFT SIDE)
 	 */
 	public float getX(int x) {
-		return x * scale * transform.wScale + transform.abcissa;
+		return x * scale * transform.wScale + transform.x;
 	}
 	
 	/**
@@ -99,7 +99,7 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @return y in world coordinates (TOP SIDE)
 	 */
 	public float getY(int y) {
-		return y * scale * transform.hScale + transform.ordinate;
+		return y * scale * transform.hScale + transform.y;
 	}
 	
 	public float getScale() {
@@ -142,30 +142,28 @@ abstract public class Map<B extends Block> extends Entity {
 		return height;
 	}
 	
-	public boolean onScreenUpdate(Camera c) {
+	public boolean onScreenUpdate() {
+		Transform ct = camera.getTransform();
+		
 		if(!(onScreen = alwaysOn)) {
-			float ex = transform.    abcissa;
-			float ey = transform.   ordinate;
+			float ex = transform.x;
+			float ey = transform.y;
 			float ew = transform. getWidth();
 			float eh = transform.getHeight();
 			
-			Transform cTransform = c.getTransform();
-			
-			float cx = cTransform.    abcissa;
-			float cy = cTransform.   ordinate;
-			float cw = cTransform. getWidth();
-			float ch = cTransform.getHeight();
+			float cx = ct.x;
+			float cy = ct.y;
+			float cw = ct. getWidth();
+			float ch = ct.getHeight();
 			
 			onScreen = (ex + ew > cx) && (ex < cx + cw) && (ey + eh > cy) && (ey < cy + ch);
 		}
 		
-		Transform ct = camera.getTransform();
-		
-		 left  = (int)Math.floor( ( ct.abcissa - transform.abcissa) / (scale * transform.wScale) );
-		 up    = (int)Math.floor( ( ct.ordinate - transform.ordinate) / (scale * transform.wScale) );
+		left  = (int)Math.floor( ( ct.x - transform.x) / (scale * transform.wScale) );
+		up    = (int)Math.floor( ( ct.y - transform.y) / (scale * transform.wScale) );
 		   
-		 right = left + acr;
-		 down  = up + dow;
+		right = left + acr;
+		down  = up + dow;
 		
 		return onScreen;
 	}
@@ -178,7 +176,7 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @return the integer x position in map coordinates 
 	 */
 	public int atX(float x) {
-		return (int)((x-transform.abcissa) * width / transform.width);
+		return (int)((x-transform.x) * width / transform.width);
 	}
 	
 	/**
@@ -189,7 +187,7 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @return the integer y position in map coordinates 
 	 */
 	public int atY(float y) {
-		return (int)((y-transform.ordinate) * height / transform.height);
+		return (int)((y-transform.y) * height / transform.height);
 	}
 	
 	public FBO getMapBuffer() {

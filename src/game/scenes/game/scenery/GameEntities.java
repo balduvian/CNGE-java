@@ -4,6 +4,7 @@ import cnge.core.Scenery;
 import game.scenes.game.SparkFont;
 import game.scenes.game.SparkLevel;
 import game.scenes.game.SparkMap;
+import game.scenes.game.entities.Battery;
 import game.scenes.game.entities.Blackening;
 import game.scenes.game.entities.Countdown;
 import game.scenes.game.entities.Player;
@@ -20,8 +21,11 @@ public class GameEntities implements Scenery {
 	public static Player player;
 	public static Sky background;
 	public static Countdown countdown;
-	public static Blackening blackening; 
-
+	public static Blackening blackening;
+	
+	public static Battery[] batteries;
+	public static int numBatteries;
+	
 	/*
 	 * map groups
 	 */
