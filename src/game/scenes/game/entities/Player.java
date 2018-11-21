@@ -6,8 +6,7 @@ import cnge.core.Base;
 import cnge.core.Entity;
 import cnge.core.Hitbox;
 import cnge.core.Map;
-import cnge.core.Map.MapAccessException;
-import cnge.core.Map.NullBlockException;
+import cnge.core.Map.AccessException;
 import cnge.core.animation.Anim2D;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
@@ -15,6 +14,8 @@ import cnge.graphics.texture.Texture;
 import game.Main;
 import game.SparkBlock;
 import game.scenes.game.GameScene;
+import game.scenes.game.SparkLevel;
+import game.scenes.game.SparkMap;
 import game.scenes.game.scenery.GameEntities;
 
 public class Player extends Entity {
@@ -104,7 +105,7 @@ public class Player extends Entity {
 	
 	public void update() {
 		GameScene gs = ((GameScene)scene);
-		Map map = GameEntities.currentMap;
+		SparkMap map = GameEntities.currentMap;
 		Transform t = getTransform();
 		Hitbox b = collisionBox;
 		
@@ -276,88 +277,59 @@ public class Player extends Entity {
 		for(int i = l; i <= r; ++i) {
 			for(int j = u; j <= d; ++j) {
 				try {
-					try {
-						SparkBlock sb = (SparkBlock)map.block(map.access(i, j));
-						if(sb.solid) {
-							do {
-								float upSide = map.getY(j);
-								float leftSide = map.getX(i);
-								float downSide = map.getY(j + 1);
-								float rightSide = map.getX(i + 1);
-								
-								SparkBlock adjacentBlock;
-								
-								/**
-								 * kinda a misnomer, it means that there is no solid block adjacent to it
-								 */
-								boolean adjacent;
-								
-								try {
-									adjacentBlock = (SparkBlock)map.block(map.access(i, j - 1));
-									adjacent = !adjacentBlock.solid;
-								} catch(NullBlockException ex) {
-									adjacent = true;
-								}
-								if(adjacent) {
-									if((baseLeft < rightSide && baseRight > leftSide)) {
-										float tempDown = upSide - baseDown;
-										if(tempDown < downDist && !(tempDown < 0)) {
-											downDist = tempDown;
-										}
-									}
-									if(dy > 0 && (down > upSide && down < downSide)) {
-										velocityY = 0;
-										dy = upSide - baseDown;
-										hasHitGround = true;
-										break;
+					SparkBlock sb = (SparkBlock)map.getBlockSet().get((map.access(i, j)));
+					if(sb.solid) {
+						do {
+							float upSide = map.getY(j);
+							float leftSide = map.getX(i);
+							float downSide = map.getY(j + 1);
+							float rightSide = map.getX(i + 1);
+							
+							//the current wall value for this block, telling whether it is collidable on any given face
+							byte wallValue = map.values[i][j];
+							//if the player, not factoring in movement, is inside the vertical span of the block
+							boolean withinVertical = (baseUp < downSide && baseDown > upSide);
+							//same for horizontal
+							boolean withinHorizontal = (baseLeft < rightSide && baseRight > leftSide);
+							
+							if(SparkLevel.isUpWall(wallValue)) {
+								if(withinHorizontal) {
+									float tempDown = upSide - baseDown;
+									if(tempDown < downDist && !(tempDown < 0)) {
+										downDist = tempDown;
 									}
 								}
-								
-								try {
-									adjacentBlock = (SparkBlock)map.block(map.access(i - 1, j));
-									adjacent = !adjacentBlock.solid;
-								} catch(NullBlockException ex) {
-									adjacent = true;
-								}
-								if(adjacent && dx > 0 && (baseUp < downSide && baseDown > upSide) && (right > leftSide && right < rightSide)) {
-									velocityX = 0;
-									dx = leftSide - baseRight;
-									wallRight = true;
-									break;
-								}
-								
-								
-								try {
-									adjacentBlock = (SparkBlock)map.block(map.access(i, j + 1));
-									adjacent = !adjacentBlock.solid;
-								} catch(NullBlockException ex) {
-									adjacent = true;
-								}
-								if(adjacent && dy < 0 && (baseLeft < rightSide && baseRight > leftSide) && (up < downSide && up > upSide)) {
+								if(dy > 0 && (down > upSide && down < downSide)) {
 									velocityY = 0;
-									dy = downSide - baseUp;
+									dy = upSide - baseDown;
+									hasHitGround = true;
 									break;
 								}
-								
-								
-								try {
-									adjacentBlock = (SparkBlock)map.block(map.access(i + 1, j));
-									adjacent = !adjacentBlock.solid;
-								} catch(NullBlockException ex) {
-									adjacent = true;
-								}
-								if(adjacent && dx < 0 && (baseUp < downSide && baseDown > upSide) && (left < rightSide && left > leftSide)) {
-									velocityX = 0;
-									dx = rightSide - baseLeft;
-									wallLeft = true;
-									break;
-								}
-								
-							} while(false);
-						}
-					} catch (NullBlockException ex) {
+							}
+							
+							if(SparkLevel.isLeftWall(wallValue) && dx > 0 && withinVertical && (right > leftSide && right < rightSide)) {
+								velocityX = 0;
+								dx = leftSide - baseRight;
+								wallRight = true;
+								break;
+							}
+							
+							if(SparkLevel.isDownWall(wallValue) && dy < 0 && withinHorizontal && (up < downSide && up > upSide)) {
+								velocityY = 0;
+								dy = downSide - baseUp;
+								break;
+							}
+							
+							if(SparkLevel.isRightWall(wallValue) && dx < 0 && withinVertical && (left < rightSide && left > leftSide)) {
+								velocityX = 0;
+								dx = rightSide - baseLeft;
+								wallLeft = true;
+								break;
+							}
+							
+						} while(false);
 					}
-				} catch (MapAccessException ex) { }
+				} catch (AccessException ex) { }
 			}
 		}
 		air = !hasHitGround;

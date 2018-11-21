@@ -29,9 +29,16 @@ public class Block {
 	 * @param cc - color code for block type
 	 * @param l - layer for block type
 	 */
-	public Block(int cc, int l, int i) {
+	public Block(int cc, int l) {
 		colorCode = cc;
 		layer = l;
+	}
+	
+	/**
+	 * this should be automatically done by the blockset
+	 */
+	public void setID(int i) {
 		id = i;
 	}
+	
 }

@@ -6,8 +6,8 @@ public class SparkBlock extends Block{
 
 	public boolean solid; 
 	
-	public SparkBlock(int cc, int l, int i, boolean s) {
-		super(cc, l, i);
+	public SparkBlock(int cc, int l, boolean s) {
+		super(cc, l);
 		solid = s;
 	}
 

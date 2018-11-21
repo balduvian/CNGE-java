@@ -9,7 +9,10 @@ public abstract class Scene {
 	private static Base base;
 	
 	protected static Window window;
+	
 	protected static Camera camera;
+	protected static Transform cameraTransform;
+	
 	protected static int screenWidth;
 	protected static int screenHeight;
 	
@@ -23,6 +26,7 @@ public abstract class Scene {
 	
 	public static void giveStuff(Camera c, Base b, Window w) {
 		camera = c;
+		cameraTransform = c.getTransform();
 		base = b;
 		window = w;
 	}
@@ -130,5 +134,29 @@ public abstract class Scene {
 	abstract public void start();
 	
 	abstract public void resizeUpdate();
+	
+	public void cameraLeftLimit(float cx) {
+		if(cameraTransform.x < cx) {
+			cameraTransform.x = cx;
+		}
+	}
+	
+	public void cameraDownLimit(float cy) {
+		if(cameraTransform.y + cameraTransform.height > cy) {
+			cameraTransform.y = cy - cameraTransform.height;
+		}
+	}
+	
+	public void cameraRightLimit(float cx) {
+		if(cameraTransform.x + cameraTransform.width > cx) {
+			cameraTransform.x = cx - cameraTransform.width;
+		}
+	}
+	
+	public void cameraUpLimit(float cy) {
+		if(cameraTransform.y < cy) {
+			cameraTransform.y = cy;
+		}
+	}
 	
 }

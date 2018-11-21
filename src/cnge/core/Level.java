@@ -1,28 +1,10 @@
 package cnge.core;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
 import javax.imageio.ImageIO;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-
-import cnge.core.Map.MapAccessException;
-import cnge.graphics.Camera;
-import cnge.graphics.FBO;
-import cnge.graphics.Transform;
-import cnge.graphics.texture.Texture;
-import cnge.graphics.texture.TexturePreset;
-
-public abstract class Level<M extends Map> {
+public abstract class Level<M extends Map, B extends Block> {
 
 	private int sections;
 	
@@ -32,7 +14,7 @@ public abstract class Level<M extends Map> {
 	
 	private String[] mapImages;
 	
-	protected Block[] blockSet;
+	protected BlockSet<B> blockSet;
 	
 	/**
 	 * constructs a new mapgroup for the scene
@@ -40,7 +22,7 @@ public abstract class Level<M extends Map> {
 	 * @param ip - the paths to the map loader images
 	 * @param bs - the blockset for the maps
 	 */
-	public Level(String[] ip, Block[] bs) {
+	public Level(String[] ip, BlockSet<B> bs) {
 		sections = ip.length;
 		mapImages = ip;
 		blockSet = bs;
@@ -52,7 +34,7 @@ public abstract class Level<M extends Map> {
 	 * @param ip - the paths to the map loader images
 	 * @param bs - the blockset for the maps
 	 */
-	public Level(String ip, Block[] bs) {
+	public Level(String ip, BlockSet<B> bs) {
 		sections = 1;
 		mapImages = new String[] {ip};
 		blockSet = bs;
@@ -108,7 +90,7 @@ public abstract class Level<M extends Map> {
 		return create;
 	}
 	
-	public Block[] getBlockSet() {
+	public BlockSet<B> getBlockSet() {
 		return blockSet;
 	}
 	
@@ -137,10 +119,10 @@ public abstract class Level<M extends Map> {
 			}
 		}
 		
-		mapSpawn();
+		onLevelLoad();
 	}
 	
-	abstract public void mapSpawn();
+	abstract public void onLevelLoad();
 	
 	private class LoaderThread implements Runnable {
 		int number;
@@ -174,7 +156,7 @@ public abstract class Level<M extends Map> {
 				}
 			}
 			
-			int bs = blockSet.length;
+			int bs = blockSet.getLength();
 			Thread[] tList = new Thread[bs];
 			for(int i = 0; i < bs; ++i) {
 				(tList[i] = new Thread(new PlacerThread(i, width, height, data, tiles[number]))).run();
@@ -211,7 +193,7 @@ public abstract class Level<M extends Map> {
 		}
 		
 		public void run() {
-			int color = blockSet[block].colorCode;
+			int color = blockSet.get(block).colorCode;
 			for(int j = 0; j < height; ++j) {
 				for(int i = 0; i < width; ++i) {
 					if(data[j * width + i] == color) {

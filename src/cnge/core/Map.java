@@ -14,7 +14,7 @@ abstract public class Map<B extends Block> extends Entity {
 	
 	public static final int NO_BLOCK = -1;
 	
-	protected B[] blockSet;
+	protected BlockSet<B> blockSet;
 	private int[][] tiles;
 	private int width;
 	private int height;
@@ -40,7 +40,7 @@ abstract public class Map<B extends Block> extends Entity {
 		getOnScreenDims();
 	}
 	
-	public void mapSetup(float x, float y, B[] bs, int[][] t) {
+	public void mapSetup(float x, float y, BlockSet<B> bs, int[][] t) {
 		setup(x, y);
 		tiles = t;
 		width = t.length;
@@ -62,19 +62,15 @@ abstract public class Map<B extends Block> extends Entity {
 	abstract public void mapRender(Transform t, Texture tx);
 	
 	public interface Access {
-		int access(Map<?> m, int x, int y) throws MapAccessException;
+		Object access(Object[][] a, int x, int y) throws AccessException;
 	}
 	
-	public int access(int x, int y) throws MapAccessException {
-		return access.access(this, x, y);
+	public Object access(Object[][] a, int x, int y) throws AccessException {
+		return access.access(a, x, y);
 	}
 	
-	public B block(int b) throws NullBlockException {
-		if(b == -1) {
-			throw new NullBlockException();
-		}else {
-			return blockSet[b];
-		}
+	public BlockSet<B> getBlockSet(){
+		return blockSet;
 	}
 	
 	public void getOnScreenDims() {
@@ -128,10 +124,6 @@ abstract public class Map<B extends Block> extends Entity {
 	
 	public int get(int x, int y) {
 		return tiles[x][y];
-	}
-	
-	public Block[] getSet() {
-		return blockSet;
 	}
 	
 	public int getWidth() {
@@ -201,16 +193,16 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @param y - map coordinate
 	 * 
 	 * @return the block there
-	 * @throws MapAccessException
+	 * @throws AccessException
 	 * 
 	 * @see atX()
 	 * @see atY()
 	 */
-	public int boundedAccess(int x, int y) throws MapAccessException {
+	public int boundedAccess(int[][] a, int x, int y) throws AccessException {
 		try {
-			return tiles[x][y];
+			return a[x][y];
 		} catch(ArrayIndexOutOfBoundsException ex) {
-			throw new MapAccessException();
+			throw new AccessException();
 		}
 	}
 	
@@ -225,9 +217,9 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @see atX()
 	 * @see atY()
 	 */
-	public int edgeAccess(int x, int y) {
+	public int edgeAccess(int[][] a, int x, int y) {
 		try {
-			return tiles[x][y];
+			return a[x][y];
 		} catch(ArrayIndexOutOfBoundsException ex) {
 			if(x < 0) {
 				x = 0;
@@ -239,7 +231,7 @@ abstract public class Map<B extends Block> extends Entity {
 			} else if(y >= height) {
 				y = height - 1;
 			}
-			return tiles[x][y];
+			return a[x][y];
 		}
 	}
 	
@@ -250,14 +242,14 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @param y - map coordinate
 	 * 
 	 * @return the block there
-	 * @throws MapAccessException
+	 * @throws AccessException
 	 * 
 	 * @see atX()
 	 * @see atY()
 	 */
-	public int horzEdgeAccess(int x, int y) throws MapAccessException {
+	public int horzEdgeAccess(int[][] a, int x, int y) throws AccessException {
 		try {
-			return tiles[x][y];
+			return a[x][y];
 		} catch(ArrayIndexOutOfBoundsException ex) {
 			if(x < 0) {
 				x = 0;
@@ -265,9 +257,9 @@ abstract public class Map<B extends Block> extends Entity {
 				x = width - 1;
 			}
 			try {
-				return tiles[x][y];
+				return a[x][y];
 			} catch(ArrayIndexOutOfBoundsException e) {
-				throw new MapAccessException();
+				throw new AccessException();
 			}
 		}
 	}
@@ -279,12 +271,12 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @param y - map coordinate
 	 * 
 	 * @return the block there
-	 * @throws MapAccessException
+	 * @throws AccessException
 	 * 
 	 * @see atX()
 	 * @see atY()
 	 */
-	public int vertEdgeAccess(int x, int y) throws MapAccessException {
+	public int vertEdgeAccess(int x, int y) throws AccessException {
 		try {
 			return tiles[x][y];
 		} catch(ArrayIndexOutOfBoundsException ex) {
@@ -296,7 +288,7 @@ abstract public class Map<B extends Block> extends Entity {
 			try {
 				return tiles[x][y];
 			} catch(ArrayIndexOutOfBoundsException e) {
-				throw new MapAccessException();
+				throw new AccessException();
 			}
 		}
 	}
@@ -308,12 +300,12 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @param y - map coordinate
 	 * 
 	 * @return the block there
-	 * @throws MapAccessException
+	 * @throws AccessException
 	 * 
 	 * @see atX()
 	 * @see atY()
 	 */
-	public int repeatHorzAccess(int x, int y) throws MapAccessException {
+	public int repeatHorzAccess(int x, int y) throws AccessException {
 		try {
 			return tiles[x][y];
 		} catch(ArrayIndexOutOfBoundsException ex) {
@@ -321,7 +313,7 @@ abstract public class Map<B extends Block> extends Entity {
 			try {
 				return tiles[x][y];
 			} catch(ArrayIndexOutOfBoundsException e) {
-				throw new MapAccessException();
+				throw new AccessException();
 			}
 		}
 	}
@@ -352,17 +344,8 @@ abstract public class Map<B extends Block> extends Entity {
 	 * 
 	 * @author Emmet
 	 */
-	public static class MapAccessException extends Exception {
+	public static class AccessException extends Exception {
 		private static final long serialVersionUID = 9197260479519042104L;
-	}
-	
-	/**
-	 * will be thrown when you try to access a block and there's nothing there
-	 * 
-	 * @author Emmet
-	 */
-	public static class NullBlockException extends Exception {
-		private static final long serialVersionUID = 9197260478519042104L;
 	}
 	
 	public void render(int layer) {

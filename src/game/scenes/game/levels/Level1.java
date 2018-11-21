@@ -13,8 +13,4 @@ public class Level1 extends SparkLevel {
 		);
 	}
 	
-	public SparkMap mapCreate(int i, Object... params) {
-		return new SparkMap();
-	}
-	
 }

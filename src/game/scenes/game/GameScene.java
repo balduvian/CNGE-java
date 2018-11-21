@@ -1,6 +1,7 @@
 package game.scenes.game;
 
 import cnge.core.Scene;
+import cnge.graphics.Transform;
 import game.scenes.game.entities.Battery;
 import game.scenes.game.entities.Blackening;
 import game.scenes.game.entities.Countdown;
@@ -25,6 +26,8 @@ public class GameScene extends Scene {
 	
 	public double startTimer;
 	
+	public float currentMapHeight;
+	
 	public GameScene() {
 		new GameGraphics().init();
 		new GameBlocks().init();
@@ -42,6 +45,8 @@ public class GameScene extends Scene {
 		
 		m.load();
 		currentMap = m.createMap(0, 0, 0);
+		currentMapHeight = currentMap.getHeight();
+		
 		createEntity(background = new Sky(), 0, 0);
 		createEntity(blackening = new Blackening(), 0, 0);
 		createEntity(countdown = new Countdown(), 128, 80);
@@ -68,12 +73,13 @@ public class GameScene extends Scene {
 			player.controllable = true;
 		}
 		
+		eUpdate(player);
+		cameraDownLimit(currentMapHeight * 32);
+		
 		eUpdate(background);
 		
 		eUpdate(blackening);
 		eUpdate(countdown);
-		
-		eUpdate(player);
 		
 		for(int i = 0; i < numBatteries; ++i) {
 			eUpdate_OS(batteries[i]);

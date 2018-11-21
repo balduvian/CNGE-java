@@ -16,19 +16,22 @@ import game.shaders.TextureShader;
 
 public class SparkMap extends Map<TexBlock> {
 	
-	public SparkMap() {
+	public byte[][] values;
+	
+	public SparkMap(byte[][] v) {
 		super(mAccess, 32);
+		values = v;
 	}
 
 	public static Access mAccess = new Access() {
-		public int access(Map<?> m, int x, int y) throws MapAccessException {
+		public int access(Map<?> m, int x, int y) throws AccessException {
 			return m.edgeAccess(x, y);
 		}
 	};
 	
 	public void blockRender(int l, int x, int y, float left, float right, float up, float down) {
 		try {
-			TexBlock tb = block(access(x, y));
+			TexBlock tb = blockSet.get(access(x, y));
 			if(tb.layer == l) {
 				TileTexture tex = tb.texture;
 				
@@ -39,7 +42,7 @@ public class SparkMap extends Map<TexBlock> {
 				tileShader.setMvp(camera.getModelProjectionMatrix(camera.getModelMatrix(left, right, up, down)));
 				
 				try {
-					if(tb.id == PLAIN_BLOCK && SparkLevel.values[x][y] == SparkLevel.VALUE_TOP) {
+					if(tb.id == PLAIN_BLOCK && SparkLevel.isUpWall(values[x][y])) {
 						tileShader.setUniforms(tex.getX(), tex.getY(), tex.getZ(0), tex.getW(1), 1, 1, 1, 1);
 					}else {
 						tileShader.setUniforms(tex.getX(), tex.getY(), tex.getZ(tb.texX), tex.getW(tb.texY), 1, 1, 1, 1);
@@ -54,11 +57,7 @@ public class SparkMap extends Map<TexBlock> {
 				
 				Texture.unbind();
 			}
-		} catch (MapAccessException ex) {
-			
-		} catch (NullBlockException ex) {
-			
-		}
+		} catch (AccessException ex) { }
 	}
 	
 	public void mapRender(Transform t, Texture tx) {
