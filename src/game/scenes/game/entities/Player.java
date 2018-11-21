@@ -6,7 +6,6 @@ import cnge.core.Base;
 import cnge.core.Entity;
 import cnge.core.Hitbox;
 import cnge.core.Map;
-import cnge.core.Map.AccessException;
 import cnge.core.animation.Anim2D;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
@@ -276,8 +275,9 @@ public class Player extends Entity {
 		
 		for(int i = l; i <= r; ++i) {
 			for(int j = u; j <= d; ++j) {
-				try {
-					SparkBlock sb = (SparkBlock)map.getBlockSet().get((map.access(i, j)));
+				int bId = map.mapAccess(i, j);
+				if(bId != Map.OUTSIDE_MAP ) {
+					SparkBlock sb = (SparkBlock)map.getBlockSet().get(bId);
 					if(sb.solid) {
 						do {
 							float upSide = map.getY(j);
@@ -286,7 +286,7 @@ public class Player extends Entity {
 							float rightSide = map.getX(i + 1);
 							
 							//the current wall value for this block, telling whether it is collidable on any given face
-							byte wallValue = map.values[i][j];
+							int wallValue = map.access(map.values, i, j);
 							//if the player, not factoring in movement, is inside the vertical span of the block
 							boolean withinVertical = (baseUp < downSide && baseDown > upSide);
 							//same for horizontal
@@ -329,7 +329,7 @@ public class Player extends Entity {
 							
 						} while(false);
 					}
-				} catch (AccessException ex) { }
+				}
 			}
 		}
 		air = !hasHitGround;

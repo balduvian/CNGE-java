@@ -12,7 +12,8 @@ import cnge.graphics.texture.Texture;
 
 abstract public class Map<B extends Block> extends Entity {
 	
-	public static final int NO_BLOCK = -1;
+	public static final int DEFAULT_BLOCK = -1;
+	public static final int OUTSIDE_MAP = -2;
 	
 	protected BlockSet<B> blockSet;
 	private int[][] tiles;
@@ -62,11 +63,15 @@ abstract public class Map<B extends Block> extends Entity {
 	abstract public void mapRender(Transform t, Texture tx);
 	
 	public interface Access {
-		Object access(Object[][] a, int x, int y) throws AccessException;
+		int access( int[][] a, int x, int y);
 	}
 	
-	public Object access(Object[][] a, int x, int y) throws AccessException {
+	public int access(int[][] a, int x, int y) {
 		return access.access(a, x, y);
+	}
+	
+	public int mapAccess(int x, int y) {
+		return access.access(tiles, x, y);
 	}
 	
 	public BlockSet<B> getBlockSet(){
@@ -198,12 +203,20 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @see atX()
 	 * @see atY()
 	 */
-	public int boundedAccess(int[][] a, int x, int y) throws AccessException {
-		try {
-			return a[x][y];
-		} catch(ArrayIndexOutOfBoundsException ex) {
-			throw new AccessException();
+	public int boundedAccess(int[][] a, int x, int y) {
+		int width_m = a.length - 1;
+		int height_m = a[0].length - 1;
+		if(x < 0) {
+			return OUTSIDE_MAP;
+		} else if (x > width_m) {
+			return OUTSIDE_MAP;
 		}
+		if(y < 0) {
+			return OUTSIDE_MAP;
+		} else if (y > height_m) {
+			return OUTSIDE_MAP;
+		}
+		return a[x][y];
 	}
 	
 	/**
@@ -217,22 +230,20 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @see atX()
 	 * @see atY()
 	 */
-	public int edgeAccess(int[][] a, int x, int y) {
-		try {
-			return a[x][y];
-		} catch(ArrayIndexOutOfBoundsException ex) {
-			if(x < 0) {
-				x = 0;
-			} else if(x >= width) {
-				x = width - 1;
-			}
-			if(y < 0) {
-				y = 0;
-			} else if(y >= height) {
-				y = height - 1;
-			}
-			return a[x][y];
+	public static int edgeAccess(int[][] a, int x, int y) {
+		int width_m = a.length - 1;
+		int height_m = a[0].length - 1;
+		if(x < 0) {
+			x = 0;
+		} else if (x > width_m) {
+			x = width_m;
 		}
+		if(y < 0) {
+			y = 0;
+		} else if (y > height_m) {
+			y = height_m;
+		}
+		return a[x][y];
 	}
 	
 	/**
@@ -247,21 +258,20 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @see atX()
 	 * @see atY()
 	 */
-	public int horzEdgeAccess(int[][] a, int x, int y) throws AccessException {
-		try {
-			return a[x][y];
-		} catch(ArrayIndexOutOfBoundsException ex) {
-			if(x < 0) {
-				x = 0;
-			} else if(x >= width) {
-				x = width - 1;
-			}
-			try {
-				return a[x][y];
-			} catch(ArrayIndexOutOfBoundsException e) {
-				throw new AccessException();
-			}
+	public static int horzEdgeAccess(int[][] a, int x, int y) {
+		int width_m = a.length - 1;
+		int height_m = a[0].length - 1;
+		if(x < 0) {
+			x = 0;
+		} else if (x > width_m) {
+			x = width_m;
 		}
+		if(y < 0) {
+			return OUTSIDE_MAP;
+		} else if (y > height_m) {
+			return OUTSIDE_MAP;
+		}
+		return a[x][y];
 	}
 	
 	/**
@@ -276,21 +286,20 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @see atX()
 	 * @see atY()
 	 */
-	public int vertEdgeAccess(int x, int y) throws AccessException {
-		try {
-			return tiles[x][y];
-		} catch(ArrayIndexOutOfBoundsException ex) {
-			if(y < 0) {
-				y = 0;
-			} else if(y >= height) {
-				y = height - 1;
-			}
-			try {
-				return tiles[x][y];
-			} catch(ArrayIndexOutOfBoundsException e) {
-				throw new AccessException();
-			}
+	public static int vertEdgeAccess(int[][] a, int x, int y) {
+		int width_m = a.length - 1;
+		int height_m = a[0].length - 1;
+		if(x < 0) {
+			return OUTSIDE_MAP;
+		} else if (x > width_m) {
+			return OUTSIDE_MAP;
 		}
+		if(y < 0) {
+			y = 0;
+		} else if (y > height_m) {
+			y = height_m;
+		}
+		return a[x][y];
 	}
 	
 	/**
@@ -305,17 +314,16 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @see atX()
 	 * @see atY()
 	 */
-	public int repeatHorzAccess(int x, int y) throws AccessException {
-		try {
-			return tiles[x][y];
-		} catch(ArrayIndexOutOfBoundsException ex) {
-			x %= width;
-			try {
-				return tiles[x][y];
-			} catch(ArrayIndexOutOfBoundsException e) {
-				throw new AccessException();
-			}
+	public static int repeatHorzAccess(int[][] a, int x, int y) {
+		int width = a.length;
+		int height_m = a[0].length - 1;
+		x %= width;
+		if(y < 0) {
+			return OUTSIDE_MAP;
+		} else if (y > height_m) {
+			return OUTSIDE_MAP;
 		}
+		return a[x][y];
 	}
 	
 	/**
@@ -329,23 +337,12 @@ abstract public class Map<B extends Block> extends Entity {
 	 * @see atX()
 	 * @see atY()
 	 */
-	public int repeatAllAccess(int x, int y) {
-		try {
-			return tiles[x][y];
-		} catch(ArrayIndexOutOfBoundsException ex) {
-			x %= width;
-			y %= height;
-			return tiles[x][y];
-		}
-	}
-	
-	/**
-	 * will be thrown when you try and access a map and it's outside the map bounds
-	 * 
-	 * @author Emmet
-	 */
-	public static class AccessException extends Exception {
-		private static final long serialVersionUID = 9197260479519042104L;
+	public static int repeatAllAccess(int[][] a, int x, int y) {
+		int width = a.length;
+		int height = a[0].length;
+		x %= width;
+		y %= height;
+		return a[x][y];
 	}
 	
 	public void render(int layer) {

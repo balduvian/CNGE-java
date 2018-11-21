@@ -22,7 +22,7 @@ abstract public class SparkLevel extends Level<SparkMap, TexBlock> {
 	/*
 	 * contains wall data
 	 */
-	public byte[][] values;
+	public int[][] values;
 			
 	public int[][] batteryPlacements;
 	
@@ -36,35 +36,35 @@ abstract public class SparkLevel extends Level<SparkMap, TexBlock> {
 		super(ip, bs);
 	}
 	
-	public byte makeValueUp(byte value) {
+	public int makeValueUp(int value) {
 		return value |= 128;
 	}
 	
-	public byte makeValueRight(byte value) {
+	public int makeValueRight(int value) {
 		return value |= 64;
 	}
 	
-	public byte makeValueDown(byte value) {
+	public int makeValueDown(int value) {
 		return value |= 32;
 	}
 	
-	public byte makeValueLeft(byte value) {
+	public int makeValueLeft(int value) {
 		return value |= 16;
 	}
 	
-	public static boolean isUpWall(byte wallValue) {
+	public static boolean isUpWall(int wallValue) {
 		return (wallValue & 128) == 128;
 	}
 	
-	public static boolean isRightWall(byte wallValue) {
+	public static boolean isRightWall(int wallValue) {
 		return (wallValue & 64) == 64;
 	}
 	
-	public static boolean isDownWall(byte wallValue) {
+	public static boolean isDownWall(int wallValue) {
 		return (wallValue & 32) == 32;
 	}
 	
-	public static boolean isLeftWall(byte wallValue) {
+	public static boolean isLeftWall(int wallValue) {
 		return (wallValue & 16) == 16;
 	}
 	
@@ -72,16 +72,16 @@ abstract public class SparkLevel extends Level<SparkMap, TexBlock> {
 		int w = tiles[0].length;
 		int h = tiles[0][0].length;
 		
-		values = new byte[w][h];
+		values = new int[w][h];
 		
 		ArrayList<int[]> batteries = new ArrayList<int[]>();
 		
 		for(int i = 0; i < w; ++i) {
-			for(int j = 1; j < h; ++j) {
+			for(int j = 0; j < h; ++j) {
 				int block = tiles[0][i][j];
 				SparkBlock bl = (blockSet.get(tiles[0][i][j]));
 				if(bl.solid) {
-					byte wallValue = 0;
+					int wallValue = 0;
 					if(j != 0 && !(blockSet.get(tiles[0][i][j - 1])).solid) {
 						wallValue = makeValueUp(wallValue);
 					}
