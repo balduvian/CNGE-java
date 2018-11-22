@@ -1,5 +1,6 @@
 package game.scenes.game.entities;
 
+import static game.scenes.game.scenery.GameEntities.player;
 import static game.scenes.game.scenery.GameGraphics.*;
 
 import cnge.core.Base;
@@ -363,6 +364,10 @@ public class Player extends Entity {
 		t.move(dx, dy);
 		
 		scene.setCameraCenter(t.x + t.getWidth() / 2, t.y + t.getHeight() / 2);
+		
+		if(t.y > ((GameScene)scene).deathBarrier) {
+			((GameScene)scene).die();
+		}
 	}
 	
 	public void render() {

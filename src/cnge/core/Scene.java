@@ -53,10 +53,6 @@ public abstract class Scene {
 		e.setup(x, y);
 	}
 	
-	public void destroyEntity(Entity e) {
-		e = null;
-	}
-	
 	public void eUpdate(Entity e) {
 		e.update();
 	}

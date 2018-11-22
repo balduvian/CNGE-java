@@ -56,8 +56,10 @@ public class Battery extends Entity {
 	
 	public void update() {
 		anim.update();
-		if(box.intersects(player.getTransform().x - transform.x, player.getTransform().y - transform.y, player.collectBox)) {
-			batteries[batteryIndex] = null;
+		if(player != null) {
+			if(box.intersects(player.getTransform().x - transform.x, player.getTransform().y - transform.y, player.collectBox)) {
+				batteries[batteryIndex] = null;
+			}
 		}
 	}
 	

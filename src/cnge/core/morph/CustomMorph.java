@@ -38,4 +38,8 @@ public class CustomMorph {
 		end = e;
 	}
 	
+	public void setTime(double t) {
+		time = t;
+	}
+	
 }

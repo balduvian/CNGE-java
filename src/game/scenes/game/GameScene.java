@@ -1,6 +1,7 @@
 package game.scenes.game;
 
 import cnge.core.Scene;
+import cnge.core.Timer;
 import cnge.graphics.Transform;
 import game.scenes.game.entities.Battery;
 import game.scenes.game.entities.Blackening;
@@ -18,15 +19,15 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class GameScene extends Scene {
 	
-	public static final double START_TIME = 3;
-	
 	public boolean pressJump;
 	public boolean pressLeft;
 	public boolean pressRight;
 	
-	public double startTimer;
-	
 	public float currentMapHeight;
+	public float deathBarrier;
+	
+	public Timer startTimer;
+	public Timer deathTimer;
 	
 	public GameScene() {
 		new GameGraphics().init();
@@ -36,6 +37,20 @@ public class GameScene extends Scene {
 	
 	@Override
 	public void start() {
+		deathTimer = new Timer(
+			2, //2 seconds after you die to restart
+			()-> {
+				startMap(currentLevel);
+			}
+		);
+		
+		startTimer = new Timer(
+			3, //3, 2, 1, GO
+			() -> {
+				player.controllable = true;
+			}
+		);
+		
 		startMap(level1);
 	}
 	
@@ -46,11 +61,11 @@ public class GameScene extends Scene {
 		m.load();
 		currentMap = m.createMap(0, 0, 0);
 		currentMapHeight = currentMap.getHeight();
+		deathBarrier = (currentMapHeight + 1) * 32;
 		
 		createEntity(background = new Sky(), 0, 0);
 		createEntity(blackening = new Blackening(), 0, 0);
 		createEntity(countdown = new Countdown(), 128, 80);
-		startTimer = START_TIME;
 		
 		numBatteries = m.batteryPlacements.length;
 		batteries = new Battery[numBatteries];
@@ -59,6 +74,8 @@ public class GameScene extends Scene {
 		}
 		
 		createEntity(player = new Player(), currentLevel.startX, currentLevel.startY);
+		
+		startTimer.start();
 	}
 	
 	@Override
@@ -67,14 +84,13 @@ public class GameScene extends Scene {
 		pressRight = window.keyPressed(GLFW_KEY_D);
 		pressLeft = window.keyPressed(GLFW_KEY_A);
 		
-		if(startTimer > 0) {
-			startTimer -= Base.time;	
-		} else {
-			player.controllable = true;
-		}
+		startTimer.update();
+		deathTimer.update();
 		
-		eUpdate(player);
+		eUpdate_S(player);
+		
 		cameraDownLimit(currentMapHeight * 32);
+		cameraLeftLimit(0);
 		
 		eUpdate(background);
 		
@@ -99,7 +115,7 @@ public class GameScene extends Scene {
 			eRender_OS(batteries[i]);
 		}
 		
-		eRender(player);
+		eRender_S(player);
 		
 		eRender_S(blackening);
 		eRender_S(countdown);
@@ -111,6 +127,13 @@ public class GameScene extends Scene {
 	@Override
 	public void resizeUpdate() {
 		
+	}
+	
+	public void die() {
+		deathTimer.start();
+		player = null;
+		blackening.alphaMorph.setTime(2);
+		blackening.alphaMorph.reset(0, 1);
 	}
 	
 }
