@@ -41,9 +41,15 @@ public class Base {
 	private int gameScreenType;
 	private boolean gamePixelType;
 	
+	/**
+	 * FRAME WIDTH IS THE WIDTH IN SCREEN SPACE
+	 */
 	private int frameWidth;
 	private int frameHeight;
 	
+	/**
+	 * GAME WIDTH IS THE WIDTH IN VIRTUAL SPACE
+	 */
 	private int gameWidth;
 	private int gameHeight;
 	private int gameLimit;
@@ -73,7 +79,7 @@ public class Base {
 	public Base(Window win, BasePreset set) {
 		window = win;
 		
-		frameRate = window.getRefreshRate();
+		frameRate = window.getRefreshRate() + 10;
 		
 		camera = new Camera(1, 1);
 		

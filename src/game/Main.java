@@ -8,6 +8,7 @@ import cnge.core.Font;
 import cnge.graphics.Window;
 import cnge.graphics.texture.TexturePreset;
 import game.scenes.game.GameScene;
+import game.scenes.noise.NoiseScene;
 
 public class Main {
 	
@@ -44,9 +45,10 @@ public class Main {
 		
 		TexturePreset.setDefaults(false, false, true);
 		
-		Base base = new Base(window, new BasePreset(BasePreset.ASPECT_FIXED, BasePreset.UNIT_SCREEN_PIXELS, 512, 288));
+		Base base = new Base(window, new BasePreset(BasePreset.ASPECT_FIXED, BasePreset.UNIT_SCREEN_PIXELS, 512, 288, 10));
 		
-		base.start(new GameScene());
+		//base.start(new GameScene());
+		base.start(new NoiseScene());
 	}
 	
 }
