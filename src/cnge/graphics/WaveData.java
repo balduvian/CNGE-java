@@ -1,6 +1,8 @@
 package cnge.graphics;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -58,10 +60,10 @@ public class WaveData {
 		return data;
 	}
  
-	public static WaveData create(String file) {
+	public static WaveData create(String path) {
 		WaveData wavStream = null;
 		try {
-			InputStream stream = WaveData.class.getClassLoader().getResource(file).openStream();
+			InputStream stream = new FileInputStream(path);
 			InputStream bufferedInput = new BufferedInputStream(stream);
 			AudioInputStream audioStream = null;
 			audioStream = AudioSystem.getAudioInputStream(bufferedInput);

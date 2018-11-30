@@ -3,10 +3,12 @@ package cnge.core;
 import cnge.graphics.Camera;
 import cnge.graphics.Transform;
 import cnge.graphics.Window;
+import game.SparkLoadScreen;
+import game.scenes.noise.NoiseAssets;
 
-public abstract class Scene {
+public abstract class Scene<S extends Scene<S>> {
 
-	private static Base base;
+	protected static Base base;
 	
 	protected static Window window;
 	
@@ -16,10 +18,18 @@ public abstract class Scene {
 	protected static int screenWidth;
 	protected static int screenHeight;
 	
+	protected AssetBundle<S> assets;
+	
+	@SuppressWarnings("unchecked")
+	public Scene(AssetBundle<S> a) {
+		assets = a;
+		a.giveScene((S)this);
+	}
+	
 	/*
 	 * static stuff that the base gives to the scene
 	 */
-
+	
 	public Camera getCamera() {
 		return camera;
 	}

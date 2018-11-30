@@ -1,10 +1,9 @@
 package game.scenes.game;
 
-import static game.scenes.game.scenery.GameGraphics.*;
+import static game.scenes.game.GameAssets.*;
 
 import cnge.core.Font;
 import cnge.graphics.Shader;
-import cnge.graphics.Shape;
 import cnge.graphics.texture.Texture;
 
 public class SparkFont extends Font{

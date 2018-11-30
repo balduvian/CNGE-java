@@ -18,7 +18,7 @@ import cnge.graphics.texture.TexturePreset;
 /**
  * @author Emmet
  */
-public class Base {
+abstract public class Base {
 	
 	public static int fps;
 	public static double time;
@@ -31,6 +31,9 @@ public class Base {
 	private int frameRate;
 	
 	private Scene scene;
+	private LoadScreen loadScreen;
+	
+	private boolean loading;
 	
 	private BaseShader baseShader;
 	
@@ -38,7 +41,8 @@ public class Base {
 	
 	private boolean fullWidth;
 	
-	private int gameScreenType;
+	private Framer screenType;
+	
 	private boolean gamePixelType;
 	
 	/**
@@ -88,6 +92,7 @@ public class Base {
 		baseShader = new BaseShader();
 		
 		Scene.giveStuff(camera, this, window);
+		AssetBundle.giveBase(this);
 		Shape.giveCamera(camera);
 		FBO.giveStuff(window, camera);
 		Entity.giveCamera(camera);
@@ -97,7 +102,7 @@ public class Base {
 		
 		audio = new ALManagement();
 		
-		gameScreenType = set.screenType;
+		screenType = set.screenType;
 		gamePixelType = set.pixelType;
 		gameWidth = set.width;
 		gameHeight = set.height;
@@ -110,6 +115,8 @@ public class Base {
 				reFrame(w, h);
 			}
 		);
+		
+		reFrame(window.getWidth(), window.getHeight());
 	}
 	
 	/**
@@ -121,11 +128,10 @@ public class Base {
 		scene = s;
 		Entity.giveScene(s);
 		
-		reFrame(window.getWidth(), window.getHeight());
-		
 		scene.start();
 		
 		gameLoop();
+		
 	}
 	
 	/**
@@ -139,6 +145,62 @@ public class Base {
 		scene.start();
 	}
 	
+	public void setLoading(LoadScreen s, boolean l) {
+		loadScreen = s;
+		loading = l;
+	}
+	
+	public void loadLoadScreen(LoadScreen s) {
+		s.giveCamera(camera);
+	}
+	
+	public interface Framer {
+		public void reFrame(Base b, int w, int h);
+	}
+	
+	public static final Framer PIXEL_FRAMER = new Framer() {
+		public void reFrame(Base b, int w, int h) {
+			b.frameWidth = w;
+			b.frameHeight = h;
+		}
+	};
+	
+	public static final Framer ASPECT_FRAMER = new Framer() {
+		public void reFrame(Base b, int w, int h) {
+			float windowRatio = (float)window.getWidth() / window.getHeight();
+			
+			float gameRatio = (float)b.gameWidth / b.gameHeight;
+			
+			if(windowRatio < gameRatio) {
+				b.fullWidth = true;
+				b.frameWidth = window.getWidth();
+				b.frameHeight = (int)(window.getHeight() * (windowRatio/gameRatio));
+			}else {
+				b.fullWidth = false;
+				b.frameWidth = (int)(window.getWidth() * (gameRatio/windowRatio));
+				b.frameHeight = window.getHeight();
+			}
+		}
+	};
+	
+	public static final Framer STRETCH_FRAMER = new Framer() {
+		public void reFrame(Base b, int w, int h) {
+			b.fullWidth = false;
+			
+			float windowRatio = (float)window.getWidth() / window.getHeight();
+			
+			b.frameHeight = h;
+			
+			b.gameWidth = (int)Math.round(windowRatio * b.gameHeight);
+			if(b.gameWidth > b.gameLimit) {
+				b.gameWidth = b.gameLimit;
+				b.frameWidth = (int)Math.round(window.getWidth() * ( (float)(b.gameWidth / b.gameHeight) / (windowRatio) ));
+			}else {
+				b.frameWidth = w;
+			}
+		}
+	};
+	
 	/**
 	 * called when the window is resized, sets the renderable frame inside the window based on the screen mode
 	 * 
@@ -149,64 +211,8 @@ public class Base {
 		
 		beingResized = true;
 		time = 0;
-		//alrighty, now let's set the frame that will be rendered in the window based on the height and width of the window
-		switch(gameScreenType) {
-			case BasePreset.SCREEN_PIXEL:
-				//the frame will be the same size as the window
-				frameWidth = w;
-				frameHeight = h;
-				break;
-			case BasePreset.ASPECT_STRETCH_HORZ:
-				
-				fullWidth = false;
-				
-				float windowRatio = (float)window.getWidth() / window.getHeight();
-				
-				frameHeight = h;
-				
-				gameWidth = (int)Math.round(windowRatio * gameHeight);
-				if(gameWidth > gameLimit) {
-					gameWidth = gameLimit;
-					frameWidth = (int)Math.round(window.getWidth() * ( (float)(gameWidth / gameHeight) / (windowRatio) ));
-				}else {
-					frameWidth = w;
-				}
-				
-				break;
-			case BasePreset.ASPECT_STRETCH_VERT:
-				
-				fullWidth = true;
-				
-				windowRatio = (float)window.getHeight() / window.getWidth();
-				
-				frameWidth = w;
-				
-				gameHeight = (int)Math.round(windowRatio * gameWidth);
-				if(gameHeight > gameLimit) {
-					gameHeight = gameLimit;
-					frameHeight = (int)Math.round(window.getHeight() * ( (float)(gameHeight / gameWidth) / (windowRatio) ));
-				}else {
-					frameHeight = h;
-				}
-				
-				break;
-			case BasePreset.ASPECT_FIXED:
-				windowRatio = (float)window.getWidth() / window.getHeight();
-				
-				float gameRatio = (float)gameWidth / gameHeight;
-				
-				if(windowRatio < gameRatio) {
-					fullWidth = true;
-					frameWidth = window.getWidth();
-					frameHeight = (int)(window.getHeight() * (windowRatio/gameRatio));
-				}else {
-					fullWidth = false;
-					frameWidth = (int)(window.getWidth() * (gameRatio/windowRatio));
-					frameHeight = window.getHeight();
-				}
-				
-				break;
-		}
+		
+		screenType.reFrame(this, w, h);
 		
 		if(gamePixelType) {
 			screenBuffer.replaceTexture(new Texture(gameWidth, gameHeight, new TexturePreset().nearest(true)));
@@ -216,8 +222,10 @@ public class Base {
 		
 		camera.setDims(gameWidth, gameHeight);
 		
-		Scene.giveDims(w, h);
-		scene.resizeUpdate();
+		if(scene != null) {
+			Scene.giveDims(w, h);
+			scene.resizeUpdate();
+		}
 	}
 	
 	public void gameLoop() {
@@ -241,7 +249,7 @@ public class Base {
 				
 				update();
 				render();
-				window.swap();
+				
 				last = now; 
 				++frames;
 			}
@@ -255,15 +263,17 @@ public class Base {
 		audio.destroy();
 	}
 	
-	private void update() {
+	public void update() {
 		window.update();
 		
-		scene.update();
+		if(!loading) {
+			scene.update();
+		}
 		
 		camera.update();
 	}
 	
-	private void render() {
+	public void render() {
 		
 		//start up that mf game screenBuffer
 		screenBuffer.enable();
@@ -271,7 +281,11 @@ public class Base {
 		glClearColor(1, 0, 1, 1);
 		Window.clear(); //clear the game screenBuffer
 		
-		scene.render();
+		if(loading) {
+			loadScreen.render();
+		} else {
+			scene.render();
+		}
 		
 		FBO.enableDefault();
 		//close down that mf screenBuffer
@@ -298,6 +312,7 @@ public class Base {
 		
 		Texture.unbind();
 
+		window.swap();
 	}
 	
 }

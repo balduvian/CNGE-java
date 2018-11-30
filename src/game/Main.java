@@ -5,6 +5,7 @@ import java.io.IOException;
 import cnge.core.Base;
 import cnge.core.BasePreset;
 import cnge.core.Font;
+import cnge.core.LoadScreen;
 import cnge.graphics.Window;
 import cnge.graphics.texture.TexturePreset;
 import game.scenes.game.GameScene;
@@ -45,10 +46,9 @@ public class Main {
 		
 		TexturePreset.setDefaults(false, false, true);
 		
-		Base base = new Base(window, new BasePreset(BasePreset.ASPECT_FIXED, BasePreset.UNIT_SCREEN_PIXELS, 512, 288, 10));
+		SparkBase base = new SparkBase(window, new BasePreset(Base.ASPECT_FRAMER, BasePreset.UNIT_SCREEN_PIXELS, 512, 288, 10));
 		
-		//base.start(new GameScene());
-		base.start(new NoiseScene());
+		base.start(new GameScene());
 	}
 	
 }

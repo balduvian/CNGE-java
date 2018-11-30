@@ -1,7 +1,6 @@
 package game.scenes.game.entities;
 
-import static game.scenes.game.scenery.GameEntities.player;
-import static game.scenes.game.scenery.GameGraphics.*;
+import static game.scenes.game.GameAssets.*;
 
 import cnge.core.Base;
 import cnge.core.Entity;
@@ -16,7 +15,6 @@ import game.SparkBlock;
 import game.scenes.game.GameScene;
 import game.scenes.game.SparkLevel;
 import game.scenes.game.SparkMap;
-import game.scenes.game.scenery.GameEntities;
 
 public class Player extends Entity {
 
@@ -105,7 +103,7 @@ public class Player extends Entity {
 	
 	public void update() {
 		GameScene gs = ((GameScene)scene);
-		SparkMap map = GameEntities.currentMap;
+		SparkMap map = currentMap;
 		Transform t = getTransform();
 		Hitbox b = collisionBox;
 		

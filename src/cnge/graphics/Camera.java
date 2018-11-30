@@ -79,6 +79,11 @@ public class Camera {
 		return new Matrix4f().translate(left, up, 0).scale(right - left, down - up, 1);
 	}
 	
+	public Matrix4f getModelMatrixDims(float left, float up, float width, float height) {
+		return new Matrix4f().translate(left, up, 0).scale(width , height, 1);
+	}
+	
+	
 	/**
 	 * gets the mvp matrix from a certain model matrix
 	 * 

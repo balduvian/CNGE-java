@@ -1,17 +1,11 @@
 package game.scenes.game;
 
-import static game.scenes.game.scenery.GameBlocks.*;
-import static game.scenes.game.scenery.GameGraphics.rect;
-import static game.scenes.game.scenery.GameGraphics.tileShader;
+import static game.scenes.game.GameAssets.*;
 
 import java.util.ArrayList;
 
-import cnge.core.Block;
 import cnge.core.BlockSet;
 import cnge.core.Level;
-import cnge.graphics.Shader;
-import cnge.graphics.texture.Texture;
-import cnge.graphics.texture.TileTexture;
 import game.SparkBlock;
 import game.TexBlock;
 

@@ -1,14 +1,11 @@
 package game.scenes.game.entities;
 
-import static game.scenes.game.scenery.GameGraphics.*;
-import static game.scenes.game.scenery.GameEntities.*;
+import static game.scenes.game.GameAssets.*;
 
 import cnge.core.Entity;
 import cnge.core.Hitbox;
 import cnge.core.animation.Anim2D;
-import cnge.core.morph.Morph;
 import cnge.graphics.Shader;
-import cnge.graphics.Transform;
 import cnge.graphics.texture.Texture;
 
 public class Battery extends Entity {

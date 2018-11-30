@@ -4,9 +4,7 @@ import cnge.core.Base;
 import cnge.core.Entity;
 import cnge.graphics.Shader;
 
-import static game.scenes.noise.NoiseScene.*;
-
-import org.joml.Vector2f;
+import static game.scenes.noise.NoiseAssets.*;
 
 public class NoisePanel extends Entity {
 

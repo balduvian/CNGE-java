@@ -1,18 +1,13 @@
 package game.scenes.game;
 
-import static game.scenes.game.scenery.GameBlocks.PLAIN_BLOCK;
-import static game.scenes.game.scenery.GameGraphics.rect;
-import static game.scenes.game.scenery.GameGraphics.textureShader;
-import static game.scenes.game.scenery.GameGraphics.tileShader;
+import static game.scenes.game.GameAssets.*;
 
 import cnge.core.Map;
 import cnge.graphics.Shader;
 import cnge.graphics.Transform;
 import cnge.graphics.texture.Texture;
 import cnge.graphics.texture.TileTexture;
-import game.SparkBlock;
 import game.TexBlock;
-import game.shaders.TextureShader;
 
 public class SparkMap extends Map<TexBlock> {
 	

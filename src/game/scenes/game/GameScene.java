@@ -1,23 +1,36 @@
 package game.scenes.game;
 
+import cnge.core.AssetBundle;
+import cnge.core.AssetBundle.SceneLoadAction;
+import cnge.core.BlockSet;
 import cnge.core.Scene;
 import cnge.core.Timer;
+import cnge.graphics.Shape;
 import cnge.graphics.Transform;
+import cnge.graphics.texture.TexturePreset;
+import cnge.graphics.texture.TileTexture;
 import game.scenes.game.entities.Battery;
 import game.scenes.game.entities.Blackening;
 import game.scenes.game.entities.Countdown;
 import game.scenes.game.entities.Player;
 import game.scenes.game.entities.Sky;
-import game.scenes.game.scenery.GameBlocks;
-import game.scenes.game.scenery.GameEntities;
-import game.scenes.game.scenery.GameGraphics;
-import cnge.core.Base;
-import cnge.core.Level;
+import game.scenes.game.levels.Level1;
+import game.scenes.noise.NoiseScene;
+import game.shaders.ColorShader;
+import game.shaders.TextShader;
+import game.shaders.TextureShader;
+import game.shaders.TileShader;
 
-import static game.scenes.game.scenery.GameEntities.*;
+import static game.scenes.game.GameAssets.*;
 import static org.lwjgl.glfw.GLFW.*;
 
-public class GameScene extends Scene {
+import java.lang.reflect.Array;
+
+import game.SparkBase;
+
+import game.TexBlock;
+
+public class GameScene extends Scene<GameScene> {
 	
 	public boolean pressJump;
 	public boolean pressLeft;
@@ -26,32 +39,44 @@ public class GameScene extends Scene {
 	public float currentMapHeight;
 	public float deathBarrier;
 	
-	public Timer startTimer;
-	public Timer deathTimer;
-	
 	public GameScene() {
-		new GameGraphics().init();
-		new GameBlocks().init();
-		new GameEntities().init();
+		super(
+			new GameAssets(
+				new SceneLoadAction<GameScene>() {
+					public void load(GameScene s) {
+						startTimer = new Timer(
+							3, //3, 2, 1, GO
+							() -> {
+								player.controllable = true;
+							}
+						);
+					}
+				},
+				
+				new SceneLoadAction<GameScene>() {
+					public void load(GameScene s) {
+						deathTimer = new Timer(
+							2, //2 seconds after you die to restart
+							()-> {
+								s.startMap(currentLevel);
+							}
+						);
+					}
+				},
+				
+				new SceneLoadAction<GameScene>() {
+					public void load(GameScene s) {
+						s.startMap(level1);
+					}
+				}
+				
+			)
+		);
 	}
 	
 	@Override
 	public void start() {
-		deathTimer = new Timer(
-			2, //2 seconds after you die to restart
-			()-> {
-				startMap(currentLevel);
-			}
-		);
 		
-		startTimer = new Timer(
-			3, //3, 2, 1, GO
-			() -> {
-				player.controllable = true;
-			}
-		);
-		
-		startMap(level1);
 	}
 	
 	//routine when we start a new map in the scene
@@ -104,12 +129,17 @@ public class GameScene extends Scene {
 		currentMap.onScreenUpdate();
 		currentMap.update();
 		//eUpdate_S(currentMap);
+		
+		Transform t = player.getTransform();
+		if(t.x > currentLevel.finishX && t.y > currentLevel.finishY) {
+			Scene.changeScene(new NoiseScene());
+		}
 	}
 	
 	public void render() {
 		eRender(background);
 		
-		currentMap.render(GameBlocks.LAYER_MID);
+		currentMap.render(LAYER_MID);
 		
 		for(int i = 0; i < numBatteries; ++i) {
 			eRender_OS(batteries[i]);
@@ -121,7 +151,7 @@ public class GameScene extends Scene {
 		eRender_S(countdown);
 		
 		sparkFont.render(new char[] {'y','o',' ','w','h','a','t',' ','u','p'}, 0, 0, 1, false);
-		//sparkFont.render(new char[] {'c','e','n','t','e','r',' ','t','h','i','s',' ','m','f',' ','t','e','x','t'}, 256, 124, 2, true);
+		 
 	}
 	
 	@Override
